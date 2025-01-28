@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/265254045.svg)](https://zenodo.org/doi/10.5281/zenodo.10442485)
+# insert DOI when available
 
 <!-- Get rid of the metarepo instructions (the two sections below this) once you're done. -->
 
