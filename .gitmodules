@@ -1,0 +1,3 @@
+[submodule "GenX.jl"]
+	path = GenX.jl
+	url = https://github.com/GenXProject/GenX.jl.git
