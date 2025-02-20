@@ -1,0 +1,17 @@
+Resource,Technology Name,Fuel ID,Primary Mover Type,Primary Mover ID,Energy Type,Fuel Type
+Coal-new,Coal_FE,BIT,Steam Turbine,ST,Thermal,Bituminous Coal
+NG Combustion Turbine (F-Frame),NaturalGas_FE,DFO,Gas Turbine,GT,Thermal,Diesel Fuel Oil
+NG 2-on-1 Combined Cycle (H-Frame) 95% CCS,NaturalGas_FE,NG,Combined Cycle Combustion Turbine - Carbon Capture Storage,CT,Thermal,Natural Gas
+NG 2-on-1 Combined Cycle (F-Frame),NaturalGas_FE,NG,Combined Cycle Combustion Turbine,CT,Thermal,Natural Gas
+RICE,NaturalGas_FE,DFO,Internal Combustion,GT,Thermal,Natural Gas
+HTGR,Nuclear,UM,Steam Turbine,ST,Thermal,Uranium
+Microreactor,Nuclear,UM,Steam Turbine,ST,Thermal,Uranium
+PBR-HTGR,Nuclear,UM,Steam Turbine,ST,Thermal,Uranium
+iPWR_Pack,Nuclear,UM,Steam Turbine,ST,Thermal,Uranium
+Land-Based Wind - Class 1 - Technology 1,LandbasedWind,None,,,Vre,
+Utility PV - Class 1,UtilityPV,None,,,Vre,
+Utility-Scale Battery Storage - 2Hr,Utility-Scale Battery Storage,None,,,Storage,
+Utility-Scale Battery Storage - 4Hr,Utility-Scale Battery Storage,None,,,Storage,
+Utility-Scale Battery Storage - 6Hr,Utility-Scale Battery Storage,None,,,Storage,
+Utility-Scale Battery Storage - 8Hr,Utility-Scale Battery Storage,None,,,Storage,
+Utility-Scale Battery Storage - 10Hr,Utility-Scale Battery Storage,None,,,Storage,
