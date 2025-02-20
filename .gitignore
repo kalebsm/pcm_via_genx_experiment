@@ -8,6 +8,11 @@ data/*.xlsx
 # any ipynb files in scripts
 scripts/*.ipynb
 scripts/*.jl
+scripts/*.csv
+
+# any research_systems files
+GenX.jl/research_systems/*
+SPCM/research_systems/*
 
 
 # -----------------
