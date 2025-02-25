@@ -3,9 +3,13 @@ import numpy as np
 import os
 
 # read in data_source_comparisons
-manual_db_rel = pd.read_csv(os.path.join('..', 'data','manual_db_rel.csv'))
+manual_db_rel = pd.read_csv(os.path.join('data','manual_db_rel.csv'))
+
+
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
 # read in updatable df
-upd_gen_df = pd.read_csv('a_upd_generator_df.csv')
+upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 model_param_upd_df = upd_gen_df.copy()
 model_param_upd_df['Max_Cap_MW'] = -1
 model_param_upd_df['Max_Cap_MWh'] = -1

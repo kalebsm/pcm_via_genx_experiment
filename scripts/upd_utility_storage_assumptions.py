@@ -6,8 +6,11 @@ import sys
 from datetime import datetime as dt
 import textwrap
 
+
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
 # read in upd_gen csv
-upd_gen_df = pd.read_csv('a_upd_generator_df.csv')
+upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 bess_upd_gen_df = upd_gen_df.copy()
 # load utility-scale battery storage data
 utility_scale_battery_df = bess_upd_gen_df[bess_upd_gen_df['Resource'].str.contains('Utility-Scale Battery Storage', na=False)]
@@ -88,4 +91,6 @@ else:
         print(resource)
         print(textwrap.fill(", ".join(columns), width=70))
         print()
-bess_upd_gen_df.to_csv('a_upd_generator_df.csv', index=False)
+
+
+bess_upd_gen_df.to_csv(a_upd_generator_df_path, index=False)

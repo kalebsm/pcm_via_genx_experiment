@@ -1,12 +1,28 @@
 import pandas as pd
 import numpy as np
 import os
+from get_case_names import get_case_names
 
 
+# define location of cost assumptions
+generator_assumptions_path = os.path.join('data', 'cases')
+
+# generate research systems folder
+
+# define path locations for CEM and LACs where inputs are going
+genx_cem_loc = os.path.join('GenX.jl', 'research_systems')
+spcm_lac_loc = os.path.join('SPCM', 'research_systems')
+
+# Get the list of all files in the generator_assumptions_path directory
+case_names_list = get_case_names(generator_assumptions_path)
+
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
 # read in upd_gen csv
-upd_gen_df = pd.read_csv('a_upd_generator_df.csv')
+upd_gen_df = pd.read_csv(a_upd_generator_df_path)
+
 # read in data_source_comparisons
-manual_db_rel = pd.read_csv(os.path.join('..', 'data','manual_db_rel.csv'))
+manual_db_rel = pd.read_csv(os.path.join('data','manual_db_rel.csv'))
 reqd_vre_data = [
                   'Resource',
                   'Zone',
@@ -34,11 +50,7 @@ vre_df = upd_gen_df[upd_gen_df['Resource'].isin(vre_resources)]
 vre_df
 reqd_vre_df = vre_df[reqd_vre_data]
 reqd_vre_df
-# define location of cost assumptions
-generator_assumptions_path = os.path.join('..', 'data', 'cases')
-# define path locations for CEM and LACs where inputs are going
-genx_cem_loc = os.path.join('..', 'GenX.jl', 'research_systems')
-spcm_lac_loc = os.path.join('..', 'SPCM', 'research_systems')
+
 
 # Get the list of all files in the generator_assumptions_path directory
 case_names_list = []
@@ -108,3 +120,6 @@ for case_name in case_names_list:
     # sorted_cem_case_vre_df.to_csv(os.path.join(genx_cem_resources_path, 'Vre.csv'), index=False)
     # # save the case_vre_df to spcm_lac_resources_path
     # sorted_lac_case_vre_df.to_csv(os.path.join(spcm_lac_resources_path, 'Vre.csv'), index=False)
+
+# print confirmation message
+print('Vre input generation complete')

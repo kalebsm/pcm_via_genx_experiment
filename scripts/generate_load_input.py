@@ -1,9 +1,24 @@
 import pandas as pd
 import numpy as np
 import os
+from get_case_names import get_case_names
+
+
+# define location of cost assumptions
+generator_assumptions_path = os.path.join('data', 'cases')
+
+# generate research systems folder
+
+# define path locations for CEM and LACs where inputs are going
+genx_cem_loc = os.path.join('GenX.jl', 'research_systems')
+spcm_lac_loc = os.path.join('SPCM', 'research_systems')
+
+# Get the list of all files in the generator_assumptions_path directory
+case_names_list = get_case_names(generator_assumptions_path)
+
 
 # load in ercot actuals data
-ercot_actuals_loc = os.path.join('..', 'scenario_generation', 'sequential_NORTA', 'data')
+ercot_actuals_loc = os.path.join('scenario_generation', 'sequential_NORTA', 'data')
 ercot_actuals_df = pd.read_csv(ercot_actuals_loc + '/actuals_ercot2018.csv')
 lac_length = len(ercot_actuals_df)
 
@@ -34,18 +49,6 @@ lac_load_data = pd.DataFrame({'Voll': [5000] + [None] * (lac_length - 1),
                           'Time_Index': range(1,lac_length+1),
                           'Demand_MW_z1': lac_load_actuals})
 
-# define location of cost assumptions
-generator_assumptions_path = os.path.join('..', 'data', 'cases')
-# define path locations for CEM and LACs where inputs are going
-genx_cem_loc = os.path.join('..', 'GenX.jl', 'research_systems')
-spcm_lac_loc = os.path.join('..', 'SPCM', 'research_systems')
-
-# Get the list of all files in the generator_assumptions_path directory
-case_names_list = []
-for xlsx_name in os.listdir(generator_assumptions_path):
-    if os.path.isfile(os.path.join(generator_assumptions_path, xlsx_name)):
-        case_name = xlsx_name.replace('.xlsx', '')
-        case_names_list.append(case_name)
 
 for case_name in case_names_list:
 # for case_name in case_names_list[0:1]:

@@ -2,21 +2,21 @@ import pandas as pd
 import numpy as np
 import os
 import yaml
+from get_case_names import get_case_names
+
 
 # define location of cost assumptions
-generator_assumptions_path = os.path.join('..', 'data', 'cases')
+generator_assumptions_path = os.path.join('data', 'cases')
+
+# generate research systems folder
+
 # define path locations for CEM and LACs where inputs are going
-genx_cem_loc = os.path.join('..', 'GenX.jl', 'research_systems')
-spcm_lac_loc = os.path.join('..', 'SPCM', 'research_systems')
+genx_cem_loc = os.path.join('GenX.jl', 'research_systems')
+spcm_lac_loc = os.path.join('SPCM', 'research_systems')
 
 # Get the list of all files in the generator_assumptions_path directory
-case_names_list = []
-for xlsx_name in os.listdir(generator_assumptions_path):
-    if os.path.isfile(os.path.join(generator_assumptions_path, xlsx_name)):
-        case_name = xlsx_name.replace('.xlsx', '')
-        case_names_list.append(case_name)
-print(case_names_list)
-import yaml
+case_names_list = get_case_names(generator_assumptions_path)
+
 
 data = {
     'Feasib_Tol': 1.0e-05,          

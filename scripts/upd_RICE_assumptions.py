@@ -19,9 +19,10 @@ def get_cleaned_cost_df(gen_costs_df, spec_gen_df):
 
     return costs_normalized
 
-
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
 # read in upd_gen csv
-upd_gen_df = pd.read_csv('a_upd_generator_df.csv')
+upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 rice_upd_gen_df = upd_gen_df.copy()
 # load in the RICE data
 rice_data = rice_upd_gen_df[upd_gen_df['Resource'] == 'RICE']

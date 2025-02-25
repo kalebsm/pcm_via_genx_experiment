@@ -28,12 +28,15 @@ ferc_excel_file = pd.ExcelFile(ferc_data_path)
 
 # define location of cost assumptions
 generator_assumptions_path = os.path.join('..', 'data', 'cases')
+
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
 # read in updatable df
-upd_gen_df = pd.read_csv('a_upd_generator_df.csv')
+upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 # create copy of upd_gen_df to update
 ferc_upd_gen_df = upd_gen_df.copy()
 # read in data_source_comparisons
-manual_db_rel = pd.read_csv(os.path.join('..', 'data','manual_db_rel.csv'))
+manual_db_rel = pd.read_csv(os.path.join('data','manual_db_rel.csv'))
 unique_gen = upd_gen_df['Resource']
 
 sheet_names = ferc_excel_file.sheet_names

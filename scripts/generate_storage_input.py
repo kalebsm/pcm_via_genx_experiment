@@ -1,9 +1,25 @@
 import pandas as pd
 import numpy as np
 import os
+from get_case_names import get_case_names
 
+
+# define location of cost assumptions
+generator_assumptions_path = os.path.join('data', 'cases')
+
+# generate research systems folder
+
+# define path locations for CEM and LACs where inputs are going
+genx_cem_loc = os.path.join('GenX.jl', 'research_systems')
+spcm_lac_loc = os.path.join('SPCM', 'research_systems')
+
+# Get the list of all files in the generator_assumptions_path directory
+case_names_list = get_case_names(generator_assumptions_path)
+
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
 # read in upd_gen csv
-upd_gen_df = pd.read_csv('a_upd_generator_df.csv')
+upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 # read in data_source_comparisons
 manual_db_rel = pd.read_csv(os.path.join('..', 'data','manual_db_rel.csv'))
 reqd_storage_data = [
@@ -43,19 +59,6 @@ storage_resources = manual_db_rel.loc[manual_db_rel['Energy Type'] == 'Storage',
 storage_df = upd_gen_df.loc[upd_gen_df['Resource'].isin(storage_resources)]
 storage_df
 reqd_storage_df = storage_df[reqd_storage_data]
-# define location of cost assumptions
-generator_assumptions_path = os.path.join('..', 'data', 'cases')
-# define path locations for CEM and LACs where inputs are going
-genx_cem_loc = os.path.join('..', 'GenX.jl', 'research_systems')
-spcm_lac_loc = os.path.join('..', 'SPCM', 'research_systems')
-
-# Get the list of all files in the generator_assumptions_path directory
-case_names_list = []
-for xlsx_name in os.listdir(generator_assumptions_path):
-    if os.path.isfile(os.path.join(generator_assumptions_path, xlsx_name)):
-        case_name = xlsx_name.replace('.xlsx', '')
-        case_names_list.append(case_name)
-
 
 for case_name in case_names_list:
 # for case_name in case_names_list[0:1]:

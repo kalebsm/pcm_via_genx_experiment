@@ -8,7 +8,7 @@ import textwrap
 
 
 # define location of cost assumptions
-generator_assumptions_path = os.path.join('..', 'data', 'cases')
+generator_assumptions_path = os.path.join('data', 'cases')
 # Get the list of all files in the generator_assumptions_path directory
 case_names_list = []
 
@@ -18,11 +18,11 @@ for csv_name in os.listdir(generator_assumptions_path):
     # save xlsx path
     csv_path = os.path.join(generator_assumptions_path, csv_name)
     if os.path.isfile(csv_path):
-        case_name = csv_name.replace('.xlsx', '')
+        case_name = csv_name.replace('.csv', '')
         case_names_list.append(case_name)
 
         # for every case, read the generator assumptions file and get a list of all unique 'Technical Name'
-        df = pd.read_excel(csv_path)
+        df = pd.read_csv(csv_path)
         if 'Technical Name' in df.columns:
             unique_gen_names.update(df['Technical Name'].unique())
 
@@ -113,9 +113,16 @@ unique_gen_names
 gen_df = pd.DataFrame(index=range(1, len(unique_gen_names) + 1), columns=gen_parameter_names)
 gen_df['Resource'] = sorted(list(unique_gen_names))
 
-# print dataframe to csv
-gen_df.to_csv('a_initialized_generator_df.csv', index=False)
+
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
+
+# # print dataframe to csv
+# gen_df.to_csv(os.path.join('data', 'a_initialized')'a_initialized_generator_df.csv', index=False)
 
 # print a updatable verison of dataframe
-gen_df.to_csv('a_upd_generator_df.csv', index=True)
+gen_df.to_csv(a_upd_generator_df_path, index=True)
 # print(gen_df)
+
+# print completion message
+print(f"Initialized generator data to {a_upd_generator_df_path}.")

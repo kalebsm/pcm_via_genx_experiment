@@ -5,9 +5,10 @@ import shutil
 import os
 import sys
 from datetime import datetime as dt
+from get_case_names import get_case_names
 
 # Add the path to the ATB-calc directory to the system path
-sys.path.insert(0, os.path.join(os.path.dirname(os.getcwd()), 'data', 'ATB-calc'))
+sys.path.insert(0, os.path.join('ATB-calc'))
 from lcoe_calculator.process_all import ProcessAll
 from lcoe_calculator.tech_processors import (ALL_TECHS,
     OffShoreWindProc, LandBasedWindProc, DistributedWindProc,
@@ -22,7 +23,7 @@ display(HTML("<style>.container { width:90% !important; }</style>"))
 if 'atb_df' not in globals() or atb_df is None:
     # The below line MUST be updated to reflect the location of the ATB workbook on your computer
     # atb_electricity_workbook = 'C:\\Users\\ks885\Documents\\aa_research\Data\Energy\\NRELs_ATB\ATB-calc\\data\\2023-ATB-Data_Master_v9.0.xlsx'
-    atb_electricity_workbook = os.path.join('..', 'data', '2024 v2 Annual Technology Baseline Workbook Errata 7-19-2024.xlsx')
+    atb_electricity_workbook = os.path.join('data', '2024 v2 Annual Technology Baseline Workbook Errata 7-19-2024.xlsx')
     # atb_electricity_workbook = os.path.join('..', 'data', '2024 v1 Annual Technology Baseline Workbook Original 6-24-2024.xlsx')
     # ---- Comment/uncomment the below lines to process all techs or a subset of techs
     # Process all technologies
@@ -37,24 +38,22 @@ if 'atb_df' not in globals() or atb_df is None:
 
     atb_df = processor.data
 
-# define location of cost assumptions
-generator_assumptions_path = os.path.join('..', 'data', 'cases')
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
 # load in generator param data shell
-upd_gen_df = pd.read_csv('a_upd_generator_df.csv')
+upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 atb_upd_gen_df = upd_gen_df.copy()
 
-
+# define location of cost assumptions
+generator_assumptions_path = os.path.join('data', 'cases')
 # Get the list of all files in the generator_assumptions_path directory
-case_names_list = []
-for xlsx_name in os.listdir(generator_assumptions_path):
-    if os.path.isfile(os.path.join(generator_assumptions_path, xlsx_name)):
-        case_name = xlsx_name.replace('.xlsx', '')
-        case_names_list.append(case_name)
+case_names_list = get_case_names(generator_assumptions_path)
 
 
-# load initialized generator df csv
-gen_2_model_df = pd.read_csv('a_initialized_generator_df.csv')
-gen_2_model_names = gen_2_model_df['Resource']
+
+# # load initialized generator df csv
+# gen_2_model_df = pd.read_csv(os.path.join('data', 'a_initialized_generator_df.csv'))
+gen_2_model_names = atb_upd_gen_df['Resource']
 
 
 # so then we need to go through unique gen names, get technology type associated, 
@@ -122,4 +121,8 @@ for gen_name in inters_names:
     # atb_gen_df = atb_df[(atb_df['DisplayName'] == gen_name)]
 
 # print out updated generator df
-atb_upd_gen_df.to_csv('a_upd_generator_df.csv', index=False)
+atb_upd_gen_df.to_csv(a_upd_generator_df_path, index=False)
+
+
+# print completion message
+print('Updated generator df saved to: ', a_upd_generator_df_path)

@@ -6,9 +6,10 @@ import sys
 from datetime import datetime as dt
 import textwrap
 
-
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
 # read in upd_gen csv
-upd_gen_df = pd.read_csv('a_upd_generator_df.csv')
+upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 smr_upd_gen_df = upd_gen_df.copy()
 # load in SMR data
 smr_foak_cost_df = pd.read_csv(os.path.join('..', 'data', 'SMR_data', 'FOAK_Costs.csv'))
@@ -131,5 +132,8 @@ else:
         print(resource)
         print(textwrap.fill(", ".join(columns), width=70))
         print()
+
+# a_upd_generator_df path
+a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
 # save to csv
-smr_upd_gen_df.to_csv('a_upd_generator_df.csv', index=False)
+smr_upd_gen_df.to_csv(a_upd_generator_df_path, index=False)
