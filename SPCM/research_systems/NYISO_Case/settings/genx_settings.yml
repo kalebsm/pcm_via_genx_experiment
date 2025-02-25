@@ -17,6 +17,6 @@ Solver: Gurobi
 StorageLosses: 0
 TimeDomainReduction: 0
 TimeDomainReductionFolder: TDR_Results
-Trans_Loss_Segments: 1
+Trans_Loss_Segments: 0
 UCommit: 2
 WriteShadowPrices: 1

@@ -1,4 +1,4 @@
-Voll,Demand_Segment,Cost_of_Demand_Curtailment_per_MW,Max_Demand_Curtailment,Rep_Periods,Timesteps_per_Rep_Period,Sub_Weights,Time_Index,Demand_MW_A,Demand_MW_B,Demand_MW_C,Demand_MW_D,Demand_MW_E,Demand_MW_F,Demand_MW_G,Demand_MW_H,Demand_MW_I,Demand_MW_J,Demand_MW_K
+Voll,Demand_Segment,Cost_of_Demand_Curtailment_per_MW,Max_Demand_Curtailment,Rep_Periods,Timesteps_per_Rep_Period,Sub_Weights,Time_Index,Demand_MW_z1,Demand_MW_z2,Demand_MW_z3,Demand_MW_z4,Demand_MW_z5,Demand_MW_z6,Demand_MW_z7,Demand_MW_z8,Demand_MW_z9,Demand_MW_z10,Demand_MW_z11
 10000.0,1.0,1.0,1.0,1.0,8760.0,8760.0,1,1443.2,897.5,1597.6,539.6,770.7,1131.1,948.6,272.5,581.8,4896.0,1974.2
 ,,,,,,,2,1454.3,861.0,1539.6,529.0,729.8,1082.0,896.4,260.0,560.4,4719.6,1848.9
 ,,,,,,,3,1421.8,834.9,1490.6,517.9,701.1,1042.0,848.3,252.5,536.3,4532.9,1748.8
