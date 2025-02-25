@@ -19,7 +19,7 @@ def get_cleaned_cost_df(gen_costs_df, spec_gen_df):
     return costs_normalized
 
 # define location of ferc data
-ferc_data_loc = os.path.join('..', 'data', 'ferc_generator_parameters')
+ferc_data_loc = os.path.join('data', 'ferc_generator_parameters')
 
 # Get the sheet names
 # assume summer data
@@ -27,7 +27,7 @@ ferc_data_path = os.path.join(ferc_data_loc, '20120724-4012_Generator_Data_Summe
 ferc_excel_file = pd.ExcelFile(ferc_data_path)
 
 # define location of cost assumptions
-generator_assumptions_path = os.path.join('..', 'data', 'cases')
+generator_assumptions_path = os.path.join('data', 'cases')
 
 # a_upd_generator_df path
 a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
@@ -150,4 +150,4 @@ for gen_name in unique_gen:
 
 
 # save ferc_upd_gen_df to csv
-ferc_upd_gen_df.to_csv('a_upd_generator_df.csv', index=False)
+ferc_upd_gen_df.to_csv(a_upd_generator_df_path, index=False)
