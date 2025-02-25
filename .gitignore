@@ -1,9 +1,6 @@
 # sys files
 .DS_Store
 
-# any data files
-data/*.csv
-data/*.xlsx
 
 # any ipynb files in scripts
 scripts/*.ipynb
@@ -11,7 +8,6 @@ scripts/*.jl
 scripts/*.csv
 
 # any research_systems files
-SPCM/research_systems/** 
 GenX.jl/research_systems/**
 
 
