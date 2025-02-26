@@ -11,7 +11,7 @@ The NYISO test system represents the 11-zone transmission network (zones A throu
 - **Zones**: 11 zones (A-K) representing NYISO control areas
 - **Transmission Lines**: 12 interconnections between zones with maximum transfer limits (no DCOPF, transmission expansion)
 - **Data Source**: Original transfer limits from Hibbard et al. reference case, with adjustments for separating zones H and I
-- 
+  
 | Zone | Transfer Limit (MW) |
 |------|---------------------|
 | A<>B | 5133                |
