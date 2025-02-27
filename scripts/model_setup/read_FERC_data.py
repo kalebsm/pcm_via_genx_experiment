@@ -101,6 +101,7 @@ ferc_2_genx_dic = {
 for gen_name in unique_gen:
 # for gen_name in unique_gen[0:1]:
     # get fuel type
+    print(gen_name)
     fuel_id = manual_db_rel[manual_db_rel['Resource'] == gen_name]['Fuel ID'].values[0]
     # get primary mover
     mover_id = manual_db_rel[manual_db_rel['Resource'] == gen_name]['Primary Mover ID'].values[0]

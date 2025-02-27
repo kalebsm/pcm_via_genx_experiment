@@ -1,8 +1,25 @@
 import subprocess
+import sys
 import os
 
-# Change the current working directory to the scripts folder
-os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__))))
+# Add the root directory to the Python path (from within the scripts folder)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Now you can import utils or any module that requires data folder access
+from utils.spcm_experiment_utils import get_paths
+
+# from model_setup import model_setup
+
+# # Run the model_setup module
+# model_setup.main()
+
+# Change the current working directory to the root folder
+print(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(os.path.join(root_path, "scripts"))
+
+print("Current working directory:", os.getcwd())
 
 # List of Python files to run
 python_files = [
@@ -31,10 +48,11 @@ python_files = [
 
 # Loop through each file and run it
 for file in python_files:
-        print(f"Ran {file}...")
-        result = subprocess.run(["python", file])
-        if result.returncode != 0:
-            print(f"Error running {file}. Stopping execution.")
-            break
-
-print("All scripts have been executed.")
+    file_path = os.path.join("model_setup", file)
+    print(f"Running {file_path}...")
+    result = subprocess.run(["python", file_path])
+    if result.returncode != 0:
+        print(f"Error running {file_path}. Stopping execution.")
+        break
+    else:
+        print("All scripts have been executed successfully.")
