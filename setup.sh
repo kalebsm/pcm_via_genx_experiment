@@ -31,7 +31,7 @@ pip_packages=("numpy" "pandas" "matplotlib" "IPython" \
                 "sys" 
                 "datetime" 
                 "ipykernel"
-                "yaml" 
+                "pyyaml" 
                 "subprocess"
                 "openpyxl" 
                 "click"

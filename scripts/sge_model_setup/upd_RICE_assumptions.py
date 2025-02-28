@@ -5,6 +5,14 @@ import os
 import sys
 from datetime import datetime as dt
 
+# Add the root directory (my_package) to sys.path so Python can find 'utils'
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # One level up from 'scripts'
+sys.path.append(root_path)
+
+# Now import from utils
+from utils.sge_utils import get_paths
+data_path = get_paths('data')
+
 
 def get_cleaned_cost_df(gen_costs_df, spec_gen_df):
     #
@@ -20,7 +28,7 @@ def get_cleaned_cost_df(gen_costs_df, spec_gen_df):
     return costs_normalized
 
 # a_upd_generator_df path
-a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
+a_upd_generator_df_path = os.path.join(data_path, 'a_upd_generator_df.csv')
 # read in upd_gen csv
 upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 rice_upd_gen_df = upd_gen_df.copy()
@@ -178,4 +186,4 @@ for col in reqd_thermal_data:
 
 print("Missing data columns:\n", "\n".join(missing_data))
 # save updated data to csv
-rice_upd_gen_df.to_csv('a_upd_generator_df.csv', index=False)
+rice_upd_gen_df.to_csv(a_upd_generator_df_path, index=False)

@@ -7,8 +7,22 @@ from datetime import datetime as dt
 import textwrap
 
 
+# Add the root directory (my_package) to sys.path so Python can find 'utils'
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # One level up from 'scripts'
+sys.path.append(root_path)
+
+# Now import from utils
+from utils.sge_utils import get_paths
+scripts_path = get_paths('scripts')
+data_path = get_paths('data')
+genx_research_path = get_paths('genx_research')
+spcm_research_path = get_paths('spcm_research')
+figures_path = get_paths('figures')
+atb_calc_path = get_paths('atb-calc')
+
+
 # a_upd_generator_df path
-a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
+a_upd_generator_df_path = os.path.join(data_path, 'a_upd_generator_df.csv')
 # read in upd_gen csv
 upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 bess_upd_gen_df = upd_gen_df.copy()

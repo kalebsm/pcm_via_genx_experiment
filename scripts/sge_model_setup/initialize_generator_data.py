@@ -6,9 +6,20 @@ import sys
 from datetime import datetime as dt
 import textwrap
 
+# Add the root directory (my_package) to sys.path so Python can find 'utils'
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # One level up from 'scripts'
+sys.path.append(root_path)
+
+# Now import from utils
+from utils.sge_utils import get_paths
+scripts_path = get_paths('scripts')
+data_path = get_paths('data')
+genx_research_path = get_paths('genx_research')
+spcm_research_path = get_paths('spcm_research')
+figures_path = get_paths('figures')
 
 # define location of cost assumptions
-generator_assumptions_path = os.path.join('data', 'cases')
+generator_assumptions_path = os.path.join(data_path, 'cases')
 # Get the list of all files in the generator_assumptions_path directory
 case_names_list = []
 
@@ -115,7 +126,7 @@ gen_df['Resource'] = sorted(list(unique_gen_names))
 
 
 # a_upd_generator_df path
-a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
+a_upd_generator_df_path = os.path.join(data_path, 'a_upd_generator_df.csv')
 
 # # print dataframe to csv
 # gen_df.to_csv(os.path.join('data', 'a_initialized')'a_initialized_generator_df.csv', index=False)

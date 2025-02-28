@@ -1,27 +1,33 @@
 import pandas as pd
 import numpy as np
 import os
+import sys
 from get_case_names import get_case_names
 
 
+# Add the root directory (my_package) to sys.path so Python can find 'utils'
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # One level up from 'scripts'
+sys.path.append(root_path)
+
+# Now import from utils
+from utils.sge_utils import get_paths
+data_path = get_paths('data')
+genx_research_path = get_paths('genx_research')
+spcm_research_path = get_paths('spcm_research')
+scenario_generation_path = get_paths('scenario_generation')
+
 # define location of cost assumptions
-generator_assumptions_path = os.path.join('data', 'cases')
-
-# generate research systems folder
-
-# define path locations for CEM and LACs where inputs are going
-genx_cem_loc = os.path.join('GenX.jl', 'research_systems')
-spcm_lac_loc = os.path.join('SPCM', 'research_systems')
+generator_assumptions_path = os.path.join(data_path, 'cases')
 
 # Get the list of all files in the generator_assumptions_path directory
 case_names_list = get_case_names(generator_assumptions_path)
 
 # a_upd_generator_df path
-a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
+a_upd_generator_df_path = os.path.join(data_path, 'a_upd_generator_df.csv')
 # read in upd_gen csv
 upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 # read in data_source_comparisons
-manual_db_rel = pd.read_csv(os.path.join('..', 'data','manual_db_rel.csv'))
+manual_db_rel = pd.read_csv(os.path.join(data_path,'manual_db_rel.csv'))
 reqd_storage_data = [
                   'Resource',
                   'Zone',
@@ -52,8 +58,8 @@ reqd_storage_data = [
                   'region',
                   'cluster',
 ]
-# get list of 'Resources' in manual_db_rel that are storage 'Energy Type'
-storage_resources = manual_db_rel.loc[manual_db_rel['Energy Type'] == 'Storage', 'Resource'].unique()
+# get list of 'Resources' in manual_db_rel that are storage 'ATB Technology Name'
+storage_resources = manual_db_rel.loc[manual_db_rel['ATB Technology Name'] == 'Utility-Scale Battery Storage', 'Resource'].unique()
 
 # get dataframe from upd_gen_df that has 'resource' in storage_resources
 storage_df = upd_gen_df.loc[upd_gen_df['Resource'].isin(storage_resources)]
@@ -63,11 +69,11 @@ reqd_storage_df = storage_df[reqd_storage_data]
 for case_name in case_names_list:
 # for case_name in case_names_list[0:1]:
     # load cem and lac paths
-    genx_cem_resources_path = os.path.join(genx_cem_loc, case_name, 'resources')
-    spcm_lac_resources_path = os.path.join(spcm_lac_loc, case_name, 'resources')
+    genx_cem_resources_path = os.path.join(genx_research_path, case_name, 'resources')
+    spcm_lac_resources_path = os.path.join(spcm_research_path, case_name, 'resources')
 
     # read in cost assumption in generator_assumptions_path for case
-    case_assumptions = pd.read_excel(os.path.join(generator_assumptions_path, case_name + '.xlsx'))
+    case_assumptions = pd.read_csv(os.path.join(generator_assumptions_path, case_name + '.csv'))
 
     # create a new copy of the reqd_storage_df for each case
     case_storage_df = reqd_storage_df.copy()

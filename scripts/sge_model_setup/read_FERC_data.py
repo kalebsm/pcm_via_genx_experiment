@@ -5,6 +5,19 @@ import os
 import sys
 from datetime import datetime as dt
 
+# Add the root directory (my_package) to sys.path so Python can find 'utils'
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # One level up from 'scripts'
+sys.path.append(root_path)
+
+# Now import from utils
+from utils.sge_utils import get_paths
+scripts_path = get_paths('scripts')
+data_path = get_paths('data')
+genx_research_path = get_paths('genx_research')
+spcm_research_path = get_paths('spcm_research')
+figures_path = get_paths('figures')
+atb_calc_path = get_paths('atb-calc')
+
 def get_cleaned_cost_df(gen_costs_df, spec_gen_df):
     #
     costs = gen_costs_df[gen_costs_df['Generic Name'].isin(spec_gen_df['Generic Name'])]
@@ -19,7 +32,7 @@ def get_cleaned_cost_df(gen_costs_df, spec_gen_df):
     return costs_normalized
 
 # define location of ferc data
-ferc_data_loc = os.path.join('data', 'ferc_generator_parameters')
+ferc_data_loc = os.path.join(data_path, 'ferc_generator_parameters')
 
 # Get the sheet names
 # assume summer data
@@ -27,16 +40,16 @@ ferc_data_path = os.path.join(ferc_data_loc, '20120724-4012_Generator_Data_Summe
 ferc_excel_file = pd.ExcelFile(ferc_data_path)
 
 # define location of cost assumptions
-generator_assumptions_path = os.path.join('data', 'cases')
+generator_assumptions_path = os.path.join(data_path, 'cases')
 
 # a_upd_generator_df path
-a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
+a_upd_generator_df_path = os.path.join(data_path, 'a_upd_generator_df.csv')
 # read in updatable df
 upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 # create copy of upd_gen_df to update
 ferc_upd_gen_df = upd_gen_df.copy()
 # read in data_source_comparisons
-manual_db_rel = pd.read_csv(os.path.join('data','manual_db_rel.csv'))
+manual_db_rel = pd.read_csv(os.path.join(data_path,'manual_db_rel.csv'))
 unique_gen = upd_gen_df['Resource']
 
 sheet_names = ferc_excel_file.sheet_names

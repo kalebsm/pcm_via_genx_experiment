@@ -51,8 +51,8 @@ upd_gen_df = CSV.read(a_upd_generator_df_path, DataFrame)
 atb_upd_gen_df = deepcopy(upd_gen_df)
 
 # Get the list of all files in the generator_assumptions_path directory
-case_names_list = filter(x -> endswith(x, ".xlsx"), readdir(generator_assumptions_path))
-case_names_list = replace.(case_names_list, ".xlsx" => "")
+case_names_list = filter(x -> endswith(x, ".csv"), readdir(generator_assumptions_path))
+case_names_list = replace.(case_names_list, ".csv" => "")
 println(case_names_list)
 
 # Load initialized generator df csv

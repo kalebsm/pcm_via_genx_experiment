@@ -7,8 +7,24 @@ import sys
 from datetime import datetime as dt
 from get_case_names import get_case_names
 
-# Add the path to the ATB-calc directory to the system path
-sys.path.insert(0, os.path.join('ATB-calc'))
+# Add the root directory (my_package) to sys.path so Python can find 'utils'
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # One level up from 'scripts'
+sys.path.append(root_path)
+
+# Now import from utils
+from utils.sge_utils import get_paths
+scripts_path = get_paths('scripts')
+data_path = get_paths('data')
+genx_research_path = get_paths('genx_research')
+spcm_research_path = get_paths('spcm_research')
+figures_path = get_paths('figures')
+atb_calc_path = get_paths('atb-calc')
+
+print(os.path.join(root_path, 'ATB-calc'))
+
+# # Add the path to the ATB-calc directory to the system path
+sys.path.insert(0, os.path.join(root_path, '..', 'ATB-calc'))
+# sys.path.append(atb_calc_path)
 from lcoe_calculator.process_all import ProcessAll
 from lcoe_calculator.tech_processors import (ALL_TECHS,
     OffShoreWindProc, LandBasedWindProc, DistributedWindProc,
@@ -23,7 +39,7 @@ display(HTML("<style>.container { width:90% !important; }</style>"))
 if 'atb_df' not in globals() or atb_df is None:
     # The below line MUST be updated to reflect the location of the ATB workbook on your computer
     # atb_electricity_workbook = 'C:\\Users\\ks885\Documents\\aa_research\Data\Energy\\NRELs_ATB\ATB-calc\\data\\2023-ATB-Data_Master_v9.0.xlsx'
-    atb_electricity_workbook = os.path.join('data', '2024 v2 Annual Technology Baseline Workbook Errata 7-19-2024.xlsx')
+    atb_electricity_workbook = os.path.join(data_path, '2024 v2 Annual Technology Baseline Workbook Errata 7-19-2024.xlsx')
     # atb_electricity_workbook = os.path.join('..', 'data', '2024 v1 Annual Technology Baseline Workbook Original 6-24-2024.xlsx')
     # ---- Comment/uncomment the below lines to process all techs or a subset of techs
     # Process all technologies
@@ -39,13 +55,13 @@ if 'atb_df' not in globals() or atb_df is None:
     atb_df = processor.data
 
 # a_upd_generator_df path
-a_upd_generator_df_path = os.path.join('data', 'a_upd_generator_df.csv')
+a_upd_generator_df_path = os.path.join(data_path, 'a_upd_generator_df.csv')
 # load in generator param data shell
 upd_gen_df = pd.read_csv(a_upd_generator_df_path)
 atb_upd_gen_df = upd_gen_df.copy()
 
 # define location of cost assumptions
-generator_assumptions_path = os.path.join('data', 'cases')
+generator_assumptions_path = os.path.join(data_path, 'cases')
 # Get the list of all files in the generator_assumptions_path directory
 case_names_list = get_case_names(generator_assumptions_path)
 
