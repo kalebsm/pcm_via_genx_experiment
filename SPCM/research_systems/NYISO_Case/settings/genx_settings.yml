@@ -11,7 +11,7 @@ NetworkExpansion: 0
 OperationalReserves: 0
 OutputFullTimeSeries: 1
 OverwriteResults: 0
-ParameterScale: 1
+ParameterScale: 0
 PrintModel: 0
 Solver: Gurobi
 StorageLosses: 0
