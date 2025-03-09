@@ -4,15 +4,13 @@ EnergyShareRequirement: 0
 MaxCapReq: 0
 MethodofMorris: 0
 MinCapReq: 0
-ModelingToGenerateAlternativeIterations: 3
 ModelingToGenerateAlternatives: 0
-ModelingtoGenerateAlternativeSlack: 0.1
 NetworkExpansion: 0
 OperationalReserves: 0
 OutputFullTimeSeries: 1
 OverwriteResults: 0
-ParameterScale: 1
-PrintModel: 0
+ParameterScale: 0
+PrintModel: 1
 Solver: Gurobi
 StorageLosses: 0
 TimeDomainReduction: 0

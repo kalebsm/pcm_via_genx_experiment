@@ -8,7 +8,7 @@ scripts/*.jl
 scripts/*.csv
 
 # any research_systems files
-GenX.jl/research_systems/**
+# GenX.jl/research_systems/**
 
 
 # -----------------
