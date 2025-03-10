@@ -19,8 +19,6 @@ CombinedCycle_NaturalGas_F_Existing,6,F,1,CombinedCycle,0,1,3648.0,3648.0,0,0.4,
 CombinedCycle_NaturalGas_F_New,6,F,1,CombinedCycle,1,1,0.0,-1.0,0,0.4,0.35,0.35,40,80,6,4,240769.89082666216,29088.888888888883,4.082222222222222,6.43,NG_F2I,1
 CombinedCycle_NaturalGas_G_Existing,7,G,1,CombinedCycle,0,1,1946.9,1946.9,0,0.4,0.35,0.35,40,80,6,4,0.0,76438.72261492955,4.082222222222222,6.43,NG_F2I,1
 CombinedCycle_NaturalGas_G_New,7,G,1,CombinedCycle,1,1,0.0,-1.0,0,0.4,0.35,0.35,40,80,6,4,316343.174351289,38219.36130746477,4.082222222222222,6.43,NG_F2I,1
-CombustionTurbine_Kerosene_G_Existing,7,G,1,CombustionTurbine,0,1,21.6,21.6,0,0.3,1.0,1.0,30,60,1,1,0.0,33898.15009775906,6.94,9.5,None,1
-CombustionTurbine_Kerosene_G_New,7,G,1,CombustionTurbine,1,1,0.0,-1.0,0,0.3,1.0,1.0,30,60,1,1,164163.004683951,16949.07504887953,6.94,9.5,None,1
 CombustionTurbine_NaturalGas_G_Existing,7,G,1,CombustionTurbine,0,1,21.6,21.6,0,0.3,1.0,1.0,30,60,1,1,0.0,33898.15009775906,6.94,9.5,NG_F2I,1
 CombustionTurbine_NaturalGas_G_New,7,G,1,CombustionTurbine,1,1,0.0,-1.0,0,0.3,1.0,1.0,30,60,1,1,164163.004683951,16949.07504887953,6.94,9.5,NG_F2I,1
 SteamTurbine_NaturalGas_G_Existing,7,G,1,SteamTurbine,0,1,3016.0,3016.0,0,0.3,0.25,0.25,50,100,12,12,0.0,202150.09775906152,16.714285714285715,10.0,NG_F2I,1
@@ -33,12 +31,10 @@ CombinedCycle_NaturalGas_K_Existing,11,K,1,CombinedCycle,0,1,806.6,806.6,0,0.4,0
 CombinedCycle_NaturalGas_K_New,11,K,1,CombinedCycle,1,1,0.0,-1.0,0,0.4,0.35,0.35,40,80,6,4,337436.34045243665,40767.75622065138,4.082222222222222,6.43,NG_K,1
 CombustionTurbine_FuelOil2_K_Existing,11,K,1,CombustionTurbine,0,1,526.9,526.9,0,0.3,1.0,1.0,30,60,1,1,0.0,36158.41479921793,6.94,9.5,FO2_DSNY,1
 CombustionTurbine_FuelOil2_K_New,11,K,1,CombustionTurbine,1,1,0.0,-1.0,0,0.3,1.0,1.0,30,60,1,1,175109.0841514878,18079.207399608964,6.94,9.5,FO2_DSNY,1
-CombustionTurbine_Kerosene_K_Existing,11,K,1,CombustionTurbine,0,1,18.2,18.2,0,0.3,1.0,1.0,30,60,1,1,0.0,36158.41479921793,6.94,9.5,None,1
-CombustionTurbine_Kerosene_K_New,11,K,1,CombustionTurbine,1,1,0.0,-1.0,0,0.3,1.0,1.0,30,60,1,1,175109.0841514878,18079.207399608964,6.94,9.5,None,1
 CombustionTurbine_NaturalGas_K_Existing,11,K,1,CombustionTurbine,0,1,702.0,702.0,0,0.3,1.0,1.0,30,60,1,1,0.0,36158.41479921793,6.94,9.5,NG_K,1
 CombustionTurbine_NaturalGas_K_New,11,K,1,CombustionTurbine,1,1,0.0,-1.0,0,0.3,1.0,1.0,30,60,1,1,175109.0841514878,18079.207399608964,6.94,9.5,NG_K,1
 SteamTurbine_NaturalGas_K_Existing,11,K,1,SteamTurbine,0,1,2300.0,2300.0,0,0.3,0.25,0.25,50,100,12,12,0.0,215629.08493221324,16.714285714285715,10.0,NG_K,1
-Nuclear_B_Existing,2,B,1,Nuclear,0,1,614.0,614.0,0,0.4,0.2,0.2,100,200,48,48,0.0,155500.0,2.7,10.46,None,1
-Nuclear_B_New,2,B,1,Nuclear,1,1,0.0,-1.0,0,0.4,0.2,0.2,100,200,48,48,811518.9034092445,77750.0,2.7,10.46,None,1
-Nuclear_C_Existing,3,C,1,Nuclear,0,1,2922.8,2922.8,0,0.4,0.2,0.2,100,200,48,48,0.0,155500.0,2.7,10.46,None,1
-Nuclear_C_New,3,C,1,Nuclear,1,1,0.0,-1.0,0,0.4,0.2,0.2,100,200,48,48,811518.9034092445,77750.0,2.7,10.46,None,1
+Nuclear_B_Existing,2,B,1,Nuclear,0,1,614.0,614.0,0,0.3,0.25,0.25,50,100,12,12,0.0,215629.08493221324,16.714285714285715,10.0,None,1
+Nuclear_B_New,2,B,1,Nuclear,1,1,0.0,-1.0,0,0.3,0.25,0.25,50,100,12,12,900688.7625727518,107814.54246610662,16.714285714285715,10.0,None,1
+Nuclear_C_Existing,3,C,1,Nuclear,0,1,2922.8,2922.8,0,0.3,0.25,0.25,50,100,12,12,0.0,215629.08493221324,16.714285714285715,10.0,None,1
+Nuclear_C_New,3,C,1,Nuclear,1,1,0.0,-1.0,0,0.3,0.25,0.25,50,100,12,12,900688.7625727518,107814.54246610662,16.714285714285715,10.0,None,1

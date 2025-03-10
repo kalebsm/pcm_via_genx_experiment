@@ -1,0 +1,13 @@
+Resource,Zone,region,cluster,Technology,New_Build,Can_Retire,Existing_Cap_MW,Max_Cap_MW,Min_Cap_MW,Min_Power,Ramp_Up_Percentage,Ramp_Dn_Percentage,Shutdown_Cost_per_MW,Startup_Cost_per_MW,Up_Time,Down_Time,Inv_Cost_per_MWyr,Fixed_OM_Cost_per_MWyr,Var_OM_Cost_per_MWh,Heat_Rate_MMBTU_per_MWh,Fuel,Model
+CombinedCycle_NaturalGas_NY_Existing,1,NY,1,CombinedCycle,0,1,12932.4,12932.4,0,0.4,0.35,0.35,40,80,6,4,0.0,58177.77777777777,4.082222222222222,6.43,NG_NY,1
+CombinedCycle_NaturalGas_NY_New,1,NY,1,CombinedCycle,1,1,0.0,-1.0,0,0.4,0.35,0.35,40,80,6,4,240769.89082666216,29088.888888888883,4.082222222222222,6.43,NG_NY,1
+CombustionTurbine_NaturalGas_NY_Existing,1,NY,1,CombustionTurbine,0,1,1966.0,1966.0,0,0.3,1.0,1.0,30,60,1,1,0.0,25800.0,6.94,9.5,NG_NY,1
+CombustionTurbine_NaturalGas_NY_New,1,NY,1,CombustionTurbine,1,1,0.0,-1.0,0,0.3,1.0,1.0,30,60,1,1,124945.03412815822,12900.0,6.94,9.5,NG_NY,1
+SteamTurbine_NaturalGas_NY_Existing,1,NY,1,SteamTurbine,0,1,9637.1,9637.1,0,0.3,0.25,0.25,50,100,12,12,0.0,153857.14285714287,16.714285714285715,10.0,NG_NY,1
+SteamTurbine_NaturalGas_NY_New,1,NY,1,SteamTurbine,1,1,0.0,-1.0,0,0.3,0.25,0.25,50,100,12,12,642665.620255001,76928.57142857143,16.714285714285715,10.0,NG_NY,1
+SteamTurbine_FuelOil6_NY_Existing,1,NY,1,SteamTurbine,0,1,1803.6,1803.6,0,0.3,0.25,0.25,50,100,12,12,0.0,153857.14285714287,16.714285714285715,10.0,FO6_NY,1
+SteamTurbine_FuelOil6_NY_New,1,NY,1,SteamTurbine,1,1,0.0,-1.0,0,0.3,0.25,0.25,50,100,12,12,642665.620255001,76928.57142857143,16.714285714285715,10.0,FO6_NY,1
+CombustionTurbine_FuelOil2_NY_Existing,1,NY,1,CombustionTurbine,0,1,526.9,526.9,0,0.3,1.0,1.0,30,60,1,1,0.0,25800.0,6.94,9.5,FO2_NY,1
+CombustionTurbine_FuelOil2_NY_New,1,NY,1,CombustionTurbine,1,1,0.0,-1.0,0,0.3,1.0,1.0,30,60,1,1,124945.03412815822,12900.0,6.94,9.5,FO2_NY,1
+Nuclear_NY_Existing,1,NY,1,Nuclear,0,1,3536.8,3536.8,0,0.4,0.2,0.2,100,200,48,48,0.0,155500.0,2.7,10.46,None,1
+Nuclear_NY_New,1,NY,1,Nuclear,1,1,0.0,-1.0,0,0.4,0.2,0.2,100,200,48,48,811518.9034092445,77750.0,2.7,10.46,None,1

@@ -1,0 +1,11 @@
+Resource,Fuel,Zone,AnnualSumCosts
+CombinedCycle_NaturalGas_NY_Existing,NG_NY,1,1.4408154904654464e8
+CombinedCycle_NaturalGas_NY_New,NG_NY,1,0.0
+CombustionTurbine_NaturalGas_NY_Existing,NG_NY,1,4.054146232033923e6
+CombustionTurbine_NaturalGas_NY_New,NG_NY,1,0.0
+SteamTurbine_NaturalGas_NY_Existing,NG_NY,1,0.0
+SteamTurbine_NaturalGas_NY_New,NG_NY,1,0.0
+SteamTurbine_FuelOil6_NY_Existing,FO6_NY,1,0.0
+SteamTurbine_FuelOil6_NY_New,FO6_NY,1,0.0
+CombustionTurbine_FuelOil2_NY_Existing,FO2_NY,1,1.0658740594948884e6
+CombustionTurbine_FuelOil2_NY_New,FO2_NY,1,0.0

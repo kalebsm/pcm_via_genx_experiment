@@ -32,7 +32,6 @@ F,Hydro,None,287.5
 F,PumpedHydro,None,1160.0
 F,SolarUtility,None,160.0
 G,CombinedCycle,NaturalGas,1946.9
-G,CombustionTurbine,Kerosene,21.6
 G,CombustionTurbine,NaturalGas,21.6
 G,SteamTurbine,NaturalGas,3016.0
 G,Battery,None,3.0
@@ -42,7 +41,6 @@ J,CombustionTurbine,NaturalGas,1195.1
 J,SteamTurbine,NaturalGas,4037.9
 K,CombinedCycle,NaturalGas,806.6
 K,CombustionTurbine,FuelOil2,526.9
-K,CombustionTurbine,Kerosene,18.2
 K,CombustionTurbine,NaturalGas,702.0
 K,SteamTurbine,NaturalGas,2300.0
 K,SolarUtility,None,54.4

@@ -3,7 +3,8 @@
 NYISO GenX Zonal Case Generator
 
 This script generates a GenX case for the NYISO system with updated data.
-It creates necessary directories and files for modeling the New York power system at the zonal level.
+It creates necessary directories and files for modeling the New
+ York power system at the zonal level.
 """
 
 import os
@@ -192,9 +193,9 @@ class NYISOGenXGenerator_Zonal:
         directories = [
             f"{self.case_path}/settings",
             f"{self.case_path}/system",
-            f"{self.case_path}/policies",
+#             f"{self.case_path}/policies",
             f"{self.case_path}/resources",
-            f"{self.case_path}/resources/policy_assignments"
+#             f"{self.case_path}/resources/policy_assignments"
         ]
         
         for directory in directories:
@@ -365,7 +366,7 @@ class NYISOGenXGenerator_Zonal:
             'FO6_UPNY': 0.07415,
             'FO6_DSNY': 0.07415,
             'coal_NY': 0.10316,
-            'Kerosene_NY': 0.07315,  
+#             'Kerosene_NY': 0.07315,  
             'None': 0
         }
 
@@ -471,8 +472,8 @@ class NYISOGenXGenerator_Zonal:
             # Map coal
             if fuel.lower() in ['coal']:
                 return 'coal_NY'
-            if fuel.lower() in ['Kerosene']:
-                return 'Kerosene_NY'
+#             if fuel.lower() in ['Kerosene']:
+#                 return 'Kerosene_NY'
         # For all other fuels, use None
         return 'None'
     def extract_resource_names(self):
@@ -521,7 +522,6 @@ class NYISOGenXGenerator_Zonal:
         """
         # Step 1: Extract all resource names from resource files
         resource_names = self.extract_resource_names()
-
         # Flatten all resource names into a single list
         all_resources = []
         for resource_list in resource_names.values():
@@ -845,14 +845,12 @@ class NYISOGenXGenerator_Zonal:
             'MinCapReq': 0,
             'MaxCapReq': 0,
             'Solver': 'Gurobi',
-            'ParameterScale': 1,
+            'ParameterScale': 0,
             'WriteShadowPrices': 1,
             'UCommit': 2,
             'TimeDomainReductionFolder': 'TDR_Results',
             'TimeDomainReduction': 0,
             'ModelingToGenerateAlternatives': 0,
-            'ModelingtoGenerateAlternativeSlack': 0.1,
-            'ModelingToGenerateAlternativeIterations': 3,
             'MethodofMorris': 0,
             'OutputFullTimeSeries': 1
         }
@@ -860,15 +858,15 @@ class NYISOGenXGenerator_Zonal:
         data_gurobi = {
             'Feasib_Tol': 1.0e-05,          
             'Optimal_Tol': 1e-5,            
-            'TimeLimit': 110000,            
+            'TimeLimit': 200000,            
             'Pre_Solve': 1,                
-            'Method': 1,                    
+            'Method': -1,                    
             'MIPGap': 1e-3,                  
-            'BarConvTol': 1.0e-08,         
+            'BarConvTol': 1.0e-05,         
             'NumericFocus': 0,              
             'Crossover': -1,                
-            'PreDual': 0,                    
-            'AggFill': 10,                  
+#             'PreDual': 0,                    
+            'AggFill': -1,                  
         }
         
         settings_path = os.path.join(self.case_path, 'settings')
@@ -1109,9 +1107,34 @@ class NYISOGenXGenerator_Zonal:
         if 'Nuclear' in self.technology_capacities:
             for zone in self.zones:
                 capacity = self.technology_capacities['Nuclear'].get(zone, 0)
+#                 if 'Nuclear' in new_build_techs:
+#                     new_nuclear = {
+#                         'Resource': f'Nuclear_{zone}_New',
+#                         'Zone': self.zone_to_number[zone],
+#                         'region': zone,
+#                         'Model': 1,
+#                         'cluster': 1,
+#                         'Technology': 'Nuclear',
+#                         'New_Build': 1,
+#                         'Can_Retire': 1, 
+#                         'Existing_Cap_MW': 0,
+#                         'Max_Cap_MW': -1, 
+#                         'Min_Cap_MW': 0,  
+#                         'Min_Power': tech_params.get('Min_Power', 0.4),
+#                         'Ramp_Up_Percentage': tech_params.get('Ramp_Up_Percentage', 0.2),
+#                         'Ramp_Dn_Percentage': tech_params.get('Ramp_Dn_Percentage', 0.2),
+#                         'Shutdown_Cost_per_MW': tech_params.get('Shutdown_Cost_per_MW', 100),
+#                         'Startup_Cost_per_MW': tech_params.get('Startup_Cost_per_MW', 200),
+#                         'Up_Time': tech_params.get('Up_Time', 24),
+#                         'Down_Time': tech_params.get('Down_Time', 24),
+#                         'Inv_Cost_per_MWyr': tech_params.get('Ann_Inv_MWYr', 600000) * scale_factor,
+#                         'Fixed_OM_Cost_per_MWyr': tech_params.get('Fix_OM_MW', 120000) * scale_factor * new_build_om_factor,
+#                         'Var_OM_Cost_per_MWh': tech_params.get('Var_OM', 2.3),
+#                         'Heat_Rate_MMBTU_per_MWh': tech_params.get('Heat_Rate_MMBTU_per_MWh', 10.46),
+#                         'Fuel': 'None'
+#                         }
+#                     thermal_data.append(new_nuclear)
                 if capacity > 0:
-                    tech_params = self.technology_params.get('Nuclear', {})
-                    scale_factor = self.zonal_scale_factors[zone]
 
                     nuclear_resource = {
                         'Resource': f'Nuclear_{zone}_Existing',
@@ -1158,11 +1181,11 @@ class NYISOGenXGenerator_Zonal:
         }
 
         for tech in vre_techs:
-            if tech in self.technology_capacities:
-                capacity = self.technology_capacities[tech].get(zone, 0)
-            else:
-                capacity = 0 
             for zone in self.zones:
+                    if tech in self.technology_capacities:
+                        capacity = self.technology_capacities[tech].get(zone, 0)
+                    else:
+                        capacity = 0 
                     scale_factor = self.zonal_scale_factors[zone]
                     tech_params = self.technology_params.get(tech, {})
                         # Use defaults if parameters not found
@@ -1190,17 +1213,7 @@ class NYISOGenXGenerator_Zonal:
                             'Num_VRE_bins': 1
                         }
                         vre_data.append(existing_resource)
-                
-                            # New build resource
-                        new_resource = existing_resource.copy()
-                        new_resource['Resource'] = f'{tech}_{zone}_New'
-                        new_resource['New_Build'] = 1
-                        new_resource['Existing_Cap_MW'] = 0
-                        new_resource['Max_Cap_MW'] = -1 
-                        new_resource['Inv_Cost_per_MWyr'] = ann_inv
-                        new_resource['Fixed_OM_Cost_per_MWyr'] = fix_om * new_build_om_factor
-                        vre_data.append(new_resource)
-                    elif (zone in ['J', ]) & (tech == 'WindOffShore'):
+                    if (zone in ['J', 'K']) & (tech == 'WindOffshore'):
                         new_resource = {
                             'Resource': f'{tech}_{zone}_New',
                             'Zone': self.zone_to_number[zone],
@@ -1220,6 +1233,27 @@ class NYISOGenXGenerator_Zonal:
                             'Num_VRE_bins': 1
                         }
                         vre_data.append(new_resource)
+                    elif tech != 'WindOffshore':
+                        new_resource = {
+                            'Resource': f'{tech}_{zone}_New',
+                            'Zone': self.zone_to_number[zone],
+                            'region': zone,
+                            'cluster': 1,
+                            'Technology': tech,
+                            'New_Build': 1,
+                            'Can_Retire': 1,
+                            'Existing_Cap_MW': 0,
+                            'Max_Cap_MW': -1,
+                            'Min_Cap_MW': 0,
+                            'Inv_Cost_per_MWyr': ann_inv,  # No investment cost for existing
+                            'Fixed_OM_Cost_per_MWyr': fix_om * new_build_om_factor,
+                            'Var_OM_Cost_per_MWh': var_om,
+                            'Heat_Rate_MMBTU_per_MWh': 0,
+                            'Fuel': 'None',
+                            'Num_VRE_bins': 1
+                        }
+                        vre_data.append(new_resource)
+
 
         # Process Hydro
         print("Processing hydro resources...")
