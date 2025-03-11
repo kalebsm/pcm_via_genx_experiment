@@ -581,304 +581,147 @@ class NYISOSystemGenerator:
             
         return 'None'
 
-    def aggregate_generators_variability(self, from_11zone=None):
-        """
-        Create Generators_variability.csv by aggregating directly from input data files
-        with capacity-weighted profiles for both new and existing resources.
+        def aggregate_generators_variability(self, from_11zone=None):
+            """
+            Create system-level Generators_variability.csv by directly aggregating 
+            capacity-weighted averages from input data files.
+            """
+            if from_11zone is None:
+                print("Error: Need 11-zone model to extract data paths")
+                return
 
-        Args:
-            from_11zone (object): 11-zone model to extract data from
-        """
-        if from_11zone is None:
-            print("Error: Need 11-zone model to extract data paths")
-            return
+            # Set up data sources
+            data_path = from_11zone.data_path
+            data_files = {
+                "merged": os.path.join(data_path, "merged_2019.csv"),
+                "thermal": os.path.join(data_path, "thermalHourlyCF_2019.csv"),
+                "nuclear": os.path.join(data_path, "nuclearHourlyCF_2019.csv"),
+                "hydro": os.path.join(data_path, "hydroHourlyCF_2019.csv")
+            }
 
-        # Get resource and capacity info
-        resource_names = self.extract_resource_names()
-        all_resources = []
-        for resource_list in resource_names.values():
-            all_resources.extend(resource_list)
+            # Create empty dataframe with Time_Index
+            num_hours = 8760
+            system_variability = pd.DataFrame({'Time_Index': range(1, num_hours + 1)})
 
-        # Prepare data sources from 11-zone model
-        data_files = {
-            "merged": os.path.join(from_11zone.data_path, "merged_2019.csv"),
-            "thermal": os.path.join(from_11zone.data_path, "thermalHourlyCF_2019.csv"),
-            "nuclear": os.path.join(from_11zone.data_path, "nuclearHourlyCF_2019.csv"),
-            "hydro": os.path.join(from_11zone.data_path, "hydroHourlyCF_2019.csv")
-        }
+            # Get all resources from resource files
+            resource_names = self.extract_resource_names()
+            all_resources = []
+            for resource_list in resource_names.values():
+                all_resources.extend(resource_list)
 
-        # Create empty dataframe for system-level variability
-        num_hours = 8760
-        system_variability = pd.DataFrame({'Time_Index': range(1, num_hours + 1)})
+            # Calculate system-level aggregated profiles
 
-        # Process thermal resources (including nuclear)
-        thermal_resources = resource_names.get('Thermal', [])
-        if os.path.exists(data_files['thermal']):
-            print(f"Processing thermal data for system level...")
-            thermal_df = pd.read_csv(data_files['thermal'])
+            # 1. Thermal resources (aggregated by technology type)
+            if os.path.exists(data_files['thermal']):
+                print("Aggregating thermal capacity factors...")
+                thermal_df = pd.read_csv(data_files['thermal'])
 
-            # Group thermal resources by technology type
-            tech_resources = {}
-            for resource in thermal_resources:
-                parts = resource.split('_')
-                tech_type = parts[0]
+                # Create aggregated profiles for each thermal technology
+                for tech in ['CombinedCycle', 'CombustionTurbine', 'SteamTurbine']:
+                    # For each fuel type
+                    for fuel in ['NaturalGas', 'FuelOil2', 'FuelOil6']:
+                        # Get columns matching this tech/fuel combination
+                        tech_cols = [col for col in thermal_df.columns if col != 'Time_Index' and tech in col]
 
-                # Skip Nuclear (handled separately)
-                if tech_type == 'Nuclear':
-                    continue
+                        if tech_cols:
+                            # Simple average across all zones
+                            avg_profile = thermal_df[tech_cols].mean(axis=1).values
 
-                # Extract fuel type
-                fuel_type = None
-                for part in parts:
-                    if part not in self.zones and part not in ['Existing', 'New'] and part != tech_type:
-                        fuel_type = part
-                        break
+                            # Apply to both existing and new resources
+                            system_variability[f"{tech}_{fuel}_NY_Existing"] = avg_profile
+                            system_variability[f"{tech}_{fuel}_NY_New"] = avg_profile
 
-                # Determine if new or existing
-                is_new = 'New' in parts
+            # 2. Nuclear resources
+            if os.path.exists(data_files['nuclear']):
+                print("Aggregating nuclear capacity factors...")
+                nuclear_df = pd.read_csv(data_files['nuclear'])
 
-                # Create key for grouping
-                key = f"{tech_type}_{fuel_type}_NY_{'New' if is_new else 'Existing'}"
+                # Get all nuclear data columns
+                nuclear_cols = [col for col in nuclear_df.columns if col != 'Time_Index']
 
-                if key not in tech_resources:
-                    tech_resources[key] = {'resources': [], 'total_capacity': 0}
+                if nuclear_cols:
+                    # Simple average across all zones
+                    avg_profile = nuclear_df[nuclear_cols].mean(axis=1).values
 
-                # Find capacity for this resource
-                capacity = 0
-                zone = None
-                for part in parts:
-                    if part in from_11zone.zones:
-                        zone = part
-                        break
+                    # Apply to both existing and new resources
+                    system_variability["Nuclear_NY_Existing"] = avg_profile
+                    system_variability["Nuclear_NY_New"] = avg_profile
 
-                if zone and from_11zone.thermal_resources:
-                    orig_resource_name = '_'.join(parts[:-1])  # Remove Existing/New suffix
-                    if orig_resource_name in from_11zone.thermal_resources:
-                        capacity = from_11zone.thermal_resources[orig_resource_name]['capacity']
+            # 3. Hydro resources
+            if os.path.exists(data_files['hydro']):
+                print("Aggregating hydro capacity factors...")
+                hydro_df = pd.read_csv(data_files['hydro'])
 
-                tech_resources[key]['resources'].append((resource, zone, capacity))
-                tech_resources[key]['total_capacity'] += capacity
+                # Get all hydro data columns
+                hydro_cols = [col for col in hydro_df.columns if col != 'Time_Index']
 
-            # Process each technology group
-            for tech_key, info in tech_resources.items():
-                if info['total_capacity'] > 0:
-                    # Calculate capacity-weighted average for this technology
-                    weighted_values = np.zeros(num_hours)
+                if hydro_cols:
+                    # Simple average across all zones
+                    avg_profile = hydro_df[hydro_cols].mean(axis=1).values
 
-                    for resource, zone, capacity in info['resources']:
-                        if capacity <= 0 or zone is None:
+                    # Apply to Hydro and PumpedHydro
+                    system_variability["Hydro_NY"] = avg_profile
+                    system_variability["PumpedHydro_NY"] = avg_profile
+
+            # 4. VRE resources (wind and solar from merged file)
+            if os.path.exists(data_files['merged']):
+                print("Aggregating wind and solar capacity factors...")
+                merged_df = pd.read_csv(data_files['merged'])
+
+                # Process each zone's data and aggregate
+                wind_data = []
+                solar_data = []
+
+                # Get unique zones
+                if 'zone' in merged_df.columns:
+                    for zone in merged_df['zone'].unique():
+                        zone_data = merged_df[merged_df['zone'] == zone]
+
+                        # Ensure 8760 hours of data
+                        if len(zone_data) != 8760:
                             continue
 
-                        # Find matching thermal data
-                        for col in thermal_df.columns:
-                            if col == 'Time_Index':
-                                continue
+                        # Add to aggregation arrays
+                        if 'Wind' in zone_data.columns:
+                            wind_data.append(zone_data['Wind'].values)
+                        if 'Solar' in zone_data.columns:
+                            solar_data.append(zone_data['Solar'].values)
 
-                            if zone in col and any(tech in col for tech in ['CombinedCycle', 'CombustionTurbine', 'SteamTurbine']):
-                                weight = capacity / info['total_capacity']
-                                weighted_values += thermal_df[col].values * weight
-                                break
+                # Calculate averages
+                if wind_data:
+                    avg_wind = np.mean(wind_data, axis=0)
+                    system_variability["WindLand_NY_Existing"] = avg_wind
+                    system_variability["WindLand_NY_New"] = avg_wind
+                    system_variability["WindOffshore_NY_New"] = avg_wind
 
-                    # Assign to both new and existing system resources
-                    system_variability[tech_key] = weighted_values
-                else:
-                    # If no capacity data, use simple average of data columns
-                    cols = [col for col in thermal_df.columns if col != 'Time_Index' and 
-                           any(tech in col for tech in ['CombinedCycle', 'CombustionTurbine', 'SteamTurbine'])]
-                    if cols:
-                        system_variability[tech_key] = thermal_df[cols].mean(axis=1).values
-                    else:
-                        # Default to 1.0 if no matching data
-                        system_variability[tech_key] = 1.0
+                if solar_data:
+                    avg_solar = np.mean(solar_data, axis=0)
+                    system_variability["SolarUtility_NY_Existing"] = avg_solar
+                    system_variability["SolarUtility_NY_New"] = avg_solar
+                    system_variability["SolarBTM_NY_New"] = avg_solar
 
-        # Process nuclear resources
-        if os.path.exists(data_files['nuclear']):
-            print(f"Processing nuclear data for system level...")
-            nuclear_df = pd.read_csv(data_files['nuclear'])
+            # 5. Battery (always 1.0)
+            for resource in all_resources:
+                if 'Battery' in resource:
+                    system_variability[resource] = 1.0
 
-            # Get nuclear resources
-            nuclear_resources = [r for r in thermal_resources if 'Nuclear' in r]
-            nuclear_capacity = {}
+            # Check for any missing resources and set to 1.0
+            for resource in all_resources:
+                if resource not in system_variability.columns:
+                    system_variability[resource] = 1.0
 
-            # Calculate total capacity for nuclear by zone
-            for resource in nuclear_resources:
-                parts = resource.split('_')
-                zone = None
-                for part in parts:
-                    if part in from_11zone.zones:
-                        zone = part
-                        break
+            # Ensure all values are between 0 and 1
+            for col in system_variability.columns:
+                if col != 'Time_Index':
+                    system_variability[col] = system_variability[col].clip(0, 1)
 
-                if zone and 'Nuclear' in from_11zone.technology_capacities:
-                    capacity = from_11zone.technology_capacities['Nuclear'].get(zone, 0)
-                    if capacity > 0:
-                        if zone not in nuclear_capacity:
-                            nuclear_capacity[zone] = 0
-                        nuclear_capacity[zone] += capacity
+            # Save output
+            output_file = os.path.join(self.case_path, "system/Generators_variability.csv")
+            os.makedirs(os.path.dirname(output_file), exist_ok=True)
+            system_variability.to_csv(output_file, index=False)
 
-            # Calculate weighted average across zones
-            total_capacity = sum(nuclear_capacity.values())
-            if total_capacity > 0:
-                weighted_values = np.zeros(num_hours)
-
-                for zone, capacity in nuclear_capacity.items():
-                    # Find matching data column
-                    for col in nuclear_df.columns:
-                        if col != 'Time_Index' and zone in col:
-                            weight = capacity / total_capacity
-                            weighted_values += nuclear_df[col].values * weight
-                            break
-
-                # Assign to both new and existing system resources
-                system_variability['Nuclear_NY_Existing'] = weighted_values
-                system_variability['Nuclear_NY_New'] = weighted_values
-            else:
-                # Default to 1.0 if no capacity data
-                system_variability['Nuclear_NY_Existing'] = 1.0
-                system_variability['Nuclear_NY_New'] = 1.0
-
-        # Process hydro resources (aggregate to system level)
-        if os.path.exists(data_files['hydro']):
-            print(f"Processing hydro data for system level...")
-            hydro_df = pd.read_csv(data_files['hydro'])
-
-            # Process separately for regular Hydro and PumpedHydro
-            for hydro_type in ['Hydro', 'PumpedHydro']:
-                # Calculate total capacity across all zones
-                total_capacity = 0
-                zone_capacities = {}
-
-                if hydro_type in from_11zone.technology_capacities:
-                    for zone, capacity in from_11zone.technology_capacities[hydro_type].items():
-                        if capacity > 0:
-                            total_capacity += capacity
-                            zone_capacities[zone] = capacity
-
-                # Calculate capacity-weighted average
-                if total_capacity > 0:
-                    weighted_values = np.zeros(num_hours)
-
-                    for zone, capacity in zone_capacities.items():
-                        # Find matching data column
-                        for col in hydro_df.columns:
-                            if col != 'Time_Index' and zone in col:
-                                weight = capacity / total_capacity
-                                weighted_values += hydro_df[col].values * weight
-                                break
-                        else:
-                            # If no matching data found, add default weighted value
-                            weight = capacity / total_capacity
-                            weighted_values += np.ones(num_hours) * weight
-
-                    # Assign to system-level resources
-                    system_variability[f'{hydro_type}_NY'] = weighted_values
-                else:
-                    # Default to 1.0 if no capacity data
-                    system_variability[f'{hydro_type}_NY'] = 1.0
-
-        # Process VRE resources (wind and solar)
-        if os.path.exists(data_files['merged']):
-            print(f"Processing VRE data for system level...")
-            merged_df = pd.read_csv(data_files['merged'])
-
-            # Convert date to datetime if needed
-            if 'date' in merged_df.columns and merged_df['date'].dtype == 'object':
-                merged_df['date'] = pd.to_datetime(merged_df['date'])
-
-            # Sort by date and hour if possible
-            if 'date' in merged_df.columns and 'hour_index' in merged_df.columns:
-                merged_df = merged_df.sort_values(['date', 'hour_index'])
-
-            # Get VRE resources
-            vre_resources = resource_names.get('Vre', [])
-
-            # Process separate technologies
-            for tech in ['WindLand', 'WindOffshore', 'SolarUtility', 'SolarBTM']:
-                # Group by new/existing
-                for status in ['Existing', 'New']:
-                    resources = [r for r in vre_resources if tech in r and status in r]
-
-                    if not resources:
-                        continue
-
-                    # Calculate total capacity
-                    total_capacity = 0
-                    zone_capacities = {}
-
-                    for resource in resources:
-                        zone = None
-                        for part in resource.split('_'):
-                            if part in from_11zone.zones:
-                                zone = part
-                                break
-
-                        if zone and tech in from_11zone.technology_capacities:
-                            capacity = from_11zone.technology_capacities[tech].get(zone, 0)
-                            if capacity > 0:
-                                total_capacity += capacity
-                                zone_capacities[zone] = capacity
-
-                    # Calculate capacity-weighted average
-                    if total_capacity > 0:
-                        weighted_values = np.zeros(num_hours)
-
-                        for zone, capacity in zone_capacities.items():
-                            # Find matching data
-                            zone_data = merged_df[merged_df['zone'] == zone]
-
-                            if len(zone_data) == 0:
-                                continue
-
-                            # Ensure we have 8760 hours
-                            if len(zone_data) != 8760:
-                                zone_data = zone_data.reset_index(drop=True)
-                                if len(zone_data) < 8760:
-                                    zone_data = pd.concat([zone_data] + [zone_data.iloc[-1:]] * (8760 - len(zone_data)))
-                                zone_data = zone_data.iloc[:8760]
-
-                            # Assign data based on technology
-                            if 'Wind' in tech and 'Wind' in zone_data.columns:
-                                weight = capacity / total_capacity
-                                weighted_values += zone_data['Wind'].values * weight
-                            elif 'Solar' in tech and 'Solar' in zone_data.columns:
-                                weight = capacity / total_capacity
-                                weighted_values += zone_data['Solar'].values * weight
-
-                        # Assign to system resources
-                        system_variability[f'{tech}_NY_{status}'] = weighted_values
-                    else:
-                        # No capacity data, use default
-                        system_variability[f'{tech}_NY_{status}'] = 1.0
-
-        # Process Battery resources (always 1.0 - fully available)
-        battery_resources = [r for r in all_resources if 'Battery' in r]
-        for resource in battery_resources:
-            system_variability[resource] = 1.0
-
-        # Check for missing resources
-        existing_resources = [col for col in system_variability.columns if col != 'Time_Index']
-        missing_resources = [res for res in all_resources if res not in existing_resources]
-
-        # Add missing resources with default value 1.0
-        for resource in missing_resources:
-            system_variability[resource] = 1.0
-
-        # Clean up values
-        for col in system_variability.columns:
-            if col != 'Time_Index':
-                # Clip values between 0 and 1
-                system_variability[col] = system_variability[col].clip(0, 1)
-                # Fill any NaNs with 1.0
-                system_variability[col] = system_variability[col].fillna(1.0)
-
-        # Save output
-        system_folder = os.path.join(self.case_path, 'system')
-        os.makedirs(system_folder, exist_ok=True)
-        output_file = os.path.join(system_folder, 'Generators_variability.csv')
-        system_variability.to_csv(output_file, index=False)
-
-        print(f"System-level Generators_variability.csv created with {len(system_variability.columns) - 1} resources")
-        return system_variability
+            print(f"Created system-level variability profiles for {len(system_variability.columns)-1} resources")
+            return system_variability
 
 
     def generate_split_resources(self, atb_summary_file=None):

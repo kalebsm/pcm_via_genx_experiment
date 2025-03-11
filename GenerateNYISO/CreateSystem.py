@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from ZonalCase import *  # Original 11-zone generator
 from SystemCase import *
+
 def main():
     # Configuration parameters
     system_case_name = "NYISO_System"

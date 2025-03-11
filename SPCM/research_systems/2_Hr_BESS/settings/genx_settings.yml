@@ -10,7 +10,7 @@ ModelingtoGenerateAlternativeSlack: 0.1
 NetworkExpansion: 0
 OperationalReserves: 1
 OutputFullTimeSeries: 1
-OverwriteResults: 0
+OverwriteResults: 1
 ParameterScale: 1
 PrintModel: 0
 Solver: Gurobi

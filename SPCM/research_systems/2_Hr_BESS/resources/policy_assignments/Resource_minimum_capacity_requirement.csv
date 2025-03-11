@@ -1,8 +1,8 @@
 Resource,Min_Cap_1,Min_Cap_2,Min_Cap_3
 Coal-new,0,0,0
-NG Combustion Turbine (F-Frame),0,0,0
-NG 2-on-1 Combined Cycle (H-Frame) 95% CCS,0,0,0
 NG 2-on-1 Combined Cycle (F-Frame),0,0,0
+NG 2-on-1 Combined Cycle (H-Frame) 95% CCS,0,0,0
+NG Combustion Turbine (F-Frame),0,0,0
 RICE,0,0,0
 HTGR,0,0,0
 Microreactor,0,0,0

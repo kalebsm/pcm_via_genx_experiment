@@ -6,7 +6,7 @@ OutputFullTimeSeriesFolder: "Full_TimeSeries"
 SystemFolder: "system"
 HydrogenMinimumProduction: 0
 OperationalReserves: 0
-ParameterScale: 0
+ParameterScale: 1
 EnableJuMPStringNames: false
 EnergyShareRequirement: 0
 PrintModel: 0

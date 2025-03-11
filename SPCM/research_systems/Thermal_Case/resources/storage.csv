@@ -1,2 +1,0 @@
-Resource,Zone,Model,New_Build,Can_Retire,Existing_Cap_MW,Existing_Cap_MWh,Max_Cap_MW,Max_Cap_MWh,Min_Cap_MW,Min_Cap_MWh,Inv_Cost_per_MWyr,Inv_Cost_per_MWhyr,Fixed_OM_Cost_per_MWyr,Fixed_OM_Cost_per_MWhyr,Var_OM_Cost_per_MWh,Var_OM_Cost_per_MWh_In,Self_Disch,Eff_Up,Eff_Down,Min_Duration,Max_Duration,Reg_Max,Rsv_Max,Reg_Cost,Rsv_Cost,region,cluster
-Utility-Scale Battery Storage - 4Hr,1,1,-1,0,0,0,-1,-1,0,0,105038.91155269914,0,48168.00000000001,0,0.0,0,0,0.85,0.85,4.0,4.0,0.25,0.5,0,0,ERCOT,0
