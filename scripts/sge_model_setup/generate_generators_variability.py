@@ -37,12 +37,12 @@ ercot_actuals_df = pd.read_csv(ercot_actuals_loc + '/actuals_ercot2018.csv')
 
 lac_length = len(ercot_actuals_df)
 period = range(0,lac_length)
-cem_length = lac_length - 50
+decision_length = lac_length - 50
 # get energy type 
 
 # create dataframe for cf data
-cem_generators_variability = pd.DataFrame({'Time_Index': range(0,cem_length)})
-lac_generators_variability = pd.DataFrame({'Time_Index': range(0,lac_length)})
+cem_generators_variability = pd.DataFrame({'Time_Index': range(0,decision_length)})
+lac_generators_variability = pd.DataFrame({'Time_Index': range(0,decision_length)})
 
 # set unique energy types for resource
 resource_types = ['Thermal', 'Vre', 'Storage'] # add other resources as needed e.g. Vre_Stor
@@ -56,29 +56,29 @@ for resource_type in atb_technology_names:
     if resource_type == 'NaturalGas_FE' or resource_type == 'Coal_FE' or resource_type == 'Nuclear':
         # thermal_resources = resources_of_type[resources_of_type['ATB Technology Name'].str.contains('Thermal')]
         for gen_name in resources_of_type:
-            cem_generators_variability[gen_name] = [1] * cem_length
-            lac_generators_variability[gen_name] = [1] * lac_length
+            cem_generators_variability[gen_name] = [1] * decision_length
+            lac_generators_variability[gen_name] = [1] * decision_length
     
     # if name contains Wind, get wind
     if resource_type == 'LandbasedWind':
         wind_resources = resources_of_type[resources_of_type.str.contains('Wind')]
         for gen_name in wind_resources:
-            cem_generators_variability[gen_name] = ercot_actuals_df['wind'][:cem_length]
-            lac_generators_variability[gen_name] = ercot_actuals_df['wind'][:lac_length]
+            cem_generators_variability[gen_name] = ercot_actuals_df['wind'][:decision_length]
+            lac_generators_variability[gen_name] = ercot_actuals_df['wind'][:decision_length]
 
     # if name contains PV or Solar, get solar
     if resource_type == 'UtilityPV':
         solar_resources = resources_of_type[resources_of_type.str.contains('PV|Solar')]
         for gen_name in solar_resources:
-            cem_generators_variability[gen_name] = ercot_actuals_df['solar'][:cem_length]
-            lac_generators_variability[gen_name] = ercot_actuals_df['solar'][:lac_length]
+            cem_generators_variability[gen_name] = ercot_actuals_df['solar'][:decision_length]
+            lac_generators_variability[gen_name] = ercot_actuals_df['solar'][:decision_length]
 
     # if name contains Storage, get storage
     if resource_type == 'Utility-Scale Battery Storage':
         # storage_resources = resources_of_type[resources_of_type['Resource'].str.contains('Storage|Battery')]
         for gen_name in resources_of_type:
-            cem_generators_variability[gen_name] = [1] * cem_length
-            lac_generators_variability[gen_name] = [1] * lac_length
+            cem_generators_variability[gen_name] = [1] * decision_length
+            lac_generators_variability[gen_name] = [1] * decision_length
 
 
 for case_name in case_names_list:

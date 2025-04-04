@@ -106,7 +106,7 @@ for case_name in case_names_list:
     # create a lac copy of the case_storage_df
     lac_case_storage_df = case_storage_df.copy()
     # set 'New_Build' to -1
-    lac_case_storage_df['New_Build'] = -1
+    lac_case_storage_df['New_Build'] = 0
     # set 'Can_Retire' to -1
     lac_case_storage_df['Can_Retire'] = 0
 

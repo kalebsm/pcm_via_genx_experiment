@@ -91,7 +91,7 @@ Var_OM_Cost_per_MWh = 5.69
 ### additional parameters from FERC data
 # load FERC data
 # define location of ferc data
-ferc_data_loc = os.path.join('..', 'data', 'ferc_generator_parameters')
+ferc_data_loc = os.path.join(data_path, 'ferc_generator_parameters')
 
 # Get the sheet names
 # assume summer data

@@ -97,9 +97,14 @@ for case_name in case_names_list:
     # create a lac copy of the case_vre_df
     lac_case_vre_df = case_vre_df.copy()
     # set 'New_Build' to -1
-    lac_case_vre_df['New_Build'] = -1
+    lac_case_vre_df['New_Build'] = 0
     # set 'Can_Retire' to -1
     lac_case_vre_df['Can_Retire'] = 0
+
+    # create column in lac_case for solar if the resource includes 'PV', 'Solar', or 'Photovoltaic'
+    lac_case_vre_df['Solar'] = np.where(lac_case_vre_df['Resource'].str.contains('PV|Solar|Photovoltaic', case=False), 1, 0)
+    # create column in lac_case for wind if the resource includes 'Wind'
+    lac_case_vre_df['Wind'] = np.where(lac_case_vre_df['Resource'].str.contains('Wind', case=False), 1, 0)
 
     # # delete the existing vre.csv in genx_cem_resources_path
     # if os.path.exists(os.path.join(genx_cem_resources_path, 'vre.csv')):

@@ -29,18 +29,18 @@ a_upd_generator_df_path = os.path.join(data_path, 'a_upd_generator_df.csv')
 full_generator_df = pd.read_csv(a_upd_generator_df_path)
 
 # load in ercot actuals data
-ercot_actuals_loc = os.path.join(scenario_generation_path, 'sequential_NORTA', 'data')
+ercot_actuals_loc = os.path.join(scenario_generation_path, 'sequential_norta', 'data')
 ercot_actuals_df = pd.read_csv(ercot_actuals_loc + '/actuals_ercot2018.csv')
 
 lac_length = len(ercot_actuals_df)
 period = range(0,lac_length)
-cem_length = lac_length - 50
+decision_length = lac_length - 50
 
 # for some reason, fuel lengths need to be one longer than the actual data
-cem_fuel_length = cem_length + 1
-lac_fuel_length = lac_length + 1
+cem_fuel_length = decision_length + 1
+lac_fuel_length = decision_length + 1
 # read in data_source_comparisons
-manual_db_rel = pd.read_csv(os.path.join('..', 'data','manual_db_rel.csv'))
+manual_db_rel = pd.read_csv(os.path.join(data_path,'manual_db_rel.csv'))
 
 for case_name in case_names_list:
 # for case_name in case_names_list[0:1]:

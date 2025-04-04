@@ -1,6 +1,8 @@
 import sys
 import os
 import subprocess
+import pandas as pd
+import numpy as np
 
 # # Add the root directory (my_package) to sys.path so Python can find 'utils'
 # root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # One level up from 'scripts'
@@ -17,7 +19,7 @@ import subprocess
 # figures_path = get_paths('figures')
 
 
-def run_all_scripts():
+def sge_model_setup():
     # List of python files to run
     python_files = [
                 "generate_case_folders.py", 
@@ -58,4 +60,4 @@ def run_all_scripts():
 
 if __name__ == "__main__":
     # print(data_path)
-    run_all_scripts()
+    sge_model_setup()

@@ -4,12 +4,19 @@ import numpy as np
 import shutil
 import os
 import sys
+import xlwings
 from datetime import datetime as dt
 from get_case_names import get_case_names
+
+print("sys.path:", sys.path)
 
 # Add the root directory (my_package) to sys.path so Python can find 'utils'
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # One level up from 'scripts'
 sys.path.append(root_path)
+
+print(root_path)
+
+print("sys.path:", sys.path)
 
 # Now import from utils
 from utils.sge_utils import get_paths

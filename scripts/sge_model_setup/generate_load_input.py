@@ -29,29 +29,29 @@ lac_length = len(ercot_actuals_df)
 
 period = range(0,lac_length)
 
-cem_length = lac_length - 50
-cem_length
-cem_load_actuals = ercot_actuals_df['load'][range(0,cem_length)]
-lac_load_actuals = ercot_actuals_df['load']
-cem_load_data = pd.DataFrame({'Voll': [5000] + [None] * (cem_length - 1), 
-                          'Demand_Segment': [1] + [None] * (cem_length -1),
-                          'Cost_of_Demand_Curtailment_per_MW': [1] + [None] * (cem_length - 1),
-                          'Max_Demand_Curtailment': [1] + [None] * (cem_length - 1),
-                          '$/MWh': [2000] + [None] * (cem_length - 1),
-                          'Rep_Periods': [1] + [None] * (cem_length-1),
-                          'Timesteps_per_Rep_Period': [cem_length] + [None] * (cem_length - 1),
-                          'Sub_Weights': [cem_length] + [None] * (cem_length - 1),
-                          'Time_Index': range(1,cem_length+1),
+decision_length = lac_length - 50
+
+cem_load_actuals = ercot_actuals_df['load'][range(0,decision_length)]
+lac_load_actuals = ercot_actuals_df['load'][range(0,decision_length)]
+cem_load_data = pd.DataFrame({'Voll': [5000] + [None] * (decision_length - 1), 
+                          'Demand_Segment': [1] + [None] * (decision_length -1),
+                          'Cost_of_Demand_Curtailment_per_MW': [1] + [None] * (decision_length - 1),
+                          'Max_Demand_Curtailment': [1] + [None] * (decision_length - 1),
+                          '$/MWh': [2000] + [None] * (decision_length - 1),
+                          'Rep_Periods': [1] + [None] * (decision_length-1),
+                          'Timesteps_per_Rep_Period': [decision_length] + [None] * (decision_length - 1),
+                          'Sub_Weights': [decision_length] + [None] * (decision_length - 1),
+                          'Time_Index': range(1,decision_length+1),
                           'Demand_MW_z1': cem_load_actuals})
-lac_load_data = pd.DataFrame({'Voll': [5000] + [None] * (lac_length - 1), 
-                          'Demand_Segment': [1] + [None] * (lac_length -1),
-                          'Cost_of_Demand_Curtailment_per_MW': [1] + [None] * (lac_length - 1),
-                          'Max_Demand_Curtailment': [1] + [None] * (lac_length - 1),
-                          '$/MWh': [2000] + [None] * (lac_length - 1),
-                          'Rep_Periods': [1] + [None] * (lac_length-1),
-                          'Timesteps_per_Rep_Period': [cem_length] + [None] * (lac_length - 1),
-                          'Sub_Weights': [cem_length] + [None] * (lac_length - 1),
-                          'Time_Index': range(1,lac_length+1),
+lac_load_data = pd.DataFrame({'Voll': [5000] + [None] * (decision_length - 1), 
+                          'Demand_Segment': [1] + [None] * (decision_length -1),
+                          'Cost_of_Demand_Curtailment_per_MW': [1] + [None] * (decision_length - 1),
+                          'Max_Demand_Curtailment': [1] + [None] * (decision_length - 1),
+                          '$/MWh': [2000] + [None] * (decision_length - 1),
+                          'Rep_Periods': [1] + [None] * (decision_length-1),
+                          'Timesteps_per_Rep_Period': [decision_length] + [None] * (decision_length - 1),
+                          'Sub_Weights': [decision_length] + [None] * (decision_length - 1),
+                          'Time_Index': range(1,decision_length+1),
                           'Demand_MW_z1': lac_load_actuals})
 
 
