@@ -1,4 +1,4 @@
-Resource,Technology Name,Fuel ID,Primary Mover Type,Primary Mover ID,Energy Type,Fuel Type
+Resource,ATB Technology Name,Fuel ID,Primary Mover Type,Primary Mover ID,Energy Type,Fuel Type
 Coal-new,Coal_FE,BIT,Steam Turbine,ST,Thermal,Bituminous Coal
 NG Combustion Turbine (F-Frame),NaturalGas_FE,DFO,Gas Turbine,GT,Thermal,Diesel Fuel Oil
 NG 2-on-1 Combined Cycle (H-Frame) 95% CCS,NaturalGas_FE,NG,Combined Cycle Combustion Turbine - Carbon Capture Storage,CT,Thermal,Natural Gas
