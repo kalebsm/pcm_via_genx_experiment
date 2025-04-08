@@ -70,6 +70,11 @@ export fixed_om_cost_per_mwyr
 export inv_cost_per_mwyr
 export inv_cost_per_mwhyr
 
+export zone_id
+export region
+export cluster
+
+
 
 
 # Multi-stage methods
