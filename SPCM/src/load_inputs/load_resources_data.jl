@@ -1091,6 +1091,8 @@ function add_resources_to_input_data!(inputs::Dict,
     ## VRE
     # Set of controllable variable renewable resources
     inputs["VRE"] = vre(gen)
+    inputs["WIND"] = findall(x -> isa(x, Vre) && x.wind == 1, gen)
+    inputs["SOLAR"] = findall(x -> isa(x, Vre) && x.solar == 1, gen)
 
     ## FLEX
     # Set of flexible demand-side resources

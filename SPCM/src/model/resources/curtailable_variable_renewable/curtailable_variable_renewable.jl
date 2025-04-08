@@ -123,7 +123,7 @@ function curtailable_variable_renewable_operational_reserves!(EP::Model, inputs:
     hourly_capacity_factor(y, t) = inputs["pP_Max"][y, t]
 
     hourly_capacity(y, t) = hourly_capacity_factor(y, t) * eTotalCap[y]
-    resources_in_bin(y) = UnitRange(y, y + num_vre_bins(gen[y]) - 1)
+    resources_in_bin(y) = UnitRange{Int64}(y, y + num_vre_bins(gen[y]) - 1)
     hourly_bin_capacity(y, t) = sum(hourly_capacity(yy, t) for yy in resources_in_bin(y))
 
     @constraint(EP,
