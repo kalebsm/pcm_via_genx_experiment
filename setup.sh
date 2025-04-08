@@ -48,6 +48,8 @@ pip_packages=("numpy" "pandas" "matplotlib" "IPython" \
                 "tomli"
                 "tzdata"
                 "xlwings"
+                "pywin32"
+                "seaborn"
                 )
 
           
