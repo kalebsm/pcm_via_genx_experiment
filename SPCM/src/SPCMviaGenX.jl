@@ -28,6 +28,7 @@ export cluster_inputs
 export mga
 export morris
 export choose_output_dir
+export run_policy_model
 
 export existing_cap_mw
 
@@ -95,6 +96,7 @@ export compute_landing_probability
 export transform_landing_probability
 export generate_lower_triangular_correlation
 export generate_norta_scenarios
+export scenario_generator_init
 
 
 using JuMP # used for mathematical programming
@@ -167,6 +169,7 @@ Pkg.develop(path=seq_norta_path)
 
 
 # include_all_in_folder("case_runners")
+include_all_in_folder("policy_case_runners")
 include_all_in_folder("configure_settings")
 include_all_in_folder("configure_solver")
 include_all_in_folder("load_inputs")
