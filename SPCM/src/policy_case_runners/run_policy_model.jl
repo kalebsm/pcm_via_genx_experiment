@@ -1399,19 +1399,19 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
             # unmet demand 
             unmet_rsv_dp[:,:] = value.(EP[:vUNMET_RSV][:,1])
             # regulation provided
-            reg_dp[:, REG_RSV] = value.(EP[:vREG][:,:,1])
+            reg_dp[REG_RSV,: ] = value.(EP[:vREG][:,:,1])
             # reserve provided
-            rsv_dp[:, REG_RSV] = value.(EP[:vRSV][:,:,1])
+            rsv_dp[REG_RSV , : ] = value.(EP[:vRSV][:,:,1])
             # shutdown unit
-            shut_dp[:, THERM_COMMIT] = value.(EP[:vSHUT][:,:,1])
+            shut_dp[THERM_COMMIT,:] = value.(EP[:vSHUT][:,:,1])
             # start unit
-            start_dp[:, THERM_COMMIT] = value.(EP[:vSTART][:,:,1])
+            start_dp[THERM_COMMIT,:] = value.(EP[:vSTART][:,:,1])
             # commit unit
-            commit_dp[:, THERM_COMMIT,] = value.(EP[:vCOMMIT][:,:,1])
+            commit_dp[THERM_COMMIT,:] = value.(EP[:vCOMMIT][:,:,1])
             # state of charge
-            s_dp[:, STOR_LIST,] = value.(EP[:vS][:,:,1])
+            s_dp[STOR_LIST,:] = value.(EP[:vS][:,:,1])
             # charge
-            charge_dp[:, STOR_LIST] = value.(EP[:vCHARGE][:,:,1])
+            charge_dp[STOR_LIST,:] = value.(EP[:vCHARGE][:,:,1])
             # electricity price
             elec_prices[:] = transpose(dual.(EP[:cPowerBalance])[:,:,1]) #* ModelScalingFactor # convert $/GWh to $/MWh
             # regulation price
@@ -1424,7 +1424,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
             if setup["UCommit"] >= 1 && !isempty(COMMIT)
                 start_costs_loop = value.(EP[:eCStart][COMMIT,1:Tend,1]).data
                 start_fuel_costs_loop = value.(EP[:eCFuelStart][COMMIT,1:Tend,1])
-                start_costs_dp[:, COMMIT,] .= (start_costs_loop .+ start_fuel_costs_loop) * ModelScalingFactor^2
+                start_costs_dp[COMMIT,:] .= (start_costs_loop .+ start_fuel_costs_loop) * ModelScalingFactor^2
             end
 
 

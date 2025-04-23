@@ -1,5 +1,6 @@
 using Revise
-# push!(LOAD_PATH, "src/SPCMviaGenX.jl")
+push!(LOAD_PATH, "src/SPCMviaGenX.jl")
+ENV["GENX_PRECOMPILE"] = "false"
 using SPCMviaGenX
 using Gurobi
 subfolders = [    
@@ -26,8 +27,8 @@ for folder in subfolders
 
         
     println("Navigating to $folder")
-    run_genx_case!(runpath, Gurobi.Optimizer)
-
+    # run_genx_case!(runpath, Gurobi.Optimizer)
+    run_policy_model(runpath, "pf")
 end
 
 println("All subprocesses complete.")
