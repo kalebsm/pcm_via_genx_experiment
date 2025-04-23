@@ -153,7 +153,7 @@ abstract type AbstractResource end
 # using Pkg
 
 # activate scenario generation
-seq_norta_path = joinpath("src","scenario_generation", "sequential_norta")
+seq_norta_path = joinpath("SPCM","src","scenario_generation", "sequential_norta")
 
 # push!(LOAD_PATH, seq_norta_path)
 # activate the project at the sequential_norta directory
@@ -168,14 +168,14 @@ Pkg.develop(path=seq_norta_path)
 
 
 
-# include_all_in_folder("case_runners")
+include_all_in_folder("case_runners")
 include_all_in_folder("policy_case_runners")
 include_all_in_folder("configure_settings")
 include_all_in_folder("configure_solver")
 include_all_in_folder("load_inputs")
 include_all_in_folder("model")
 include_all_in_folder("scenario_generation")
-# include_all_in_folder("write_outputs")
+include_all_in_folder("write_outputs")
 
 # include("time_domain_reduction/time_domain_reduction.jl")
 # include("time_domain_reduction/precluster.jl")
@@ -184,6 +184,6 @@ include_all_in_folder("scenario_generation")
 # include_all_in_folder("multi_stage")
 include_all_in_folder("additional_tools")
 
-# include("startup/genx_startup.jl")
+include("startup/genx_startup.jl")
 
 end

@@ -1,15 +1,3 @@
-function get_settings_path(case::AbstractString)
-    return joinpath(case, "settings")
-end
-
-function get_settings_path(case::AbstractString, filename::AbstractString)
-    return joinpath(get_settings_path(case), filename)
-end
-
-function get_default_output_folder(case::AbstractString)
-    return joinpath(case, "results")
-end
-
 @doc raw"""
     run_genx_case!(case::AbstractString, optimizer::Any=HiGHS.Optimizer)
 
@@ -29,7 +17,7 @@ run_genx_case!("path/to/case", Gurobi.Optimizer)
 ```
 """
 function run_genx_case!(case::AbstractString, optimizer::Any = HiGHS.Optimizer)
-    print_genx_version() # Log the GenX version
+    # print_genx_version() # Log the GenX version
     genx_settings = get_settings_path(case, "genx_settings.yml") # Settings YAML file path
     writeoutput_settings = get_settings_path(case, "output_settings.yml") # Write-output settings YAML file path
     mysetup = configure_settings(genx_settings, writeoutput_settings) # mysetup dictionary stores settings and GenX-specific parameters
