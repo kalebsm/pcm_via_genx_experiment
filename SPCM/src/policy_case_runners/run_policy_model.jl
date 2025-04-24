@@ -26,11 +26,6 @@ function get_default_output_folder(case::AbstractString)
     return joinpath(case, "results")
 end
 
-function hoursbefore(p::Int, t::Int, b::UnitRange{Int})::Vector{Int}
-	period = div(t - 1, p)
-	return period * p .+ mod1.(t .- b, p)
-end
-
 function lkad_hoursbefore(p::Int, t::Int, b::UnitRange{Int})::Vector{Int}
     # if t > p, simply return the period leading up to T
     if t > p
@@ -58,7 +53,6 @@ end
 
 function run_policy_model(case::AbstractString, model_type::AbstractString)
         
-    ### Run.jl
     # case = dirname(@__FILE__)
     optimizer = Gurobi.Optimizer
 
@@ -136,7 +130,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     folder_name_parts = split(case, "\\")
     case_name = folder_name_parts[end]
 
-    # get model type XXX make automatic, update for PF vs LAC
+
 
     ### Load in Scenario Generation information
     scen_generator = scenario_generator_init()
@@ -215,7 +209,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
 
 
     #### define warm start parameters
-    
+
 
     #### initialize elements that are saved across loops
 
@@ -226,6 +220,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     regions = region.(gen)
     clusters = cluster.(gen)
     rid = resource_id.(gen)
+    resource_names = inputs["RESOURCE_NAMES"]
 
     COMMIT = inputs["COMMIT"]
     THERM_COMMIT = inputs["THERM_COMMIT"] # can be outside of loop, never changes
@@ -242,6 +237,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     # ZONES = ???
     num_gen = inputs["G"]
     G = inputs["G"] 
+    Z = inputs["Z"]     # Number of zones
 
     # initialize dictionaries for saved variables, sVariable, could either be nested dictionaries or matrix arrays. XXX
 
@@ -259,8 +255,8 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     reg_dp = zeros(num_gen, Tend);
 
     # sNSE = Dict()
-    nse_dp = zeros(1, Tend);
-    unmet_rsv_dp = zeros(1,Tend);
+    nse_dp = zeros(Z, Tend);
+    unmet_rsv_dp = zeros(Z,Tend);
 
     # sCOMMIT = Dict()
     commit_dp = zeros(num_gen, Tend);
@@ -276,12 +272,12 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     s_dp = zeros(num_gen, Tend);
 
     # initialize object to save prices
-    elec_prices = zeros(Tend)
-    reg_prices = zeros(Tend)
-    rsv_prices  = zeros(Tend)
+    elec_prices = zeros(Z, Tend)
+    reg_prices = zeros(Z, Tend)
+    rsv_prices  = zeros(Z, Tend)
 
     for price_key in pri_strings
-        pri_dict[price_key] = zeros(Tend)
+        pri_dict[price_key] = zeros(Z, Tend)
     end
 
     max_discharge_const_duals = Array{Any}(undef, Tend)
@@ -324,8 +320,8 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     charge_costs_dp = zeros(num_gen, Tend)
 
     # per zone components - WELFARE 
-    nse_cost = zeros(1, Tend)
-    unmet_rsv_cost = zeros(1, Tend)
+    nse_cost = zeros(Z, Tend)
+    unmet_rsv_cost = zeros(Z, Tend)
 
     # Create a NetRevenue dataframe
     dfNetRevenue = DataFrame(region = regions,
@@ -1399,42 +1395,42 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
             # unmet demand 
             unmet_rsv_dp[:,:] = value.(EP[:vUNMET_RSV][:,1])
             # regulation provided
-            reg_dp[:, REG_RSV] = value.(EP[:vREG][:,:,1])
+            reg_dp[REG_RSV, :] = value.(EP[:vREG][:,:,1])
             # reserve provided
-            rsv_dp[:, REG_RSV] = value.(EP[:vRSV][:,:,1])
+            rsv_dp[REG_RSV, :] = value.(EP[:vRSV][:,:,1])
             # shutdown unit
-            shut_dp[:, THERM_COMMIT] = value.(EP[:vSHUT][:,:,1])
+            shut_dp[THERM_COMMIT, :] = value.(EP[:vSHUT][:,:,1])
             # start unit
-            start_dp[:, THERM_COMMIT] = value.(EP[:vSTART][:,:,1])
+            start_dp[THERM_COMMIT, :] = value.(EP[:vSTART][:,:,1])
             # commit unit
-            commit_dp[:, THERM_COMMIT,] = value.(EP[:vCOMMIT][:,:,1])
+            commit_dp[THERM_COMMIT, :] = value.(EP[:vCOMMIT][:,:,1])
             # state of charge
-            s_dp[:, STOR_LIST,] = value.(EP[:vS][:,:,1])
+            s_dp[STOR_LIST, :] = value.(EP[:vS][:,:,1])
             # charge
-            charge_dp[:, STOR_LIST] = value.(EP[:vCHARGE][:,:,1])
+            charge_dp[STOR_LIST, :] = value.(EP[:vCHARGE][:,:,1])
             # electricity price
-            elec_prices[:] = transpose(dual.(EP[:cPowerBalance])[:,:,1]) #* ModelScalingFactor # convert $/GWh to $/MWh
+            elec_prices[:,:] = transpose(dual.(EP[:cPowerBalance])[:,:,1]) #* ModelScalingFactor # convert $/GWh to $/MWh
             # regulation price
-            reg_prices[:] = transpose(dual.(EP[:cReg])[:,:,1])
+            reg_prices[:,:] = transpose(dual.(EP[:cReg])[:,:,1])
             # reserve price
-            rsv_prices[:] = transpose(dual.(EP[:cRsvReq])[:,:,1])
+            rsv_prices[:,:] = transpose(dual.(EP[:cRsvReq])[:,:,1])
 
             fuel_costs_dp[:,:] =  value.(EP[:eCFuelOut][:,1:Tend,1]) .* ModelScalingFactor^2
 
             if setup["UCommit"] >= 1 && !isempty(COMMIT)
                 start_costs_loop = value.(EP[:eCStart][COMMIT,1:Tend,1]).data
                 start_fuel_costs_loop = value.(EP[:eCFuelStart][COMMIT,1:Tend,1])
-                start_costs_dp[:, COMMIT,] .= (start_costs_loop .+ start_fuel_costs_loop) * ModelScalingFactor^2
+                start_costs_dp[COMMIT, :] .= (start_costs_loop .+ start_fuel_costs_loop) * ModelScalingFactor^2
             end
 
 
-            energy_revs_dp[:,:] = pgen_dp .* elec_prices' .* ModelScalingFactor^2
+            energy_revs_dp[:,:] = pgen_dp .* elec_prices .* ModelScalingFactor^2
             var_om_costs_dp[:,:] = var_om_cost_per_gen.* pgen_dp .* ModelScalingFactor^2
 
-            reg_revs_dp[:,:] =  reg_dp .* reg_prices' .* ModelScalingFactor^2
-            rsv_revs_dp[:,:] =  rsv_dp .* rsv_prices' .* ModelScalingFactor^2
+            reg_revs_dp[:,:] =  reg_dp .* reg_prices .* ModelScalingFactor^2
+            rsv_revs_dp[:,:] =  rsv_dp .* rsv_prices .* ModelScalingFactor^2
 
-            charge_costs_dp[:,:] = charge_dp .* elec_prices' .* ModelScalingFactor^2
+            charge_costs_dp[:,:] = charge_dp .* elec_prices .* ModelScalingFactor^2
         
             nse_cost[:,:] = rhinputs["pC_D_Curtail"] .* nse_dp .* ModelScalingFactor^2
             unmet_rsv_cost[:,:] = rhinputs["pC_Rsv_Penalty"] .* unmet_rsv_dp .* ModelScalingFactor^2
@@ -1460,11 +1456,11 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
             # charge
             charge_dp[STOR_ALL,r] = value.(EP[:vCHARGE][STOR_ALL,1,1])
             # electricity price
-            elec_prices[r] = sum(dual.(EP[:cPowerBalance])[1,1,:]) #* ModelScalingFactor # convert $/GWh to $/MWh
+            elec_prices[Z,r] = sum(dual.(EP[:cPowerBalance])[1,1,:]) #* ModelScalingFactor # convert $/GWh to $/MWh
             # regulation price
-            reg_prices[r] = sum(dual.(EP[:cReg])[1,:,:]) #* ModelScalingFactor
+            reg_prices[Z,r] = sum(dual.(EP[:cReg])[1,:,:]) #* ModelScalingFactor
             # reserve price
-            rsv_prices[r] = sum(dual.(EP[:cRsvReq])[1,:,:]) #* ModelScalingFactor
+            rsv_prices[Z,r] = sum(dual.(EP[:cRsvReq])[1,:,:]) #* ModelScalingFactor
 
             fuel_costs_dp[:,r] =  value.(EP[:eCFuelOut][:,1,1]) .* ModelScalingFactor^2
 
@@ -1474,16 +1470,16 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
                 start_costs_dp[COMMIT,r] .= (start_costs_loop .+ start_fuel_costs_loop) * ModelScalingFactor^2
             end
 
-            energy_revs_dp[:,r] = pgen_dp[:,r] .* elec_prices[r] .* ModelScalingFactor^2
+            energy_revs_dp[:,r] = pgen_dp[:,r] .* elec_prices[:,r] .* ModelScalingFactor^2
             var_om_costs_dp[:,r] = var_om_cost_per_gen[:] .* pgen_dp[:,r] .* ModelScalingFactor^2
 
             reg_revs_dp[:,r] = reg_prices[r] .* reg_dp[:,r] .* ModelScalingFactor^2
             rsv_revs_dp[:,r] = rsv_prices[r] .* rsv_dp[:,r] .* ModelScalingFactor^2
 
-            charge_costs_dp[:,r] = charge_dp[:,r] .* elec_prices[r] .* ModelScalingFactor^2
+            charge_costs_dp[:,r] = charge_dp[:,r] .* elec_prices[:,r] .* ModelScalingFactor^2
         
-            nse_cost[1,r] = inputs["pC_D_Curtail"][1] * nse_dp[1,r] .* ModelScalingFactor^2
-            unmet_rsv_cost[1,r] = inputs["pC_Rsv_Penalty"] * unmet_rsv_dp[1,r] .* ModelScalingFactor^2
+            nse_cost[:,r] = inputs["pC_D_Curtail"][1] * nse_dp[:,r] .* ModelScalingFactor^2
+            unmet_rsv_cost[:,r] = inputs["pC_Rsv_Penalty"] * unmet_rsv_dp[:,r] .* ModelScalingFactor^2
 
             # save duals on discharge constraints
             # IF STOR_ALL is non-empty then save duals
@@ -1542,9 +1538,10 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         # # Call the memory check function
         # check_memory_usage()
 
-        if Sys.free_memory() / Sys.total_memory() < 0.1
-            GC.gc()
-        end
+        # this may be bad for performance...
+        # if Sys.free_memory() / Sys.total_memory() < 0.1
+        #     GC.gc()
+        # end
 
 
 
@@ -1562,20 +1559,37 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         mkpath(results_folder)
     end
 
+    # create dataframes of the results
+    shut_df = DataFrame(shut_dp', resource_names)
+    start_df = DataFrame(start_dp', resource_names)
+    commit_df = DataFrame(commit_dp', resource_names)
+    pgen_df = DataFrame(pgen_dp' * ModelScalingFactor, resource_names)
+    s_df = DataFrame(s_dp' * ModelScalingFactor, resource_names)
+    charge_df = DataFrame(charge_dp' * ModelScalingFactor, resource_names)
+    rsv_df = DataFrame(rsv_dp' * ModelScalingFactor, resource_names)
+    reg_df = DataFrame(reg_dp' * ModelScalingFactor, resource_names)
+    elec_prices_df = DataFrame(elec_prices' * ModelScalingFactor, [string(Z)])
+    reg_prices_df = DataFrame(reg_prices' * ModelScalingFactor, [string(Z)])
+    rsv_prices_df = DataFrame(rsv_prices' * ModelScalingFactor, [string(Z)])
+    nse_df = DataFrame(nse_dp' * ModelScalingFactor, [string(Z)])
+    unmet_rsv_df = DataFrame(unmet_rsv_dp' * ModelScalingFactor, [string(Z)])
 
-    writedlm(results_folder * "/unit_shut.csv", shut_dp', ',')
-    writedlm(results_folder * "/unit_start.csv", start_dp', ',')
-    writedlm(results_folder * "/unit_commit.csv", commit_dp', ',')
-    writedlm(results_folder * "/unit_rsv.csv", rsv_dp' * ModelScalingFactor, ',')
-    writedlm(results_folder * "/unit_reg.csv", reg_dp' * ModelScalingFactor, ',')
-    writedlm(results_folder * "/unit_pgen.csv", pgen_dp' * ModelScalingFactor, ',')
-    writedlm(results_folder * "/unit_state_of_charge.csv", s_dp' * ModelScalingFactor, ',')
-    writedlm(results_folder * "/unit_charge.csv", charge_dp' * ModelScalingFactor, ',')
-    writedlm(results_folder * "/price_electricity.csv", elec_prices' * ModelScalingFactor, ',')
-    writedlm(results_folder * "/prices_reg.csv", reg_prices' * ModelScalingFactor, ',')
-    writedlm(results_folder * "/prices_rsv.csv", rsv_prices' * ModelScalingFactor, ',')
-    writedlm(results_folder * "/zone_nse.csv", nse_dp' * ModelScalingFactor, ',')
-    writedlm(results_folder * "/zone_unmet_rsv.csv", unmet_rsv_dp' * ModelScalingFactor, ',')
+    CSV.write(joinpath(results_folder, "unit_shut.csv"), shut_df)
+    CSV.write(joinpath(results_folder, "unit_shut.csv"), shut_df)
+    CSV.write(joinpath(results_folder, "unit_start.csv"), start_df)
+    CSV.write(joinpath(results_folder, "unit_commit.csv"), commit_df)
+    CSV.write(joinpath(results_folder, "unit_pgen.csv"), pgen_df)
+    CSV.write(joinpath(results_folder, "unit_state_of_charge.csv"), s_df)
+    CSV.write(joinpath(results_folder, "unit_charge.csv"), charge_df)
+    CSV.write(joinpath(results_folder, "unit_rsv.csv"), rsv_df)
+    CSV.write(joinpath(results_folder, "unit_reg.csv"), reg_df)
+    CSV.write(joinpath(results_folder, "price_electricity.csv"), elec_prices_df)
+    CSV.write(joinpath(results_folder, "unit_rsv.csv"), rsv_df)
+    CSV.write(joinpath(results_folder, "unit_reg.csv"), reg_df)
+    CSV.write(joinpath(results_folder, "prices_reg.csv"), reg_prices_df)
+    CSV.write(joinpath(results_folder, "prices_rsv.csv"), rsv_prices_df)
+    CSV.write(joinpath(results_folder, "zone_nse.csv"), nse_df)
+    CSV.write(joinpath(results_folder, "zone_unmet_rsv.csv"), unmet_rsv_df)
 
 
 
@@ -1633,6 +1647,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     # copy_dfGen[!,:Fixed_OM_Cost_per_MWyr] = copy_dfGen[!,:Fixed_OM_Cost_per_MWyr] .* ModelScalingFactor
     # CSV.write(results_folder * "/generator_characteristics.csv", copy_dfGen, header=true)
 
+    storage_durations = [gen[y].max_duration for y in STOR_ALL]
 
     invest_costs_perMW_yr = inv_cost_per_mwyr_per_gen .* ModelScalingFactor
     invest_costs_perMWhour_yr = inv_cost_per_mwhyr_per_gen .* ModelScalingFactor
@@ -1644,7 +1659,14 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     operating_profit_per_gen_vec = operating_profit_per_gen[:]
     total_inv_costs_MW_yr_vec = total_inv_costs_MW_yr[:]
     total_inv_costs_MWhour_yr_vec = total_inv_costs_MWhour_yr[:]
+
+    total_inv_costs_MWhour_cost_in_MW_yr_vec = total_inv_costs_MWhour_yr_vec .* storage_durations
+
+    total_both_inv_costs_MW_yr = total_inv_costs_MW_yr_vec + total_inv_costs_MWhour_cost_in_MW_yr_vec
+
     diff = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec;
+
+
 
     # Create a DataFrame
     df = DataFrame(generators = generator_name_per_gen,
@@ -1662,9 +1684,10 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
                     EnergyRevenue = total_energy_revs_dp[:],
                     OperatingRegulationRevenue = total_reg_revs_dp[:],
                     OperatingReserveRevenue = total_rsv_revs_dp[:],
-                    Revenue = rev_per_gen[:],
-                    Cost = cost_per_gen[:],
+                    Operating_Revenue = rev_per_gen[:],
+                    Operating_Cost = cost_per_gen[:],
                     operating_profit_per_gen = operating_profit_per_gen_vec,
+                    total_inv_costs = total_both_inv_costs_MW_yr,
                     diff = diff)
 
     # Write the DataFrame to a CSV file
@@ -1678,6 +1701,10 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
 
 
     if model_type == "slac"
+
+        # if undef in prices_scen_array, then remove undefined elements
+        # Remove undefined elements from prices_scen_array if any
+        prices_scen_array = filter(x -> x !== nothing, prices_scen_array)
 
         save_hdf5(results_folder, Tend, "prices_scen_array", prices_scen_array)
 
@@ -1725,29 +1752,29 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
 
                 if total_power_from_energy < max_capacity
                     if pgen_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] < total_power_from_energy
-                        global energy_marginal_count += 1
+                        energy_marginal_count += 1
                         push!(t_indices, t)
                     else
-                        global not_marginal_count += 1
+                        not_marginal_count += 1
                     end
                 else
                     if (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
                         sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
-                        global discharge_charge_marginal_count += 1
+                        discharge_charge_marginal_count += 1
                         push!(t_indices, t)
                     elseif (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
                         sum(max_charge_const_duals[t][1,:]) > eps && charge_dp[STOR_ALL[],t] < eps)
-                        global discharge_marginal_count += 1
+                        discharge_marginal_count += 1
                         push!(t_indices, t)
                     elseif (sum(max_discharge_const_duals[t][1,:]) > eps && pgen_dp[STOR_ALL[],t] < eps && 
                         sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
-                        global charge_marginal_count += 1
+                        charge_marginal_count += 1
                         push!(t_indices, t)
                     else
-                        global not_marginal_count += 1
+                        not_marginal_count += 1
                     end
                 end
-                global is_marginal_count = energy_marginal_count + discharge_marginal_count + charge_marginal_count + discharge_charge_marginal_count
+                is_marginal_count = energy_marginal_count + discharge_marginal_count + charge_marginal_count + discharge_charge_marginal_count
             end
 
             positive_charge_and_pgen_count = count(t -> charge_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] > eps, 1:Tend)
