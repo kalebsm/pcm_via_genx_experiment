@@ -29,7 +29,8 @@ export mga
 export morris
 export choose_output_dir
 export run_policy_model
-
+export run_policy_model_new
+export initialize_policy_model
 export existing_cap_mw
 
 # fuel

@@ -1,3 +1,40 @@
+### case_runner.jl
+
+function get_settings_path(case::AbstractString)
+    return joinpath(case, "settings")
+end
+
+function get_settings_path(case::AbstractString, filename::AbstractString)
+    return joinpath(get_settings_path(case), filename)
+end
+
+function get_default_output_folder(case::AbstractString)
+    return joinpath(case, "results")
+end
+
+function lkad_hoursbefore(p::Int, t::Int, b::UnitRange{Int})::Vector{Int}
+    # if t > p, simply return the period leading up to T
+    if t > p
+        return t .- b
+    elseif t <= p
+        return mod1.(t .- b, p)
+    end
+end
+
+
+function save_hdf5(savepath, Tend, data_str, data_array)
+    println("Saving ", data_str, " to HDF5 file")
+    # Create the HDF5 file
+    h5 = HDF5.h5open(joinpath(savepath, data_str * ".h5"), "w")
+    # Write the wind_scen_array to the HDF5 file
+    for i in 1:Tend
+        dsetname = data_str * "_$i"
+        HDF5.write(h5, dsetname, data_array[i])
+    end
+    # Close the HDF5 file
+    close(h5)
+end
+
 @doc raw"""
     run_genx_case!(case::AbstractString, optimizer::Any=HiGHS.Optimizer)
 
