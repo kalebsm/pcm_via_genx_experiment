@@ -1,4 +1,20 @@
-function initialize_policy_model(case::AbstractString)
+# Add a small quadratic term to the objective function for smoother price formation
+function add_quadratic_regularization(EP, generators, W, T; regularization_weight=1e-7)
+    num_gen = length(generators)  # Number of scenarios
+    # Create quadratic regularization expression
+    @expression(EP, eQuadraticReg[w=1:W], 
+        regularization_weight * sum(
+            EP[:vP][y,t,w]^2 for y in 1:num_gen, t in 1:T
+        )
+    )
+    
+    # Add regularization to the objective
+    EP[:eObj] += eQuadraticReg
+    
+    return EP
+end
+
+function initialize_policy_model(case::AbstractString; offset=true)
     # case = dirname(@__FILE__)
     optimizer = Gurobi.Optimizer
 
@@ -126,8 +142,13 @@ function initialize_policy_model(case::AbstractString)
     # define CEM path
     cem_path = joinpath(case, "..", "..", "..", "GenX.jl", "research_systems", case_name)
     cem_results_path = joinpath(cem_path, "results")
-
-    # load commit, commit, commit_dp
+    if offset
+        pf_results_path = joinpath(cem_path, "results_pf")
+        pf_rev = CSV.read(joinpath(pf_results_path, "NetRevenue.csv"), DataFrame)
+        offset_ = pf_rev.diff[:]
+    else
+        offset_ = zeros(num_gen)
+    end    # load commit, commit, commit_dp
     cem_commit_raw = CSV.read(joinpath(cem_results_path, "commit.csv"), DataFrame)
     # Remove the first two rows and reset the index for `cem_commit`
     cem_commit = cem_commit_raw[3:end, :]
@@ -151,7 +172,6 @@ function initialize_policy_model(case::AbstractString)
     cem_dispatch_raw = CSV.read(joinpath(cem_results_path, "power.csv"), DataFrame)
     # Remove the first two rows and reset the index for `cem_dispatch`
     cem_dispatch = cem_dispatch_raw[3:end, :]
-    
     # Create a context dictionary to store all the required data
     context = Dict(
         "setup" => setup,
@@ -165,14 +185,16 @@ function initialize_policy_model(case::AbstractString)
         "cem_shut" => cem_shut,
         "cem_soc" => cem_soc,
         "cem_dispatch" => cem_dispatch,
-        "case" => case
+        "case" => case,
+        "offset" => offset_
     )
     
     return context
 end
 
-function run_policy_model_new(context::Dict, model_type::AbstractString, existing_capacities::Dict=Dict(); 
+function run_policy_model_new(context::Dict, model_type::AbstractString, existing_capacities = []; 
                           write_results::Bool=false)
+    start_time = time()
     # Unpack variables from context
     setup = context["setup"]
     inputs = deepcopy(context["inputs"])  # Deep copy to avoid modifying original
@@ -186,37 +208,44 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
     cem_soc = context["cem_soc"]
     cem_dispatch = context["cem_dispatch"]
     case = context["case"]
-    
+    offset = context["offset"]
     # Apply any new existing capacities if provided
     if !isempty(existing_capacities)
-        for (idx, capacity) in existing_capacities
+        for (idx, capacity) in enumerate(existing_capacities)
             inputs["RESOURCES"][idx].existing_cap_mw = capacity
         end
     end
     
     # Unpack scenario generator variables
     unique_forecast_times = scen_generator["unique_forecast_times"]
+    unique_issue_times = scen_generator["unique_issue_times"]
     start_date = scen_generator["start_date"]
     corr_forecast_issue_times = scen_generator["corr_forecast_issue_times"]
     forecast_scenario_length = scen_generator["forecast_scenario_length"]
     number_of_scenarios = scen_generator["number_of_scenarios"]
+    solar_model_data = scen_generator["solar_model_data"]
     M_load = scen_generator["M_load"]
     M_solar = scen_generator["M_solar"]
     M_wind = scen_generator["M_wind"]
-    solar_well_defined_cols = scen_generator["solar_well_defined_cols"]
+    lp_solar = scen_generator["lp_solar"]
     load_marginals_by_issue = scen_generator["load_marginals_by_issue"]
     solar_marginals_by_issue = scen_generator["solar_marginals_by_issue"]
     wind_marginals_by_issue = scen_generator["wind_marginals_by_issue"]
     load_landing_probabilities = scen_generator["load_landing_probabilities"]
     solar_landing_probabilities = scen_generator["solar_landing_probabilities"]
     wind_landing_probabilities = scen_generator["wind_landing_probabilities"]
+    load_actual_avg = scen_generator["load_actual_avg"]
+    solar_actual_avg = scen_generator["solar_actual_avg"]
+    wind_actual_avg = scen_generator["wind_actual_avg"]
+    solar_well_defined_cols = scen_generator["solar_well_defined_cols"]
+    solar_issue_decn_time_matrix = scen_generator["solar_issue_decn_time_matrix"]
     load_actual_avg_GW = scen_generator["load_actual_avg_GW"]
     solar_actual_avg_cf = scen_generator["solar_actual_avg_cf"]
     wind_actual_avg_cf = scen_generator["wind_actual_avg_cf"]
     decision_mdl_lkd_length = scen_generator["decision_mdl_lkd_length"]
-    max_solar_actual = scen_generator["max_solar_actual"]
-    max_wind_actual = scen_generator["max_wind_actual"]
-    
+    max_solar_actual = scen_generator["max_solar_actual"];
+    max_wind_actual = scen_generator["max_wind_actual"];
+    start_date = scen_generator["start_date"];
     #=======================================================================
     DEFINE INDICES, DATETIMES, ISSUE SETS FOR NORTA SCENARIOS AND STOCASTIC SIM
     =======================================================================#
@@ -347,7 +376,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
     date = deepcopy(start_date)
 
     println("Generating the SPCM Optimization")
-    
+
     # Loop through time periods
     for r in R
         global decision_date = start_date + Dates.Hour(r - 1)
@@ -1168,9 +1197,9 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
 
         @constraint(EP, cMaxPowerWithRegRsv[y in THERM_COMMIT_REG_RSV, t=1:T, w=1:W], 
             EP[:vP][y,t,w]+EP[:vREG][y,t,w]+EP[:vRSV][y,t,w] <= rhinputs["pP_Max"][w][y,t] * cap_size(gen[y]) * EP[:vCOMMIT][y,t,w])
-
+        
         #### Define the Objective ####
-
+        EP = add_quadratic_regularization(EP, gen,W,T)
         ## assign probabilities to stochastic scenarios
         uniform_probs = 1 / W
         ## redefine objective 
@@ -1374,8 +1403,8 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
     total_inv_costs_MWhour_cost_in_MW_yr_vec = total_inv_costs_MWhour_yr_vec .* storage_durations
 
     total_both_inv_costs_MW_yr = total_inv_costs_MW_yr_vec + total_inv_costs_MWhour_cost_in_MW_yr_vec
-
-    diff = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec
+    diff_org = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec
+    diff = diff_org - offset
 
     # Create results DataFrame
     results_df = DataFrame(generators = generator_name_per_gen,
@@ -1397,8 +1426,9 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
                         Operating_Cost = cost_per_gen[:],
                         operating_profit_per_gen = operating_profit_per_gen_vec,
                         total_inv_costs = total_both_inv_costs_MW_yr,
+                        diff_org = diff_org,
                         diff = diff)
-
+end_time = time()-start_time
 # Only write results to files if requested
 if write_results
     # Create results folder if needed
@@ -1475,13 +1505,16 @@ if write_results
 end
 
 # Return the net profit and financial results
+PMR = diff./(total_both_inv_costs_MW_yr + fixed_om_costs_vec)
 return Dict(
     "net_profit" => diff,
+    "PMR" => PMR*100,
     "total_welfare" => total_welfare[1],
     "operating_profit" => operating_profit_per_gen_vec,
     "inv_costs" => total_both_inv_costs_MW_yr,
     "energy_revenue" => total_energy_revs_dp[:],
     "capacity_mw" => existing_cap_mw_per_gen * ModelScalingFactor,
+    "solve_time" => end_time,
     "results_df" => results_df
 )
 end
