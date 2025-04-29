@@ -1,11 +1,11 @@
 # Add a small quadratic term to the objective function for smoother price formation
-function add_quadratic_regularization(EP, generators, W, T; regularization_weight=1e-7)
+function add_quadratic_regularization(EP, generators, W, T; regularization_weight=1e-6)
     num_gen = length(generators)  # Number of scenarios
     # Create quadratic regularization expression
     @expression(EP, eQuadraticReg[w=1:W], 
         regularization_weight * sum(
             EP[:vP][y,t,w]^2 for y in 1:num_gen, t in 1:T
-        )
+        )/2
     )
     
     # Add regularization to the objective
@@ -86,59 +86,7 @@ function initialize_policy_model(case::AbstractString; offset=true)
     ### Load in Scenario Generation information
     scen_generator = scenario_generator_init()
     
-    # Save the objects from scen_generator into individual variables
-    unique_forecast_times = scen_generator["unique_forecast_times"]
-    unique_issue_times = scen_generator["unique_issue_times"]
-    start_date = scen_generator["start_date"]
-    corr_forecast_issue_times = scen_generator["corr_forecast_issue_times"]
-    forecast_scenario_length = scen_generator["forecast_scenario_length"]
-    number_of_scenarios = scen_generator["number_of_scenarios"]
-    solar_model_data = scen_generator["solar_model_data"]
-    M_load = scen_generator["M_load"]
-    M_solar = scen_generator["M_solar"]
-    M_wind = scen_generator["M_wind"]
-    lp_solar = scen_generator["lp_solar"]
-    load_marginals_by_issue = scen_generator["load_marginals_by_issue"]
-    solar_marginals_by_issue = scen_generator["solar_marginals_by_issue"]
-    wind_marginals_by_issue = scen_generator["wind_marginals_by_issue"]
-    load_landing_probabilities = scen_generator["load_landing_probabilities"]
-    solar_landing_probabilities = scen_generator["solar_landing_probabilities"]
-    wind_landing_probabilities = scen_generator["wind_landing_probabilities"]
-    load_actual_avg = scen_generator["load_actual_avg"]
-    solar_actual_avg = scen_generator["solar_actual_avg"]
-    wind_actual_avg = scen_generator["wind_actual_avg"]
-    solar_well_defined_cols = scen_generator["solar_well_defined_cols"]
-    solar_issue_decn_time_matrix = scen_generator["solar_issue_decn_time_matrix"]
-    load_actual_avg_GW = scen_generator["load_actual_avg_GW"]
-    solar_actual_avg_cf = scen_generator["solar_actual_avg_cf"]
-    wind_actual_avg_cf = scen_generator["wind_actual_avg_cf"]
-    decision_mdl_lkd_length = scen_generator["decision_mdl_lkd_length"]
-    max_solar_actual = scen_generator["max_solar_actual"]
-    max_wind_actual = scen_generator["max_wind_actual"]
-    start_date = scen_generator["start_date"]
-    
-    # extract resource info
-    gen = inputs["RESOURCES"]
-    zones = zone_id.(gen)
-    regions = region.(gen)
-    clusters = cluster.(gen)
-    rid = resource_id.(gen)
-    resource_names = inputs["RESOURCE_NAMES"]
 
-    COMMIT = inputs["COMMIT"]
-    THERM_COMMIT = inputs["THERM_COMMIT"]
-    STOR_LIST = inputs["STOR_ALL"]
-    STOR_ALL = inputs["STOR_ALL"]
-    VRE_LIST = inputs["VRE"]
-    if setup["OperationalReserves"] >= 1
-        RSV = inputs["RSV"]
-        REG = inputs["REG"]
-    end
-
-    num_gen = inputs["G"]
-    G = inputs["G"] 
-    Z = inputs["Z"]
-    
     # define CEM path
     cem_path = joinpath(case, "..", "..", "..", "GenX.jl", "research_systems", case_name)
     cem_results_path = joinpath(cem_path, "results")
@@ -147,6 +95,7 @@ function initialize_policy_model(case::AbstractString; offset=true)
         pf_rev = CSV.read(joinpath(pf_results_path, "NetRevenue.csv"), DataFrame)
         offset_ = pf_rev.diff[:]
     else
+        num_gen = inputs["G"]
         offset_ = zeros(num_gen)
     end    # load commit, commit, commit_dp
     cem_commit_raw = CSV.read(joinpath(cem_results_path, "commit.csv"), DataFrame)
@@ -213,6 +162,9 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
     if !isempty(existing_capacities)
         for (idx, capacity) in enumerate(existing_capacities)
             inputs["RESOURCES"][idx].existing_cap_mw = capacity
+            if idx in inputs["STOR_ALL"]
+                inputs["RESOURCES"][idx].existing_cap_mwh = capacity.*2
+            end
         end
     end
     
@@ -857,7 +809,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
             (cap_size(gen[y]) * EP[:vSTART][y, t, w] * heat_rate_mmbtu_per_mwh(gen[y])).==0)
 
         ### curtailable_variable_renewable
-
+        println("Curtailable Variable Renewable Module")
         VRE = rhinputs["VRE"]
 
         VRE_POWER_OUT = intersect(VRE, ids_with_positive(gen, num_vre_bins))
@@ -892,7 +844,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
         ### storage.jl
         STOR_ALL = rhinputs["STOR_ALL"]
 
-
+        println("Storage Module")
         ### investment_energy
         @expression(EP, eExistingCapEnergy[y in STOR_ALL], existing_cap_mwh(gen[y]))
 
@@ -1063,7 +1015,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
             EP[:vS][y,t-1,w]-(1/efficiency_down(gen[y]) * EP[:vP][y,t,w])+(efficiency_up(gen[y]) * EP[:vCHARGE][y,t,w]) 
                 -( self_discharge(gen[y]) * EP[:vS][y,t-1,w]))
 
-
+        println("Thermal Module")
         # thermal.jl
         THERM_COMMIT = rhinputs["THERM_COMMIT"]
         THERM_NO_COMMIT = rhinputs["THERM_NO_COMMIT"]
@@ -1231,6 +1183,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
             compute_conflict!(EP)
             iis_model, _ = copy_conflict(EP)
             print(iis_model)
+
         end
                 ## Record pre-solver time
         presolver_time = time() - presolver_start_time

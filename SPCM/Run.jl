@@ -21,10 +21,10 @@ subfolders = [
 
 mainpath = pwd()
 case_path = joinpath(mainpath,"SPCM", "Research_Systems", "2_Hr_BESS")
-context = initialize_policy_model(case_path, offset=false)
+context = initialize_policy_model(case_path, offset=true)
 # Start with initial capacities
-model_type = "dlac-i"
-current_capacities = Dict()  # Empty dict means use default capacities
+model_type = "dlac-p"
+current_capacities = []  # Empty dict means use default capacities
 results = run_policy_model_new(context, model_type, current_capacities,write_results=true)
 
 for folder in subfolders
