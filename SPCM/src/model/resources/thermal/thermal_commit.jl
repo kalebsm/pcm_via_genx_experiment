@@ -321,31 +321,45 @@ function thermal_commit_operational_reserves!(EP::Model, inputs::Dict)
     vREG = EP[:vREG]
     vRSV = EP[:vRSV]
 
-    commit(y, t) = cap_size(gen[y]) * EP[:vCOMMIT][y, t]
-    max_power(y, t) = inputs["pP_Max"][y, t]
+    THERM_COMMIT_REG_RSV = intersect(THERM_COMMIT, inputs["REG"], inputs["RSV"])
 
-    # Maximum regulation and reserve contributions
-    @constraint(EP,
-        [y in REG, t in 1:T],
-        vREG[y, t]<=max_power(y, t) * reg_max(gen[y]) * commit(y, t))
-    @constraint(EP,
-        [y in RSV, t in 1:T],
-        vRSV[y, t]<=max_power(y, t) * rsv_max(gen[y]) * commit(y, t))
+    @constraint(EP, cMaxREGContrib[y in THERM_COMMIT_REG_RSV, t=1:T], 
+        EP[:vREG][y,t] <= inputs["pP_Max"][y,t]* reg_max(gen[y]) * cap_size(gen[y]) *EP[:vCOMMIT][y,t])
+    
+    @constraint(EP, cMaxRSVContrib[y in THERM_COMMIT_REG_RSV, t=1:T], 
+        EP[:vRSV][y,t] <= inputs["pP_Max"][y,t] * rsv_max(gen[y]) * cap_size(gen[y]) *EP[:vCOMMIT][y,t])
 
-    # Minimum stable power generated per technology "y" at hour "t" and contribution to regulation must be > min power
-    expr = extract_time_series_to_expression(vP, THERM_COMMIT)
-    add_similar_to_expression!(expr[REG, :], -vREG[REG, :])
-    @constraint(EP,
-        [y in THERM_COMMIT, t in 1:T],
-        expr[y, t]>=min_power(gen[y]) * commit(y, t))
+    @constraint(EP, cMinStablePower[y in THERM_COMMIT_REG_RSV, t=1:T], 
+        EP[:vP][y,t]-EP[:vREG][y,t] >= min_power(gen[y]) * cap_size(gen[y]) *EP[:vCOMMIT][y,t])
 
-    # Maximum power generated per technology "y" at hour "t"  and contribution to regulation and reserves up must be < max power
-    expr = extract_time_series_to_expression(vP, THERM_COMMIT)
-    add_similar_to_expression!(expr[REG, :], vREG[REG, :])
-    add_similar_to_expression!(expr[RSV, :], vRSV[RSV, :])
-    @constraint(EP,
-        [y in THERM_COMMIT, t in 1:T],
-        expr[y, t]<=max_power(y, t) * commit(y, t))
+    @constraint(EP, cMaxPowerWithRegRsv[y in THERM_COMMIT_REG_RSV, t=1:T], 
+        EP[:vP][y,t]+EP[:vREG][y,t]+EP[:vRSV][y,t] <= inputs["pP_Max"][y,t] * cap_size(gen[y]) * EP[:vCOMMIT][y,t])
+
+    # commit(y, t) = cap_size(gen[y]) * EP[:vCOMMIT][y, t]
+    # max_power(y, t) = inputs["pP_Max"][y, t]
+
+    # # Maximum regulation and reserve contributions
+    # @constraint(EP,
+    #     [y in REG, t in 1:T],
+    #     vREG[y, t]<=max_power(y, t) * reg_max(gen[y]) * commit(y, t))
+    # @constraint(EP,
+    #     [y in RSV, t in 1:T],
+    #     vRSV[y, t]<=max_power(y, t) * rsv_max(gen[y]) * commit(y, t))
+
+    # # Minimum stable power generated per technology "y" at hour "t" and contribution to regulation must be > min power
+    # expr = extract_time_series_to_expression(vP, THERM_COMMIT)
+    # add_similar_to_expression!(expr[REG, :], -vREG[REG, :])
+    # @constraint(EP,
+    #     [y in THERM_COMMIT, t in 1:T],
+    #     expr[y, t]>=min_power(gen[y]) * commit(y, t))
+
+    # # Maximum power generated per technology "y" at hour "t"  and contribution to regulation and reserves up must be < max power
+    # expr = extract_time_series_to_expression(vP, THERM_COMMIT)
+    # add_similar_to_expression!(expr[REG, :], vREG[REG, :])
+    # add_similar_to_expression!(expr[RSV, :], vRSV[RSV, :])
+    # @constraint(EP,
+    #     [y in THERM_COMMIT, t in 1:T],
+    #     expr[y, t]<=max_power(y, t) * commit(y, t))
 end
 
 @doc raw"""

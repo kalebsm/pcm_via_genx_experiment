@@ -1,13 +1,10 @@
 # Add a small quadratic term to the objective function for smoother price formation
 function add_quadratic_regularization(EP, generators, W, T; regularization_weight=1e-4)
     num_gen = length(generators)  # Number of scenarios
-    # Create quadratic regularization expression
-    @expression(EP, eQuadraticReg[w=1:W], 
+    @expression(EP, eQuadraticReg[1:W], 
         regularization_weight * sum(
-            EP[:vP][y,t,w]^2 for y in 1:num_gen, t in 1:T
-        )/2
-    )
-    
+            EP[:vP][y,t,w]^2 for y in 1:num_gen, t in 1:T, w in 1:W
+    )/2
     # Add regularization to the objective
     EP[:eObj] += eQuadraticReg
     
@@ -834,8 +831,9 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
         ### storage.jl
         STOR_ALL = rhinputs["STOR_ALL"]
 
-        println("Storage Module")
+        println("Storage Resources Module")
         ### investment_energy
+        println("Storage Investment Module")
         @expression(EP, eExistingCapEnergy[y in STOR_ALL], existing_cap_mwh(gen[y]))
 
         @expression(EP, eTotalCapEnergy[y in STOR_ALL], eExistingCapEnergy[y] + EP[:vZERO])
@@ -850,6 +848,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
 
 
         ### storage_all.jl
+        println("Storage Core Resources Module")
         Reserves = setup["OperationalReserves"]
         STOR_SHORT_DURATION = rhinputs["STOR_SHORT_DURATION"]
 
@@ -1013,7 +1012,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
 
         # thermal_commit.jl
         ### Expressions ###
-
+        println("Thermal (Unit Commitment) Resources Module")
         ## Power Balance Expressions ##
         @expression(EP, ePowerBalanceThermCommit[t=1:T, z=1:Z, w=1:W],
         sum(EP[:vP][y,t,w] for y in intersect(THERM_COMMIT, resources_in_zone_by_rid(gen,z))))
@@ -1124,7 +1123,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
             * cap_size(gen[y]) * EP[:vSTART][y,t,w]
             - min_power(gen[y]) * cap_size(gen[y]) *EP[:vSHUT][y,t,w])
         end
-
+        println("Thermal Commit Operational Reserves Module")
         # stochastic_thermal_commit_reserves
         THERM_COMMIT_REG_RSV = intersect(THERM_COMMIT, rhinputs["REG"], rhinputs["RSV"])
 
