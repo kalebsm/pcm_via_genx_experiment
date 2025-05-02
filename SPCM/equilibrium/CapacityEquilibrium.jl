@@ -35,8 +35,8 @@ Returns a dictionary with results and convergence information.
 function compute_equilibrium(context, model_type; 
                             initial_capacities=Dict(), 
                             tolerance=1e-3, 
-                            max_iterations=100, 
-                            step_size=0.005,
+                            max_iterations=150, 
+                            step_size=0.05,
                             smoothing_param=10.0,
                             perturbation_size=0.01,
                             save_iterations=false)
@@ -60,33 +60,32 @@ function compute_equilibrium(context, model_type;
     capacity_history = []
     profit_history = []
     max_pmr_history = []
-    log_file = joinpath(context["case"], "equilibrium_smooth_$(model_type).csv")
+    log_file = joinpath(context["case"], "equilibrium_qp_$(model_type).csv")
     resource_names = [gen[y].resource for y in 1:num_gen]
-    # Initialize log file with headers
-    open(log_file, "w") do f
-        # Write header row
-        headers = ["Iteration", "max_pmr", "time"]
+    # # Initialize log file with headers
+    # open(log_file, "w") do f
+    #     # Write header row
+    #     headers = ["Iteration", "max_pmr", "time"]
         
-        # Add columns for each generator's capacity
-        for name in resource_names
-            push!(headers, "$(name)_capacity_MW")
-        end
+    #     # Add columns for each generator's capacity
+    #     for name in resource_names
+    #         push!(headers, "$(name)_capacity_MW")
+    #     end
         
-        # Add columns for each generator's profit
-        for name in resource_names
-            push!(headers, "$(name)_pmr")
-        end
-        # Write the header row
-        println(f, join(headers, ","))
-    end
+    #     # Add columns for each generator's profit
+    #     for name in resource_names
+    #         push!(headers, "$(name)_pmr")
+    #     end
+    #     # Write the header row
+    #     println(f, join(headers, ","))
+    # end
     # Main iteration loop
-    for iteration in 1:max_iterations
+    for iteration in 97:max_iterations
         start = time()
         println("Iteration $iteration of $max_iterations")
         # current_capacities = current_capacities .* 1.05
         # Run policy model with current capacities
         results = run_policy_model_new(context, model_type, current_capacities; write_results=false)
-        
         # Extract profits and investment costs
         net_profit = results["net_profit"]  # Vector of profits minus investment costs
         capacities = results["capacity_mw"]./ModelScalingFactor  # Vector of capacities in MW
@@ -100,6 +99,12 @@ function compute_equilibrium(context, model_type;
         adjustment = current_capacities .+ step_size*(pmr/100)
         next_capacities = softplus.(adjustment, smoothing_param)
         max_pmr = maximum(abs.(pmr))
+        if max_pmr < 10
+            step_size = 0.01
+            if max_pmr < 1
+                step_size = 0.001
+            end
+        end
         push!(max_pmr_history, max_pmr)
         println("Maximum abs profit margin: $max_pmr MW")
         iter_time = time()-start

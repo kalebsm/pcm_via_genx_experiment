@@ -1,5 +1,5 @@
 # Add a small quadratic term to the objective function for smoother price formation
-function add_quadratic_regularization(EP, generators, W, T; regularization_weight=1e-6)
+function add_quadratic_regularization(EP, generators, W, T; regularization_weight=1e-4)
     num_gen = length(generators)  # Number of scenarios
     # Create quadratic regularization expression
     @expression(EP, eQuadraticReg[w=1:W], 
@@ -14,7 +14,7 @@ function add_quadratic_regularization(EP, generators, W, T; regularization_weigh
     return EP
 end
 
-function initialize_policy_model(case::AbstractString; offset=true)
+function initialize_policy_model(case::AbstractString)
     # case = dirname(@__FILE__)
     optimizer = Gurobi.Optimizer
 
@@ -90,14 +90,6 @@ function initialize_policy_model(case::AbstractString; offset=true)
     # define CEM path
     cem_path = joinpath(case, "..", "..", "..", "GenX.jl", "research_systems", case_name)
     cem_results_path = joinpath(cem_path, "results")
-    if offset
-        pf_results_path = joinpath(cem_path, "results_pf")
-        pf_rev = CSV.read(joinpath(pf_results_path, "NetRevenue.csv"), DataFrame)
-        offset_ = pf_rev.diff[:]
-    else
-        num_gen = inputs["G"]
-        offset_ = zeros(num_gen)
-    end    # load commit, commit, commit_dp
     cem_commit_raw = CSV.read(joinpath(cem_results_path, "commit.csv"), DataFrame)
     # Remove the first two rows and reset the index for `cem_commit`
     cem_commit = cem_commit_raw[3:end, :]
@@ -135,7 +127,6 @@ function initialize_policy_model(case::AbstractString; offset=true)
         "cem_soc" => cem_soc,
         "cem_dispatch" => cem_dispatch,
         "case" => case,
-        "offset" => offset_
     )
     
     return context
@@ -157,7 +148,6 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
     cem_soc = context["cem_soc"]
     cem_dispatch = context["cem_dispatch"]
     case = context["case"]
-    offset = context["offset"]
     # Apply any new existing capacities if provided
     if !isempty(existing_capacities)
         for (idx, capacity) in enumerate(existing_capacities)
@@ -1151,7 +1141,10 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
             EP[:vP][y,t,w]+EP[:vREG][y,t,w]+EP[:vRSV][y,t,w] <= rhinputs["pP_Max"][w][y,t] * cap_size(gen[y]) * EP[:vCOMMIT][y,t,w])
         
         #### Define the Objective ####
-        EP = add_quadratic_regularization(EP, gen,W,T)
+        if setup["QuadraticCost"] == 1
+            EP = add_quadratic_regularization(EP, gen,W,T)
+        end
+       
         ## assign probabilities to stochastic scenarios
         uniform_probs = 1 / W
         ## redefine objective 
@@ -1356,8 +1349,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
     total_inv_costs_MWhour_cost_in_MW_yr_vec = total_inv_costs_MWhour_yr_vec .* storage_durations
 
     total_both_inv_costs_MW_yr = total_inv_costs_MW_yr_vec + total_inv_costs_MWhour_cost_in_MW_yr_vec
-    diff_org = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec
-    diff = diff_org - offset
+    diff = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec
 
     # Create results DataFrame
     results_df = DataFrame(generators = generator_name_per_gen,
@@ -1379,7 +1371,6 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
                         Operating_Cost = cost_per_gen[:],
                         operating_profit_per_gen = operating_profit_per_gen_vec,
                         total_inv_costs = total_both_inv_costs_MW_yr,
-                        diff_org = diff_org,
                         diff = diff)
 end_time = time()-start_time
 # Only write results to files if requested
