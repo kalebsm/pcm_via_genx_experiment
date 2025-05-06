@@ -247,7 +247,7 @@ function generate_model(setup::Dict, inputs::Dict, OPTIMIZER::MOI.OptimizerWithA
         mga!(EP, inputs, setup)
     end
     if setup["QuadraticCost"] == 1
-        EP = add_quadratic_regularization(EP, inputs["RESOURCES"],1,T)
+        add_quadratic_regularization!(EP)
     end
     ## Define the objective function
     @objective(EP, Min, setup["ObjScale"]*EP[:eObj])

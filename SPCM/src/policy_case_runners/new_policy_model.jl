@@ -1,16 +1,36 @@
-# Add a small quadratic term to the objective function for smoother price formation
-function add_quadratic_regularization(EP, generators, W, T; regularization_weight=1e-4)
-    num_gen = length(generators)  # Number of scenarios
-    @expression(EP, eQuadraticReg[1:W], 
-        regularization_weight * sum(
-            EP[:vP][y,t,w]^2 for y in 1:num_gen, t in 1:T, w in 1:W
-    )/2
-    # Add regularization to the objective
-    EP[:eObj] += eQuadraticReg
-    
-    return EP
+# Check memory usage and error out if it exceeds 90%
+function check_memory_usage()
+    mem_info = Sys.free_memory()
+    total_memory = Sys.total_memory()
+    used_memory = total_memory - mem_info
+    memory_usage_percentage = (used_memory / total_memory) * 100
+
+    if memory_usage_percentage >= 90
+        error("Memory usage has exceeded 90%. Exiting to prevent system instability.")
+    end
 end
 
+# Add a small quadratic term to the objective function for smoother price formation
+# function add_quadratic_regularization(EP, generators, W, T; regularization_weight=1e-4)
+#     num_gen = length(generators)  # Number of scenarios
+#     @expression(EP, eQuadraticReg[1:W], 
+#         regularization_weight * sum(
+#             EP[:][y,t,w]^2 for y in 1:num_gen, t in 1:T, w in 1:W
+#     )/2)
+#     # Add regularization to the objective
+#     EP[:eObj] += eQuadraticReg
+    
+#     return EP
+# end
+function add_quadratic_regularization!(EP; W = 0, regularization_weight = 1e-3)
+    if W == 0
+        EP[:eObj] += EP[:eTotalCNSE]^2 .* regularization_weight ./ 2
+    else
+        @expression(EP, eQuadraticReg[w=1:W], 
+        (regularization_weight * EP[:eTotalCNSE][w]^2)/2)
+        EP[:eObj] += eQuadraticReg
+    end
+end
 function initialize_policy_model(case::AbstractString)
     # case = dirname(@__FILE__)
     optimizer = Gurobi.Optimizer
@@ -85,8 +105,8 @@ function initialize_policy_model(case::AbstractString)
     
 
     # define CEM path
-    cem_path = joinpath(case, "..", "..", "..", "GenX.jl", "research_systems", case_name)
-    cem_results_path = joinpath(cem_path, "results")
+    # cem_path = joinpath(case, "..", "..", "..", "SPCM", "research_systems", case_name)
+    cem_results_path = joinpath(case, "results")
     cem_commit_raw = CSV.read(joinpath(cem_results_path, "commit.csv"), DataFrame)
     # Remove the first two rows and reset the index for `cem_commit`
     cem_commit = cem_commit_raw[3:end, :]
@@ -1140,8 +1160,8 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
             EP[:vP][y,t,w]+EP[:vREG][y,t,w]+EP[:vRSV][y,t,w] <= rhinputs["pP_Max"][w][y,t] * cap_size(gen[y]) * EP[:vCOMMIT][y,t,w])
         
         #### Define the Objective ####
-        if setup["QuadraticCost"] == 1
-            EP = add_quadratic_regularization(EP, gen,W,T)
+        if setup["QuadraticCost"] == 1 
+            add_quadratic_regularization!(EP; W=W)
         end
        
         ## assign probabilities to stochastic scenarios
@@ -1331,7 +1351,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
                             sum(charge_costs_dp, dims=2) - fixed_om_costs
 
     total_welfare = sum(operating_profit_per_gen) - sum(nse_cost) - sum(unmet_rsv_cost)
-
+    
     # Calculate investment costs
     storage_durations = [y in STOR_ALL ? gen[y].max_duration : 0.0 for y in 1:num_gen]
 
@@ -1349,7 +1369,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
 
     total_both_inv_costs_MW_yr = total_inv_costs_MW_yr_vec + total_inv_costs_MWhour_cost_in_MW_yr_vec
     diff = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec
-
+    sys_costs = sum(cost_per_gen) + sum(nse_cost) +sum(total_both_inv_costs_MW_yr)
     # Create results DataFrame
     results_df = DataFrame(generators = generator_name_per_gen,
                         Capacity_MW = existing_cap_mw_per_gen* ModelScalingFactor,
@@ -1457,6 +1477,7 @@ return Dict(
     "inv_costs" => total_both_inv_costs_MW_yr,
     "energy_revenue" => total_energy_revs_dp[:],
     "capacity_mw" => existing_cap_mw_per_gen * ModelScalingFactor,
+    "sys_costs" => sys_costs,
     "solve_time" => end_time,
     "results_df" => results_df
 )

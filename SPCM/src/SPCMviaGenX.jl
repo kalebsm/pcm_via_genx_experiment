@@ -32,7 +32,7 @@ export run_policy_model
 export run_policy_model_new
 export initialize_policy_model
 export existing_cap_mw
-export add_quadratic_regularization
+export add_quadratic_regularization!
 # fuel
 export start_fuel_mmbtu_per_mw
 export fuel
