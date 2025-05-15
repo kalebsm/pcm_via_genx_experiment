@@ -19,7 +19,7 @@ def get_paths(path_type):
         'spcm_research': Path(__file__).parents[2] / 'SPCM' / 'research_systems',
         'figures': Path(__file__).parents[2] / 'figures',
         'atb-calc': Path(__file__).parents[2] / 'ATB-calc',
-        'scenario_generation': Path(__file__).parents[2] / 'scenario_generation'
+        'scenario_generation': Path(__file__).parents[2] / 'SPCM' / 'src' / 'scenario_generation',
     }
     
     env_var = env_var_map.get(path_type)

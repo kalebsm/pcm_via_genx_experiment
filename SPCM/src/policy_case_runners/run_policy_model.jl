@@ -1,17 +1,4 @@
 
-# Check memory usage and error out if it exceeds 90%
-function check_memory_usage()
-    mem_info = Sys.free_memory()
-    total_memory = Sys.total_memory()
-    used_memory = total_memory - mem_info
-    memory_usage_percentage = (used_memory / total_memory) * 100
-
-    if memory_usage_percentage >= 90
-        error("Memory usage has exceeded 90%. Exiting to prevent system instability.")
-    end
-end
-
-
 ### case_runner.jl
 
 function get_settings_path(case::AbstractString)
@@ -40,7 +27,7 @@ function save_hdf5(savepath, Tend, data_str, data_array)
     println("Saving ", data_str, " to HDF5 file")
     # Create the HDF5 file
     h5 = HDF5.h5open(joinpath(savepath, data_str * ".h5"), "w")
-    # Write the wind_scen_array to the HDF5 file
+    # Write the data_array to the HDF5 file
     for i in 1:Tend
         dsetname = data_str * "_$i"
         HDF5.write(h5, dsetname, data_array[i])
@@ -49,14 +36,28 @@ function save_hdf5(savepath, Tend, data_str, data_array)
     close(h5)
 end
 
+function read_hdf5(filepath, Tend, data_str)
+    println("Reading ", data_str, " from HDF5 file")
+    # Open the HDF5 file
+    h5 = HDF5.h5open(filepath, "r")
+    # Initialize an array to store the data
+    data_array = Vector{Any}(undef, Tend)
+    # Read the data from the HDF5 file
+    for i in 1:Tend
+        dsetname = data_str * "_$i"
+        data_array[i] = HDF5.read(h5, dsetname)
+    end
+    # Close the HDF5 file
+    close(h5)
+    return data_array
+end
 
 
-function run_policy_model(case::AbstractString, model_type::AbstractString)
-        
+
+function run_policy_model(case::AbstractString, model_type::AbstractString, test_dictionary::Dict{String,Int})
+    
     # case = dirname(@__FILE__)
     optimizer = Gurobi.Optimizer
-
-
 
     ### print_genx_version()
     ascii_art = raw"""
@@ -120,6 +121,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     end
     # for each generator, add 48 rows of last value
     inputs["C_Start"] = hcat(inputs["C_Start"], repeat(inputs["C_Start"][:, end:end], 1, 48))
+
     # Should be defined in module, but doesn't get read in these run files???
     ModelScalingFactor = 1e+3; 
 
@@ -179,7 +181,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
 
     rh_len = forecast_scenario_length # scenario_length
 
-    print("model type is", model_type)
+    println("model type is ", model_type)
     if model_type == "pf"
         R = 1
     elseif model_type == "dlac-p" || model_type == "dlac-i" || model_type == "slac"
@@ -232,6 +234,9 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         REG = inputs["REG"]     # Generators contributing to regulation 
     end
 
+    solar_ids = [gen[y].id for y in VRE_LIST if gen[y].solar == 1]
+    wind_ids = [gen[y].id for y in VRE_LIST if gen[y].wind == 1]
+
     # WIND_LIST = inputs["WIND"]
     # SOLAR_LIST = inputs["SOLAR"]
     # ZONES = ???
@@ -270,6 +275,10 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     charge_dp = zeros(num_gen, Tend);
     # sS = Dict()
     s_dp = zeros(num_gen, Tend);
+
+
+    # additional
+    load_dp = zeros(Z, Tend);
 
     # initialize object to save prices
     elec_prices = zeros(Z, Tend)
@@ -333,6 +342,11 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     #=======================================================================
     Define CEM wrap around initial conditions
     =======================================================================#
+    ### set up processing information required to get correct wraparound info
+    # initialize number of units that are started / on
+    # gen_up_lengths = [y in THERM_COMMIT ? gen[y].existing_cap_mw / gen[y].cap_size * 0.75 : 0.0 for y in 1:num_gen]
+
+
     # define CEM path
     cem_path = joinpath(case, "..", "..", "..", "GenX.jl", "research_systems", case_name)
     cem_results_path = joinpath(cem_path, "results")
@@ -340,27 +354,44 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     # load commit, commit, commit_dp
     cem_commit_raw = CSV.read(joinpath(cem_results_path, "commit.csv"), DataFrame)
     # Remove the first two rows and reset the index for `cem_commit`
-    cem_commit = cem_commit_raw[3:end, :]
+    cem_commit = cem_commit_raw[3:end,:] 
 
     # load startup, start, start_dp
     cem_start_raw = CSV.read(joinpath(cem_results_path, "start.csv"), DataFrame)
     # Remove the first two rows and reset the index for `cem_start`
-    cem_start = cem_start_raw[3:end, :]
+    cem_start = cem_start_raw[3:end,:]
 
     # load shut down, shutdown, shut_dp
     cem_shut_raw = CSV.read(joinpath(cem_results_path, "shutdown.csv"), DataFrame)
     # Remove the first two rows and reset the index for `cem_shut`
-    cem_shut = cem_shut_raw[3:end, :]
+    cem_shut = cem_shut_raw[3:end,:]
+
+  # load shut down, shutdown, shut_dp
+    cem_shut_raw = CSV.read(joinpath(cem_results_path, "shutdown.csv"), DataFrame)
+    # Remove the first two rows and reset the index for `cem_shut`
+    cem_shut = cem_shut_raw[3:end,:]
 
     # load state of charge, storage, s_dp
     cem_soc_raw = CSV.read(joinpath(cem_results_path, "storage.csv"), DataFrame)
     # Remove the first two rows and reset the index for `cem_soc`
     cem_soc = cem_soc_raw[3:end, :]
 
+    for col in names(cem_soc)
+        if eltype(cem_soc[!, col]) == Float64
+            cem_soc[!, col] .= cem_soc[!, col] ./ ModelScalingFactor
+        end
+    end
+
     # load dispatch, power, pgen_dp
     cem_dispatch_raw = CSV.read(joinpath(cem_results_path, "power.csv"), DataFrame)
     # Remove the first two rows and reset the index for `cem_dispatch`
-    cem_dispatch = cem_dispatch_raw[3:end, :]
+    cem_dispatch = cem_dispatch_raw[3:end,:]
+
+    for col in names(cem_dispatch)
+        if eltype(cem_dispatch[!, col]) == Float64
+            cem_dispatch[!, col] .= cem_dispatch[!, col] ./ ModelScalingFactor
+        end
+    end
 
 
     #=======================================================================
@@ -387,6 +418,17 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     # println(time_elapsed)
 
     # #=======================================================================
+    # Create save path for results
+    # =======================================================================#
+
+    # create a results folder in the case folder if it doesn't exist
+    results_folder = joinpath(case, "results_" * model_type)
+    if !isdir(results_folder)
+        println("Creating results folder at: ", results_folder)
+        mkpath(results_folder)
+    end
+
+    # #=======================================================================
     # Debug at specified time in rolling horizon model
     # =======================================================================#
 
@@ -398,13 +440,26 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     # charge_dp = Matrix(DataFrame(CSV.File(savepath * "unit_charge.csv", header = false))) / ModelScalingFactor
 
     #=======================================================================
-    Debug specific objects
+    Set 
     =======================================================================#
-    # load_scen_array = Array{Any}(undef, Tend) # [Matrix{Any}(undef, number_of_scenarios, scenario_length) for _ in 1:Tend] # 
-    # solar_scen_array = Array{Any}(undef, Tend) # [Matrix{Any}(undef, number_of_scenarios, scenario_length) for _ in 1:Tend] #
-    # wind_scen_array = Array{Any}(undef, Tend) # [Matrix{Any}(undef, number_of_scenarios, scenario_length) for _ in 1:Tend] # 
-    prices_scen_array = Array{Any}(undef, Tend) # [Matrix{Any}(undef, number_of_scenarios, scenario_length) for _ in 1:Tend] #
-    # EP_models_array = Array{Any}(undef, Tend)
+    if test_dictionary["test_scenario_path"] == 1
+        load_scen_path = zeros(Tend)
+        solar_scen_path = zeros(Tend) 
+        wind_scen_path = zeros(Tend) 
+    end
+
+    if test_dictionary["test_scenario_lookahead_path"] == 1
+        load_scen_array = Array{Any}(undef, Tend) # [Matrix{Any}(undef, number_of_scenarios, scenario_length) for _ in 1:Tend] # 
+        solar_scen_array = Array{Any}(undef, Tend) # [Matrix{Any}(undef, number_of_scenarios, scenario_length) for _ in 1:Tend] #
+        wind_scen_array = Array{Any}(undef, Tend) # [Matrix{Any}(undef, number_of_scenarios, scenario_length) for _ in 1:Tend] # 
+    end
+
+    if test_dictionary["test_prices_scen_path"] == 1
+        prices_scen_array = [] # [Matrix{Any}(undef, number_of_scenarios, scenario_length) for _ in 1:Tend] #
+    end
+
+    # initialize for removing temp files if garbage collection occurs
+    garbage_collected = false
 
 
     # #### Lookahead Loop
@@ -690,6 +745,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         @constraint(EP, Max_vP[y=1:G, t=1:T, w=1:W], vP[y,t,w] <= gen[y].existing_cap_mw)
 
         ### non_served_energy.jl
+        println("Non-served Energy Module")
         # variables
         # Non-served energy/curtailed demand in the segment "s" at hour "t" in zone "z"
         @variable(EP, vNSE[s=1:SEG,t=1:T,z=1:Z,w=1:W] >= 0);
@@ -976,6 +1032,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
             (cap_size(gen[y]) * EP[:vSTART][y, t, w] * heat_rate_mmbtu_per_mwh(gen[y])).==0)
 
         ### curtailable_variable_renewable
+        println("Dispatchable/Curtailable Resources Module")
 
         VRE = rhinputs["VRE"]
 
@@ -1009,6 +1066,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
 
 
         ### storage.jl
+        println("Storage Resources Module")
         STOR_ALL = rhinputs["STOR_ALL"]
 
 
@@ -1027,6 +1085,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
 
 
         ### storage_all.jl
+        println("Storage Core Resources Module")
         Reserves = setup["OperationalReserves"]
         STOR_SHORT_DURATION = rhinputs["STOR_SHORT_DURATION"]
 
@@ -1080,7 +1139,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
 
         ### storage_all_reserves
         # intialize storage state of charge
-        initial_vS = [y in STOR_ALL ? gen[y].existing_cap_mwh * 0.75 : 0.0 for y in 1:num_gen]
+        # initial_vS = [y in STOR_ALL ? gen[y].existing_cap_mwh * 0.75 : 0.0 for y in 1:num_gen]
 
         # parameters
         STOR_REG_RSV = intersect(STOR_ALL, rhinputs["REG"], rhinputs["RSV"]) # Set of storage resources with both REG and RSV reserves
@@ -1140,7 +1199,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         # Reg charge Linking Constraint
         if r == 1
             @constraint(EP, cSTOR_MaxRegChargeLink[y in STOR_REG_RSV, t in START_SUBPERIODS, w=1:W], EP[:vCHARGE][y,t,w]+EP[:vREG_charge][y,t,w] <= 
-                EP[:eTotalCapEnergy][y]-initial_vS[y])
+                EP[:eTotalCapEnergy][y]-cem_soc[end,gen[y].resource])
         else r > 1
             @constraint(EP, cSTOR_MaxRegChargeLink[y in STOR_REG_RSV, t in START_SUBPERIODS, w=1:W], EP[:vCHARGE][y,t,w]+EP[:vREG_charge][y,t,w] <= 
                 EP[:eTotalCapEnergy][y]-s_dp[y,r-1])
@@ -1156,7 +1215,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         # Reg Rsv Linking
         if r == 1
             @constraint(EP, cSTOR_MaxRegRsvLink[y in STOR_REG_RSV, t in START_SUBPERIODS, w=1:W], EP[:vP][y,t,w]+EP[:vREG_discharge][y,t,w] +
-                EP[:vRSV_discharge][y,t,w] <= initial_vS[y] * efficiency_down(gen[y]))
+                EP[:vRSV_discharge][y,t,w] <= cem_soc[end,gen[y].resource] * efficiency_down(gen[y]))
         else r > 1
             @constraint(EP, cSTOR_MaxRegRsvLink[y in STOR_REG_RSV, t in START_SUBPERIODS, w=1:W], EP[:vP][y,t,w]+EP[:vREG_discharge][y,t,w] +
                 EP[:vRSV_discharge][y,t,w] <= s_dp[y,r-1] * efficiency_down(gen[y]))
@@ -1169,8 +1228,8 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         # SOC balance
         if r == 1 ### XXX This is where the wrap-around or the warm-start needs to be implemented
             @constraint(EP, cSTOR_SOCLink[y in STOR_ALL, t in START_SUBPERIODS, w = 1:W], EP[:vS][y,t,w] ==
-            initial_vS[y]-(1/ efficiency_down(gen[y]) *EP[:vP][y,t,w])
-                +(efficiency_up(gen[y]) *EP[:vCHARGE][y,t,w])- (self_discharge(gen[y]) * initial_vS[y]))
+            cem_soc[end,gen[y].resource]-(1/ efficiency_down(gen[y]) *EP[:vP][y,t,w])
+                +(efficiency_up(gen[y]) *EP[:vCHARGE][y,t,w])- (self_discharge(gen[y]) * cem_soc[end,gen[y].resource]))
         else r > 1
             @constraint(EP, cSTOR_SOCLink[y in STOR_ALL, t in START_SUBPERIODS, w = 1:W], EP[:vS][y,t,w] ==
                 s_dp[y,r-1]-(1 / efficiency_down(gen[y]) * EP[:vP][y,t,w])
@@ -1189,6 +1248,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         THERM_ALL = rhinputs["THERM_ALL"]
 
         # thermal_commit.jl
+        println("Thermal Commit Module")
         ### Expressions ###
 
         ## Power Balance Expressions ##
@@ -1240,7 +1300,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         ) 
 
         # initialize number of units that are started / on
-        num_starting_units = [y in THERM_COMMIT ? gen[y].existing_cap_mw / gen[y].cap_size * 0.75 : 0.0 for y in 1:num_gen]
+        # num_starting_units = [y in THERM_COMMIT ? gen[y].existing_cap_mw / gen[y].cap_size * 0.75 : 0.0 for y in 1:num_gen]
 
         ### Update Thermal Single Intertemp Constraints
         ## cTC_BalCommitUnits
@@ -1249,14 +1309,14 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         ## cTC_LinkCommitUnits
         if r == 1 ### XXX This is where the wrap-around or the warm-start needs to be implemented
             @constraint(EP, cTC_CommitUnitsLink[y in THERM_COMMIT, t in START_SUBPERIODS, w=1:W], 
-                EP[:vCOMMIT][y,t,w] == num_starting_units[y] + EP[:vSTART][y,t,w] - EP[:vSHUT][y,t,w])
+                EP[:vCOMMIT][y,t,w] == cem_commit[end,gen[y].resource] + EP[:vSTART][y,t,w] - EP[:vSHUT][y,t,w])
         else r > 1
             # @constraint(EP, cTC_CommitUnitsLink[y in THERM_COMMIT], EP[:vCOMMIT][y,1] == EP[:vSTART][y,1] - EP[:vSHUT][y,1])
             @constraint(EP, cTC_CommitUnitsLink[y in THERM_COMMIT, t in START_SUBPERIODS, w=1:W], 
                 EP[:vCOMMIT][y,t,w] == commit_dp[y,r-1] + EP[:vSTART][y,t,w] - EP[:vSHUT][y,t,w])
         end
 
-        initial_vP = [y in THERM_COMMIT ? gen[y].existing_cap_mw * 0.75 : 0.0 for y in 1:num_gen]
+        # initial_vP = [y in THERM_COMMIT ? gen[y].existing_cap_mw * 0.75 : 0.0 for y in 1:num_gen]
 
         # XXX could be cleaned up similar to current GenX THERM_COMMIT.jl
 
@@ -1269,7 +1329,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         ## cTC_MaxRampDownLink
         if r == 1 ### XXX This is where the wrap-around or the warm-start needs to be implemented
             @constraint(EP, cTC_MaxRampDownLink[y in THERM_COMMIT, t in START_SUBPERIODS, w=1:W],
-            initial_vP[y] - EP[:vP][y,t,w] <= ramp_down_fraction(gen[y]) * cap_size(gen[y]) *(EP[:vCOMMIT][y,t,w]-EP[:vSTART][y,t,w])
+            cem_dispatch[end,gen[y].resource] - EP[:vP][y,t,w] <= ramp_down_fraction(gen[y]) * cap_size(gen[y]) *(EP[:vCOMMIT][y,t,w]-EP[:vSTART][y,t,w])
                 - min_power(gen[y]) * cap_size(gen[y]) *EP[:vSTART][y,t,w]
                 + min(rhinputs["pP_Max"][w][y,t],max(min_power(gen[y]), ramp_down_fraction(gen[y]) )) 
                 * cap_size(gen[y]) * EP[:vSHUT][y,t,w])
@@ -1290,7 +1350,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
         ## cTC_MaxRampUpLink
         if r == 1 ### XXX This is where the wrap-around or the warm-start needs to be implemented
             @constraint(EP,cTC_MaxRampUpLink[y in THERM_COMMIT, t in START_SUBPERIODS,w=1:W],
-            EP[:vP][y,t,w]- initial_vP[y] <= ramp_up_fraction(gen[y]) * cap_size(gen[y]) * (EP[:vCOMMIT][y,t,w]-EP[:vSTART][y,t,w])
+            EP[:vP][y,t,w]- cem_dispatch[end,gen[y].resource] <= ramp_up_fraction(gen[y]) * cap_size(gen[y]) * (EP[:vCOMMIT][y,t,w]-EP[:vSTART][y,t,w])
             + min(rhinputs["pP_Max"][w][y,t],max(min_power(gen[y]) , ramp_up_fraction(gen[y]) )) 
             * cap_size(gen[y]) * EP[:vSTART][y,t,w]
             - min_power(gen[y]) * cap_size(gen[y]) *EP[:vSHUT][y,t,w])
@@ -1408,6 +1468,10 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
             s_dp[STOR_LIST, :] = value.(EP[:vS][:,:,1])
             # charge
             charge_dp[STOR_LIST, :] = value.(EP[:vCHARGE][:,:,1])
+
+            # Load
+            load_dp[Z,:] = rhinputs["pD"][1][:,Z]
+
             # electricity price
             elec_prices[:,:] = transpose(dual.(EP[:cPowerBalance])[:,:,1]) #* ModelScalingFactor # convert $/GWh to $/MWh
             # regulation price
@@ -1455,6 +1519,8 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
             s_dp[STOR_ALL,r] = value.(EP[:vS][STOR_ALL,1,1])
             # charge
             charge_dp[STOR_ALL,r] = value.(EP[:vCHARGE][STOR_ALL,1,1])
+            # Load
+            load_dp[Z,r] = rhinputs["pD"][1][1,Z]
             # electricity price
             elec_prices[Z,r] = sum(dual.(EP[:cPowerBalance])[1,1,:]) #* ModelScalingFactor # convert $/GWh to $/MWh
             # regulation price
@@ -1494,70 +1560,110 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
             println("Model not recognized")
         end
 
-        prices_scen_array[r] = dual.(EP[:cPowerBalance])[:,:,:] .* ModelScalingFactor
+        if test_dictionary["test_prices_scen_path"] == 1
+            if model_type == "pf"
+                push!(prices_scen_array, dual.(EP[:cPowerBalance])[:,:,:] .* ModelScalingFactor)
+            elseif model_type == "dlac-p" || model_type == "dlac-i" || model_type == "slac"
+                push!(prices_scen_array, dual.(EP[:cPowerBalance])[:,:,:] .* ModelScalingFactor)
+            end
+        end
+       
+        ###========================================================================
+        ### Garbage Collection
+        ###========================================================================
 
-        #=======================================================================
-        Write Costs
-        =======================================================================#   
-        # gen = inputs["RESOURCES"]
-        # SEG = inputs["SEG"]  # Number of lines
-        # Z = inputs["Z"]     # Number of zones
-        # T = inputs["T"]     # Number of time steps (hours)
+        # if system memory is low, save variables to csvs, garbage collect, and re-read decision variable from csv
+        if Sys.free_memory() / Sys.total_memory() < 0.1
 
-        # cost_list = [
-        #     "cTotal",
-        #     "cFix",
-        #     "cVar",
-        #     "cFuel",
-        #     "cNSE",
-        #     "cStart",
-        #     "cUnmetRsv",
-        #     "cNetworkExp",
-        #     "cUnmetPolicyPenalty",
-        #     "cCO2"
-        # ]
-        # dfCost = DataFrame(Costs = cost_list)
+            garbage_collected = true
 
-        # total_cost = [
-        #     value(EP[:eObj]),
-        #     cFix,
-        #     cVar,
-        #     cFuel,
-        #     value(EP[:eTotalCNSE]),
-        #     0.0,
-        #     0.0,
-        #     0.0,
-        #     0.0,
-        #     0.0
-        # ]
+            ### save to temp csv
+            CSV.write(joinpath(results_folder, "temp_unit_shut.csv"), DataFrame(shut_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_unit_start.csv"), DataFrame(start_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_unit_commit.csv"), DataFrame(commit_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_unit_pgen.csv"), DataFrame(pgen_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_unit_state_of_charge.csv"), DataFrame(s_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_unit_charge.csv"), DataFrame(charge_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_unit_rsv.csv"), DataFrame(rsv_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_unit_reg.csv"), DataFrame(reg_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_price_electricity.csv"), DataFrame(elec_prices, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_unit_rsv.csv"), DataFrame(rsv_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_unit_reg.csv"), DataFrame(reg_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_prices_reg.csv"), DataFrame(reg_prices, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_prices_rsv.csv"), DataFrame(rsv_prices, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_zone_nse.csv"), DataFrame(nse_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_zone_unmet_rsv.csv"), DataFrame(unmet_rsv_dp, :auto), writeheader=false)
+            CSV.write(joinpath(results_folder, "temp_load.csv"), DataFrame(load_dp, :auto), writeheader=false)
 
-        ## END LOOKAHEAD FOR LOOP
+            # do the same for prices_scen_array
+            if test_dictionary["test_prices_scen_path"] == 1
+                # if undef in prices_scen_array, then remove undefined elements
+                # Remove undefined elements from prices_scen_array if any
+                # prices_scen_array = filter(x -> x !== nothing, prices_scen_array)
+
+                save_hdf5(results_folder, r, "temp_prices_scen_array", prices_scen_array)
+            end
 
 
-        # error()
-        # # Call the memory check function
-        # check_memory_usage()
+            # garbage collection
+            GC.gc()
 
-        # this may be bad for performance...
-        # if Sys.free_memory() / Sys.total_memory() < 0.1
-        #     GC.gc()
-        # end
+            # re-read decision variable from csv
+            shut_dp = Matrix(CSV.read(joinpath(results_folder, "temp_unit_shut.csv"), DataFrame, header=false))
+            start_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_unit_start.csv"), DataFrame, header=false))
+            commit_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_unit_commit.csv"), DataFrame, header=false))
+            pgen_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_unit_pgen.csv"), DataFrame, header=false))
+            s_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_unit_state_of_charge.csv"), DataFrame, header=false))
+            charge_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_unit_charge.csv"), DataFrame, header=false))
+            rsv_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_unit_rsv.csv"), DataFrame, header=false))
+            reg_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_unit_reg.csv"), DataFrame, header=false))
+            elec_prices =  Matrix(CSV.read(joinpath(results_folder, "temp_price_electricity.csv"), DataFrame, header=false))
+            rsv_prices =  Matrix(CSV.read(joinpath(results_folder, "temp_prices_rsv.csv"), DataFrame, header=false))
+            reg_prices =  Matrix(CSV.read(joinpath(results_folder, "temp_prices_reg.csv"), DataFrame, header=false))
+            nse_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_zone_nse.csv"), DataFrame, header=false))
+            unmet_rsv_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_zone_unmet_rsv.csv"), DataFrame, header=false))
+            load_dp =  Matrix(CSV.read(joinpath(results_folder, "temp_load.csv"), DataFrame, header=false))
+
+            # read in prices_scen_array
+            if test_dictionary["test_prices_scen_path"] == 1
+                read_hdf5(joinpath(results_folder, "temp_prices_scen_array.h5"), r, "temp_prices_scen_array")
+            end
+
+
+        end
 
 
 
     end ### Uncomment for Rolling Horizon Loop?
-    # error()
+
+    ###========================================================================
+    ### Garbage Collection
+    ###========================================================================
+
+    # delete temp csv
+    if garbage_collected
+        println("Deleting temp files")
+        rm(joinpath(results_folder, "temp_unit_shut.csv"))
+        rm(joinpath(results_folder, "temp_unit_start.csv"))
+        rm(joinpath(results_folder, "temp_unit_commit.csv"))
+        rm(joinpath(results_folder, "temp_unit_pgen.csv"))
+        rm(joinpath(results_folder, "temp_unit_state_of_charge.csv"))
+        rm(joinpath(results_folder, "temp_unit_charge.csv"))
+        rm(joinpath(results_folder, "temp_unit_rsv.csv"))
+        rm(joinpath(results_folder, "temp_unit_reg.csv"))
+        rm(joinpath(results_folder, "temp_price_electricity.csv"))
+        rm(joinpath(results_folder, "temp_prices_reg.csv"))
+        rm(joinpath(results_folder, "temp_prices_rsv.csv"))
+        rm(joinpath(results_folder, "temp_zone_nse.csv"))
+        rm(joinpath(results_folder, "temp_zone_unmet_rsv.csv"))
+        rm(joinpath(results_folder, "temp_load.csv"))
+        rm(joinpath(results_folder, "temp_prices_scen_array.h5"))
+    end
+
 
     # #=======================================================================
     # Save Files
     # =======================================================================#
-
-    # create a results folder in the case folder if it doesn't exist
-    results_folder = joinpath(case, "results_" * model_type)
-    if !isdir(results_folder)
-        println("Creating results folder at: ", results_folder)
-        mkpath(results_folder)
-    end
 
     # create dataframes of the results
     shut_df = DataFrame(shut_dp', resource_names)
@@ -1574,7 +1680,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     nse_df = DataFrame(nse_dp' * ModelScalingFactor, [string(Z)])
     unmet_rsv_df = DataFrame(unmet_rsv_dp' * ModelScalingFactor, [string(Z)])
 
-    CSV.write(joinpath(results_folder, "unit_shut.csv"), shut_df)
+
     CSV.write(joinpath(results_folder, "unit_shut.csv"), shut_df)
     CSV.write(joinpath(results_folder, "unit_start.csv"), start_df)
     CSV.write(joinpath(results_folder, "unit_commit.csv"), commit_df)
@@ -1592,6 +1698,39 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     CSV.write(joinpath(results_folder, "zone_unmet_rsv.csv"), unmet_rsv_df)
 
 
+    ###========================================================================
+    ### Printing Testing data 
+    ###========================================================================
+    # create testing  folder in results path if it doesn't exist
+    testing_results_folder = joinpath(results_folder, "testing")
+    if !isdir(testing_results_folder)
+        println("Creating testing results folder at: ", testing_results_folder)
+        mkpath(testing_results_folder)
+    end
+
+    solar_capacity_gw = [gen[y].existing_cap_mw for y in VRE_LIST if gen[y].solar == 1]
+    wind_capacity_gw = [gen[y].existing_cap_mw for y in VRE_LIST if gen[y].wind == 1]
+    
+    # convert the solar and wind paths to capacity factors based on max actuals
+    solar_scen_path_cf = pgen_dp[solar_ids,:] ./ solar_capacity_gw
+    wind_scen_path_cf = pgen_dp[wind_ids,:] ./ wind_capacity_gw
+    load_scen_path_GW = load_dp
+    
+    solar_actual_avg_cf_dec_ln = solar_actual_avg_cf[1:Tend]
+    wind_actual_avg_cf_dec_ln = wind_actual_avg_cf[1:Tend]
+    load_actual_avg_GW_dec_ln = load_actual_avg_GW[1:Tend]
+    
+    # append solar, wind cf and load actuals to dataframe
+    solar_data = DataFrame("scenario path [cf]" => vec(solar_scen_path_cf), "solar actuals [cf]" => solar_actual_avg_cf_dec_ln)
+    wind_data = DataFrame("scenario path [cf]" => vec(wind_scen_path_cf), "wind actuals [cf]" => wind_actual_avg_cf_dec_ln)
+    load_data = DataFrame("scenario path [GW]" => vec(load_scen_path_GW), "load actuals [GW]" => load_actual_avg_GW_dec_ln)
+    
+    
+    if test_dictionary["test_scenario_path"] == 1
+        CSV.write(joinpath(testing_results_folder, "solar_scen_path.csv"), solar_data)
+        CSV.write(joinpath(testing_results_folder, "wind_scen_path.csv"), wind_data)
+        CSV.write(joinpath(testing_results_folder, "load_scen_path.csv"), load_data)
+    end
 
     #=======================================================================
     Calculate Profits per Generator and Total Welfare
@@ -1660,9 +1799,12 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     total_inv_costs_MW_yr_vec = total_inv_costs_MW_yr[:]
     total_inv_costs_MWhour_yr_vec = total_inv_costs_MWhour_yr[:]
 
-    total_inv_costs_MWhour_cost_in_MW_yr_vec = total_inv_costs_MWhour_yr_vec .* storage_durations
-
-    total_both_inv_costs_MW_yr = total_inv_costs_MW_yr_vec + total_inv_costs_MWhour_cost_in_MW_yr_vec
+    if !isempty(STOR_ALL)
+        total_inv_costs_MWhour_cost_in_MW_yr_vec = total_inv_costs_MWhour_yr_vec .* storage_durations
+        total_both_inv_costs_MW_yr = total_inv_costs_MW_yr_vec + total_inv_costs_MWhour_cost_in_MW_yr_vec
+    else
+        total_both_inv_costs_MW_yr = total_inv_costs_MW_yr_vec
+    end
 
     diff = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec;
 
@@ -1698,15 +1840,15 @@ function run_policy_model(case::AbstractString, model_type::AbstractString)
     Create HDF5 Files for saving Arrays of scenarios, duals, and prices
     =======================================================================#
 
+    if test_dictionary["test_prices_scen_path"] == 1
+        # # if undef in prices_scen_array, then remove undefined elements
+        # # Remove undefined elements from prices_scen_array if any
+        # prices_scen_array = filter(x -> x !== nothing, prices_scen_array)
 
+        save_hdf5(results_folder, maximum(R), "prices_scen_array", prices_scen_array)
+    end
 
-    if model_type == "slac"
-
-        # if undef in prices_scen_array, then remove undefined elements
-        # Remove undefined elements from prices_scen_array if any
-        prices_scen_array = filter(x -> x !== nothing, prices_scen_array)
-
-        save_hdf5(results_folder, Tend, "prices_scen_array", prices_scen_array)
+    if model_type == "slac" 
 
         if !isempty(STOR_ALL)
             # print duals to hdf5
