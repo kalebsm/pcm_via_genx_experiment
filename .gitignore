@@ -14,8 +14,11 @@ data/
 SPCM/research_systems/
 GenX.jl/research_systems
 # any files in figures/plots and figures/tables
-figures/plots/
-figures/tables/
+figures/plots/*
+figures/pdf_tables/*
+figures/jpg/*
+figures/latex/*
+figures/csv/*
 
 
 # any zip file
