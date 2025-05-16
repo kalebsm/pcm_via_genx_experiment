@@ -32,12 +32,12 @@ export run_policy_model
 export run_policy_model_new
 export initialize_policy_model
 export existing_cap_mw
-export add_quadratic_regularization!
+export regularization_weight
 # fuel
 export start_fuel_mmbtu_per_mw
 export fuel
 export heat_rate_mmbtu_per_mwh
-
+export ModelScalingFactor
 
 
 export ids_with_positive

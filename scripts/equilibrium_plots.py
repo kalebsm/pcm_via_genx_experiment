@@ -5,7 +5,7 @@ import argparse
 import math
 import os
 
-def plot_capacity_equilibrium_analysis(log_file, output_dir=None):
+def plot_capacity_equilibrium_analysis(log_file, output_dir=None, label=None):
     """
     Creates three figures from capacity equilibrium log data:
     1. Maximum PMR over iterations
@@ -51,7 +51,7 @@ def plot_capacity_equilibrium_analysis(log_file, output_dir=None):
              linewidth=2, markersize=6, color='darkblue')
     plt.xlabel('Iteration', fontsize=12)
     plt.ylabel('Maximum PMR', fontsize=12)
-    plt.title('Maximum Absolute Profit Margin Ratio (PMR) Over Iterations', fontsize=14)
+    plt.title(f'Maximum Absolute Profit Margin Ratio (PMR) Over Iterations \n{label}', fontsize=14)
     plt.grid(True)
     
     # Add horizontal line at y=0
@@ -83,8 +83,8 @@ def plot_capacity_equilibrium_analysis(log_file, output_dir=None):
                  label=name, linewidth=2)
     
     plt.xlabel('Iteration', fontsize=12)
-    plt.ylabel('Profit Margin Ratio (PMR)', fontsize=12)
-    plt.title('Generator Profit Margin Ratios', fontsize=14)
+    plt.ylabel(f'Profit Margin Ratio (PMR) ', fontsize=12)
+    plt.title(f'Generator Profit Margin Ratios \n {label}', fontsize=14)
     plt.legend(loc='best', fontsize=10)
     plt.grid(True)
     plt.axhline(y=0, color='black', linestyle='--')
@@ -136,7 +136,7 @@ def plot_capacity_equilibrium_analysis(log_file, output_dir=None):
                 linewidth=2, markersize=6, color=sns.color_palette("colorblind")[i % 10])
         
         # Set titles and labels
-        ax.set_title(f'{name} Capacity Evolution', fontsize=12)
+        ax.set_title(f'{name} Capacity Evolution \n {label}', fontsize=12)
         ax.set_xlabel('Iteration')
         ax.set_ylabel('Capacity (MW)')
         ax.grid(True)
@@ -178,6 +178,7 @@ def plot_capacity_equilibrium_analysis(log_file, output_dir=None):
     return output_files
 
 if __name__ == "__main__":
-    log_file = "/Users/shxryz/Desktop/Research Stuff/spcm_genx_experiment/SPCM/research_systems/2_Hr_BESS/equilibrium_small_dlac-p.csv"
-    output_dir = "/Users/shxryz/Desktop/Research Stuff/spcm_genx_experiment/SPCM/research_systems/2_Hr_BESS/Figures"
-    plot_capacity_equilibrium_analysis(log_file, output_dir)
+    log_file = "/Users/shxryz/Desktop/Research Stuff/spcm_genx_experiment/SPCM/research_systems/2_Hr_BESS_QUAD/equilibrium_anderson_pf.csv"
+    output_dir = "/Users/shxryz/Desktop/Research Stuff/spcm_genx_experiment/SPCM/research_systems/2_Hr_BESS_QUAD/Figures"
+    label = "PF"
+    plot_capacity_equilibrium_analysis(log_file, output_dir, label)

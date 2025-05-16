@@ -22,15 +22,17 @@ end
     
 #     return EP
 # end
-function add_quadratic_regularization!(EP; W = 0, regularization_weight = 1e-3)
-    if W == 0
-        EP[:eObj] += EP[:eTotalCNSE]^2 .* regularization_weight ./ 2
-    else
-        @expression(EP, eQuadraticReg[w=1:W], 
-        (regularization_weight * EP[:eTotalCNSE][w]^2)/2)
-        EP[:eObj] += eQuadraticReg
-    end
-end
+# function add_quadratic_regularization!(EP; W = 0, regularization_weight = 1e-6)
+#     if W == 0
+#         EP[:eObj] += EP[:eTotalCNSE]^2 .* regularization_weight ./ 2
+#     else
+#         @expression(EP, eQuadraticReg[w=1:W], 
+#         (regularization_weight * EP[:eTotalCNSE][w]^2)/2)
+#         EP[:eObj] += eQuadraticReg
+#     end
+# end
+global regularization_weight = 5e-2
+
 function initialize_policy_model(case::AbstractString)
     # case = dirname(@__FILE__)
     optimizer = Gurobi.Optimizer
@@ -541,10 +543,13 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
         #expressions
 
         # Objective Function Expressions
-
-        # Cost of non-served energy/curtailed demand at hour "t" in zone "z"
-        @expression(EP, eCNSE[s=1:SEG,t=1:T,z=1:Z, w=1:W], (rhinputs["omega"][t]*rhinputs["pC_D_Curtail"][s]*vNSE[s,t,z,w]))
-
+        if setup["QuadraticCost"] == 1 
+            @expression(EP, eCNSE_linear[s=1:SEG,t=1:T,z=1:Z, w=1:W], (rhinputs["omega"][t]*rhinputs["pC_D_Curtail"][s]*vNSE[s,t,z,w]))
+            @expression(EP, eCNSE_quadratic[s=1:SEG,t=1:T,z=1:Z, w=1:W], (rhinputs["omega"][t]*rhinputs["pC_D_Curtail"][s]*0.5*vNSE[s,t,z,w]^2*regularization_weight))
+            @expression(EP, eCNSE[s=1:SEG,t=1:T,z=1:Z, w=1:W], eCNSE_linear[s,t,z,w] + eCNSE_quadratic[s,t,z,w])
+        else
+            @expression(EP, eCNSE[s=1:SEG,t=1:T,z=1:Z, w=1:W], (rhinputs["omega"][t]*rhinputs["pC_D_Curtail"][s]*vNSE[s,t,z,w]))
+        end
         # Sum individual demand segment contributions to non-served energy costs to get total non-served energy costs
         # Julia is fastest when summing over one row one column at a time
         @expression(EP, eTotalCNSETS[t=1:T,z=1:Z, w=1:W], sum(eCNSE[s,t,z,w] for s in 1:SEG))
@@ -1160,9 +1165,9 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
             EP[:vP][y,t,w]+EP[:vREG][y,t,w]+EP[:vRSV][y,t,w] <= rhinputs["pP_Max"][w][y,t] * cap_size(gen[y]) * EP[:vCOMMIT][y,t,w])
         
         #### Define the Objective ####
-        if setup["QuadraticCost"] == 1 
-            add_quadratic_regularization!(EP; W=W)
-        end
+        # if setup["QuadraticCost"] == 1 
+        #     add_quadratic_regularization!(EP; W=W)
+        # end
        
         ## assign probabilities to stochastic scenarios
         uniform_probs = 1 / W
@@ -1221,6 +1226,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
             pgen_dp[:,:] = value.(EP[:vP][:,:,1])
             # non-served load
             nse_dp[:,:] = value.(EP[:vNSE][:,:,Z,1]) # 1 for 1 scenarios
+        
             # unmet demand 
             unmet_rsv_dp[:,:] = value.(EP[:vUNMET_RSV][:,1])
             # regulation provided
@@ -1306,7 +1312,7 @@ function run_policy_model_new(context::Dict, model_type::AbstractString, existin
             rsv_revs_dp[:,r] = rsv_prices[r] .* rsv_dp[:,r] .* ModelScalingFactor^2
 
             charge_costs_dp[:,r] = charge_dp[:,r] .* elec_prices[:,r] .* ModelScalingFactor^2
-        
+            
             nse_cost[:,r] = inputs["pC_D_Curtail"][1] * nse_dp[:,r] .* ModelScalingFactor^2
             unmet_rsv_cost[:,r] = inputs["pC_Rsv_Penalty"] * unmet_rsv_dp[:,r] .* ModelScalingFactor^2
 
