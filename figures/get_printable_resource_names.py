@@ -38,14 +38,16 @@ def get_printable_resource_names(data):
     # df = df.replace(simplify_resource_names)
     # print("Simplifying resource names")
 
-    data_copy = data.copy()
+    
 
     # new_df = df_copy.assign(**{col: df_copy[col].replace(simplify_resource_names) for col in df_copy.columns})
     if type(data) == pd.DataFrame:
+        data_copy = data.copy()
         # print("Data is a DataFrame")
         data_copy = data_copy.rename(columns=simplify_resource_names)
         # print(data_copy.columns)
     elif type(data) == dict:
+        data_copy = data.copy()
         # print("Data is a dict")
         for key, value in data.items():
             new_key = simplify_resource_names.get(key, key)
@@ -59,14 +61,19 @@ def get_printable_resource_names(data):
             if new_key != key:
                 del data_copy[key]
     elif type(data) == list:
+        data_copy = data.copy()
         data_copy = [simplify_resource_names.get(x, x) for x in data]
         # get unique set but keep the order
         data_copy = list(dict.fromkeys(data_copy))
     elif type(data) == np.ndarray:
+        data_copy = data.copy()
         data_copy = np.array([simplify_resource_names.get(x, x) for x in data])
         # get unique set but keep the order
         _, idx = np.unique(data_copy, return_index=True)
         data_copy = data_copy[np.sort(idx)]
+
+    elif type(data) == str:
+        data_copy = simplify_resource_names.get(data, data)
     else:
         raise ValueError("Input data must be a DataFrame or a list.")
 
