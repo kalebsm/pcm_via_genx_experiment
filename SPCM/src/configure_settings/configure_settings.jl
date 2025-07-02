@@ -37,7 +37,8 @@ function default_settings()
         "ResourcePoliciesFolder" => "policy_assignments",
         "SystemFolder" => "system",
         "PoliciesFolder" => "policies",
-        "ObjScale" => 1)
+        "ObjScale" => 1,
+        "QuadraticCost" => 0)
 end
 
 @doc raw"""

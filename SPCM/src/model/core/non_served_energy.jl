@@ -68,9 +68,21 @@ function non_served_energy!(EP::Model, inputs::Dict, setup::Dict)
     ## Objective Function Expressions ##
 
     # Cost of non-served energy/curtailed demand at hour "t" in zone "z"
-    @expression(EP,
+    if setup["QuadraticCost"] == 1 
+        @expression(EP,
+        eCNSE_linear[s = 1:SEG, t = 1:T, z = 1:Z],
+        (inputs["omega"][t]*inputs["pC_D_Curtail"][s]*vNSE[s, t, z]))
+        @expression(EP,
+        eCNSE_quadratic[s = 1:SEG, t = 1:T, z = 1:Z],
+        (inputs["omega"][t]*inputs["pC_D_Curtail"][s]*0.5*vNSE[s, t, z]^2*regularization_weight))
+        @expression(EP, eCNSE[s = 1:SEG, t = 1:T, z = 1:Z], 
+        eCNSE_linear[s, t, z] + eCNSE_quadratic[s, t, z])
+    else
+        @expression(EP,
         eCNSE[s = 1:SEG, t = 1:T, z = 1:Z],
         (inputs["omega"][t]*inputs["pC_D_Curtail"][s]*vNSE[s, t, z]))
+    end
+   
 
     # Sum individual demand segment contributions to non-served energy costs to get total non-served energy costs
     # Julia is fastest when summing over one row one column at a time
@@ -79,7 +91,7 @@ function non_served_energy!(EP::Model, inputs::Dict, setup::Dict)
     @expression(EP, eTotalCNSE, sum(eTotalCNSET[t] for t in 1:T))
 
     # Add total cost contribution of non-served energy/curtailed demand to the objective function
-    add_to_expression!(EP[:eObj], eTotalCNSE)
+    EP[:eObj] += eTotalCNSE
 
     ## Power Balance Expressions ##
     @expression(EP, ePowerBalanceNse[t = 1:T, z = 1:Z], sum(vNSE[s, t, z] for s in 1:SEG))
