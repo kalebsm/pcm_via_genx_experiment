@@ -178,7 +178,7 @@ def plot_capacity_equilibrium_analysis(log_file, output_dir=None, label=None):
     return output_files
 
 if __name__ == "__main__":
-    log_file = "/Users/shxryz/Desktop/Research Stuff/spcm_genx_experiment/SPCM/research_systems/2_Hr_BESS_QUAD/equilibrium_anderson_pf.csv"
+    log_file = "/Users/shxryz/Desktop/Research Stuff/spcm_genx_experiment/SPCM/research_systems/2_Hr_BESS_QUAD/equilibrium_anderson_LARGE_dlac-i.csv"
     output_dir = "/Users/shxryz/Desktop/Research Stuff/spcm_genx_experiment/SPCM/research_systems/2_Hr_BESS_QUAD/Figures"
-    label = "PF"
+    label = "DLAC-I (AA = 10), Large LR"
     plot_capacity_equilibrium_analysis(log_file, output_dir, label)

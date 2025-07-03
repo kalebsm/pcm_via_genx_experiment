@@ -46,13 +46,13 @@ function compute_equilibrium(context, model_type;
     initial_capacities=Dict(), 
     tolerance=1e-2, 
     max_iterations=1000, 
-    step_size=0.05,
+    step_size=0.5,
     smoothing_param=10.0,
     perturbation_size=0.01,
     save_iterations=false,
-    aa_memory=5,         # Anderson Acceleration memory size
+    aa_memory=10,         # Anderson Acceleration memory size
     aa_regularization=1e-10,  # Regularization parameter for matrix inversion
-    aa_mixing=0.7)       # Mixing parameter for Anderson acceleration
+    aa_mixing=0.6)       # Mixing parameter for Anderson acceleration
 
     # Get resource information from context
     inputs = context["inputs"]
@@ -72,7 +72,7 @@ function compute_equilibrium(context, model_type;
     capacity_history = []
     profit_history = []
     max_pmr_history = []
-    log_file = joinpath(context["case"], "equilibrium_anderson_$(model_type).csv")
+    log_file = joinpath(context["case"], "equilibrium_anderson_LARGE_$(model_type).csv")
     resource_names = [gen[y].resource for y in 1:num_gen]
 
     # Anderson Acceleration variables
@@ -117,9 +117,9 @@ function compute_equilibrium(context, model_type;
         # Adjust step size based on maximum PMR
         max_pmr = maximum(abs.(pmr))
         if max_pmr < 10
-            step_size = 0.005
+            # step_size = 0.005
             if max_pmr < 5
-                step_size = 0.001
+                step_size = 0.01
                 if max_pmr < 2
                     step_size = 0.0005
                 end
