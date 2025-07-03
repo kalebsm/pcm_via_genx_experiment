@@ -66,9 +66,11 @@ _your output data references here_
 Fill in detailed info here or link to other documentation to thoroughly walkthrough how to use the contents of this repository to reproduce your experiment. Below is an example.
 
 
-1. Install the software components required to conduct the experiment from [contributing modeling software](#contributing-modeling-software)
-2. Download and install the supporting [input data](#input-data) required to conduct the experiment
-3. Run the following scripts in the `workflow` directory to re-create this experiment:
+1. git clone --recurse-submodules <insert spcm_genx_experiment url here> https://github.com/kalebsm/spcm_genx_experiment.git
+2. Install submodule repositories via the submodule links. One is a Fork of GenX, the other is a main branch of ATB-calc
+3. Install the software components required to conduct the experiment from [contributing modeling software](#contributing-modeling-software)
+4. Download and install the supporting [input data](#input-data) required to conduct the experiment
+5. Run the following scripts in the `workflow` directory to re-create this experiment:
 
 | Script Name | Description | How to Run |
 | --- | --- | --- |

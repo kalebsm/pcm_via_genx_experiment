@@ -1,15 +1,28 @@
 # sys files
 .DS_Store
 
+# any data files
+data/
 
-# any ipynb files in scripts
-scripts/*.ipynb
-scripts/*.jl
-scripts/*.csv
 
-# any research_systems files
-# GenX.jl/research_systems/**
+# # any ipynb files in scripts
+# scripts/*.ipynb
+# scripts/*.jl
+# scripts/*.csv
 
+# # any research_systems files
+SPCM/research_systems/
+GenX.jl/research_systems
+# any files in figures/plots and figures/tables
+figures/plots/*
+figures/pdf_tables/*
+figures/jpg/*
+figures/latex/*
+figures/csv/*
+
+
+# any zip file
+*.zip
 
 # -----------------
 # ---- PYTHON -----

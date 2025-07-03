@@ -1,6 +1,9 @@
 [submodule "GenX.jl"]
 	path = GenX.jl
 	url = https://github.com/kalebsm/GenX.jl.git
-[submodule "data/ATB-calc"]
-	path = data/ATB-calc
+[submodule "ATB-calc"]
+	path = ATB-calc
 	url = https://github.com/NREL/ATB-calc.git
+[submodule "SPCM/src/scenario_generation/sequential_norta"]
+	path = SPCM/src/scenario_generation/sequential_norta
+	url = https://github.com/kalebsm/sequential_norta.git
