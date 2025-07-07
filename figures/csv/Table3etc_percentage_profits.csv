@@ -1,0 +1,65 @@
+Resource,CEM,PF,DLAC-p,DLAC-i,SLAC,Case
+NG CC,0%,4%,-12%,23%,-32%,Thermal_Base
+NG CT,0%,4%,2%,27%,-1%,Thermal_Base
+Wind,0%,-2%,-5%,-2%,-29%,Thermal_Base
+Solar,0%,0%,-3%,3%,-10%,Thermal_Base
+NG CC,0%,1%,-5%,-13%,-18%,2_Hr_BESS
+NG CT,0%,0%,-2%,-18%,-19%,2_Hr_BESS
+Wind,0%,-2%,-2%,-2%,-11%,2_Hr_BESS
+Solar,0%,2%,-1%,-6%,-5%,2_Hr_BESS
+BESS,0%,22%,-14%,-4%,4%,2_Hr_BESS
+NG CC,0%,36%,-22%,-22%,-19%,2_Hr_BESS_Fuelx2
+NG CT,0%,42%,-25%,-27%,-25%,2_Hr_BESS_Fuelx2
+Wind,0%,9%,-5%,-4%,-4%,2_Hr_BESS_Fuelx2
+Solar,0%,7%,-1%,2%,0%,2_Hr_BESS_Fuelx2
+BESS,0%,22%,-7%,-16%,-11%,2_Hr_BESS_Fuelx2
+NG CC,0%,9%,4%,-7%,-9%,4_Hr_BESS
+NG CT,0%,9%,7%,-9%,-11%,4_Hr_BESS
+Wind,0%,0%,-1%,-3%,-8%,4_Hr_BESS
+Solar,0%,4%,0%,-1%,1%,4_Hr_BESS
+BESS,0%,14%,-1%,-13%,-2%,4_Hr_BESS
+NG CC,0%,38%,-6%,-21%,-17%,4_Hr_BESS_Fuelx2
+NG CT,0%,44%,-8%,-28%,-24%,4_Hr_BESS_Fuelx2
+Wind,0%,10%,-1%,-1%,-1%,4_Hr_BESS_Fuelx2
+Solar,0%,5%,-1%,3%,2%,4_Hr_BESS_Fuelx2
+BESS,0%,30%,-8%,-11%,-10%,4_Hr_BESS_Fuelx2
+NG CC,0%,1%,-8%,-27%,-35%,4_Hr_BESS_Fuelx3
+NG CT,0%,4%,-6%,-31%,-43%,4_Hr_BESS_Fuelx3
+Wind,0%,2%,0%,5%,-1%,4_Hr_BESS_Fuelx3
+Solar,0%,0%,-3%,-1%,-2%,4_Hr_BESS_Fuelx3
+BESS,0%,6%,-1%,2%,-15%,4_Hr_BESS_Fuelx3
+NG CC,0%,3%,-10%,-16%,-22%,4_Hr_BESS_Fuelx4
+NG CT,0%,7%,-7%,-17%,-29%,4_Hr_BESS_Fuelx4
+Wind,0%,3%,9%,22%,15%,4_Hr_BESS_Fuelx4
+Solar,0%,0%,5%,10%,7%,4_Hr_BESS_Fuelx4
+BESS,0%,10%,-7%,14%,-6%,4_Hr_BESS_Fuelx4
+NG CC,0%,19%,6%,-11%,-9%,6_Hr_BESS
+NG CT,0%,22%,9%,-14%,-11%,6_Hr_BESS
+Wind,0%,2%,-1%,-4%,-10%,6_Hr_BESS
+Solar,0%,6%,3%,3%,2%,6_Hr_BESS
+BESS,0%,26%,0%,-10%,7%,6_Hr_BESS
+NG CC,0%,3%,-10%,-22%,-20%,6_Hr_BESS_Fuelx2
+NG CT,0%,4%,-12%,-31%,-27%,6_Hr_BESS_Fuelx2
+Wind,0%,1%,-3%,0%,-1%,6_Hr_BESS_Fuelx2
+Solar,0%,1%,-1%,2%,-1%,6_Hr_BESS_Fuelx2
+BESS,0%,8%,-12%,-9%,-2%,6_Hr_BESS_Fuelx2
+NG CC,0%,39%,-7%,-4%,-8%,8_Hr_BESS
+NG CT,0%,45%,-6%,-6%,-7%,8_Hr_BESS
+Wind,0%,6%,-4%,-2%,-10%,8_Hr_BESS
+Solar,0%,8%,0%,5%,4%,8_Hr_BESS
+BESS,0%,38%,-1%,6%,22%,8_Hr_BESS
+NG CC,0%,6%,5%,-37%,-33%,8_Hr_BESS_Fuelx2
+NG CT,0%,6%,6%,-49%,-42%,8_Hr_BESS_Fuelx2
+Wind,0%,2%,0%,-4%,-6%,8_Hr_BESS_Fuelx2
+Solar,0%,0%,2%,2%,-2%,8_Hr_BESS_Fuelx2
+BESS,0%,15%,0%,-21%,-11%,8_Hr_BESS_Fuelx2
+NG CC,0%,20%,-17%,-8%,-12%,10_Hr_BESS
+NG CT,0%,22%,-18%,-12%,-12%,10_Hr_BESS
+Wind,0%,2%,-6%,-3%,-10%,10_Hr_BESS
+Solar,0%,4%,-1%,4%,2%,10_Hr_BESS
+BESS,0%,28%,-10%,2%,12%,10_Hr_BESS
+NG CC,0%,6%,5%,-30%,-29%,10_Hr_BESS_Fuelx2
+NG CT,0%,7%,7%,-40%,-36%,10_Hr_BESS_Fuelx2
+Wind,0%,2%,0%,-3%,-7%,10_Hr_BESS_Fuelx2
+Solar,0%,0%,2%,4%,-3%,10_Hr_BESS_Fuelx2
+BESS,0%,19%,-2%,-13%,-6%,10_Hr_BESS_Fuelx2

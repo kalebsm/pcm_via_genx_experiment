@@ -1,0 +1,13 @@
+Technical Name,Cost Source,Parameter Source,Inv_Cost_per_MWyr_factor,Inv_Cost_per_MWhyr_factor,Inv_Cost_Charge_per_MWyr_factor,Fixed_OM_Cost_per_MWyr_factor,Fixed_OM_Cost_per_MWhyr_factor,Fixed_OM_Cost_Charge_per_MWyr_factor,Var_OM_Cost_per_MWh_factor,Var_OM_Cost_per_MWh_In_factor,Fuel_Cost_factor,duration
+Coal-new,ATB,FERC,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1,None
+NG 2-on-1 Combined Cycle (F-Frame),ATB,FERC,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1,None
+NG 2-on-1 Combined Cycle (H-Frame) 95% CCS,ATB,FERC,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1,None
+NG Combustion Turbine (F-Frame),ATB,FERC,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1,None
+RICE,Manual,Manual,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1,None
+HTGR,Manual,Manual,100,100,100,100,100,100,100,100,100,None
+Microreactor,Manual,Manual,100,100,100,100,100,100,100,100,100,None
+PBR-HTGR,Manual,Manual,100,100,100,100,100,100,100,100,100,None
+iPWR_Pack,Manual,Manual,100,100,100,100,100,100,100,100,100,None
+Utility PV - Class 1,ATB,na,1,1,1,1,1,1,1,1,1,None
+Land-Based Wind - Class 1 - Technology 1,ATB,na,1,1,1,1,1,1,1,1,1,None
+Utility-Scale Battery Storage - 6Hr,ATB,na,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,6

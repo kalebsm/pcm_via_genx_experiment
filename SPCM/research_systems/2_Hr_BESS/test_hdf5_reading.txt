@@ -1,0 +1,21 @@
+function save_hdf5(savepath, Tend, data_str, data_array)
+    println("Saving ", data_str, " to HDF5 file")
+    # Create the HDF5 file
+    h5 = HDF5.h5open(joinpath(savepath, data_str * ".h5"), "w")
+    # Write the data_array to the HDF5 file
+    for i in 1:Tend
+        dsetname = data_str * "_$i"
+        HDF5.write(h5, dsetname, data_array[i])
+    end
+    # Close the HDF5 file
+    close(h5)
+end
+
+# test hdf5 reading
+results_folder = joinpath(case, "results_" * model_type)
+
+Tend = 8686
+
+prices_scen_array = [Vector{Float64}() for _ in 1:Tend]
+
+save_hdf5(results_folder, Tend, "prices_scen", prices_scen_array)
