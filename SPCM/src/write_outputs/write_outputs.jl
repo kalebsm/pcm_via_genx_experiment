@@ -47,7 +47,7 @@ function write_outputs(EP::Model, path::AbstractString, setup::Dict, inputs::Dic
     # Dict containing the list of outputs to write
     output_settings_d = setup["WriteOutputsSettingsDict"]
     write_settings_file(path, setup)
-    write_system_env_summary(path)
+    # write_system_env_summary(path)
 
     output_settings_d["WriteStatus"] && write_status(path, inputs, setup, EP)
 
@@ -544,7 +544,7 @@ Writes a file named `env_summary.yml` in the specified directory.
 
 """
 function write_system_env_summary(path::AbstractString)
-    v = pkgversion(GenX)
+    # v = pkgversion(GenX)
     env_summary = Dict(
         :ARCH => getproperty(Sys, :ARCH),
         :CPU_NAME => getproperty(Sys, :CPU_NAME),
@@ -554,7 +554,7 @@ function write_system_env_summary(path::AbstractString)
         :MACHINE => getproperty(Sys, :MACHINE),
         :JULIA_STDLIB => getproperty(Sys, :STDLIB),
         :JULIA_VERSION => VERSION,
-        :GENX_VERSION => v
+        # :GENX_VERSION => v
     )
 
     YAML.write_file(joinpath(path, "system_summary.yml"), env_summary)

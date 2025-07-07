@@ -241,3 +241,6 @@ rsconnect
 inst/shinyApp/temp.ini
 inst/shinyApp/test.ini
 packrat/lib*/
+GenX.jl
+.vscode/settings.json
+GenX.jl

@@ -52,14 +52,25 @@ function read_hdf5(filepath, Tend, data_str)
     return data_array
 end
 
+# Check memory usage and error out if it exceeds 90%
+function check_memory_usage()
+    mem_info = Sys.free_memory()
+    total_memory = Sys.total_memory()
+    used_memory = total_memory - mem_info
+    memory_usage_percentage = (used_memory / total_memory) * 100
 
+    if memory_usage_percentage >= 90
+        error("Memory usage has exceeded 90%. Exiting to prevent system instability.")
+    end
+end
 
-function run_policy_model(case::AbstractString, model_type::AbstractString, test_dictionary::Dict{String,Int})
-    
+global regularization_weight = 5e-2
+
+function initialize_policy_model(case::AbstractString)
     # case = dirname(@__FILE__)
     optimizer = Gurobi.Optimizer
 
-    ### print_genx_version()
+    # Print GenX version
     ascii_art = raw"""
     ______   _______     ______  ____    ____  
     .' ____ \ |_   __ \  .' ___  ||_   \  /   _| 
@@ -84,10 +95,13 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     writeoutput_settings = get_settings_path(case, "output_settings.yml") # Write-output settings YAML file path
     setup = configure_settings(genx_settings, writeoutput_settings) # setup dictionary stores settings and GenX-specific parameters
 
-    ### run_genx_case_simple
+    # Configure solver
+    println("Configuring Solver")
     settings_path = get_settings_path(case)
+    solver_name = lowercase(get(setup, "Solver", ""))
+    OPTIMIZER = configure_solver(settings_path, optimizer; solver_name=solver_name)
 
-    ### Cluster time series inputs if necessary and if specified by the user
+    # Cluster time series inputs if necessary and if specified by the user
     if setup["TimeDomainReduction"] == 1
         TDRpath = joinpath(case, setup["TimeDomainReductionFolder"])
         system_path = joinpath(case, setup["SystemFolder"])
@@ -100,20 +114,11 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
         end
     end
 
-    ### Configure solver
-    println("Configuring Solver")
-    solver_name = lowercase(get(setup, "Solver", ""))
-    OPTIMIZER = configure_solver(settings_path, optimizer; solver_name=solver_name)
-
-    #### Running a case
-
-    ### Load inputs
+    # Load inputs
     println("Loading Inputs")
     inputs = load_inputs(setup, case)
 
-    ### update omega and fuel_costs and c_start for lookahead length
-    # XXX I'm not sure there is a better way to do this other than ex-post loading the inputs using GenX
-    # add 48 rows to omega 
+    # update omega and fuel_costs and c_start for lookahead length
     inputs["omega"] = vcat(inputs["omega"], ones(48))
     # for each fuel in fuel_costs, add 48 rows of last value
     for fuel in keys(inputs["fuel_costs"])
@@ -123,20 +128,90 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     inputs["C_Start"] = hcat(inputs["C_Start"], repeat(inputs["C_Start"][:, end:end], 1, 48))
 
     # Should be defined in module, but doesn't get read in these run files???
-    ModelScalingFactor = 1e+3; 
-
-
+    ModelScalingFactor = 1e+3
+    
     #=======================================================================
     Set Case Specific Parameters
     =======================================================================#
     folder_name_parts = split(case, "\\")
     case_name = folder_name_parts[end]
 
-
-
     ### Load in Scenario Generation information
     scen_generator = scenario_generator_init()
-    # Save the objects from scen_generator into individual variables
+    
+
+    # define CEM path
+    # cem_path = joinpath(case, "..", "..", "..", "SPCM", "research_systems", case_name)
+    cem_results_path = joinpath(case, "results")
+    cem_commit_raw = CSV.read(joinpath(cem_results_path, "commit.csv"), DataFrame)
+    # Remove the first two rows and reset the index for `cem_commit`
+    cem_commit = cem_commit_raw[3:end, :]
+
+    # load startup, start, start_dp
+    cem_start_raw = CSV.read(joinpath(cem_results_path, "start.csv"), DataFrame)
+    # Remove the first two rows and reset the index for `cem_start`
+    cem_start = cem_start_raw[3:end, :]
+
+    # load shut down, shutdown, shut_dp
+    cem_shut_raw = CSV.read(joinpath(cem_results_path, "shutdown.csv"), DataFrame)
+    # Remove the first two rows and reset the index for `cem_shut`
+    cem_shut = cem_shut_raw[3:end, :]
+
+    # load state of charge, storage, s_dp
+    cem_soc_raw = CSV.read(joinpath(cem_results_path, "storage.csv"), DataFrame)
+    # Remove the first two rows and reset the index for `cem_soc`
+    cem_soc = cem_soc_raw[3:end, :]
+
+    # load dispatch, power, pgen_dp
+    cem_dispatch_raw = CSV.read(joinpath(cem_results_path, "power.csv"), DataFrame)
+    # Remove the first two rows and reset the index for `cem_dispatch`
+    cem_dispatch = cem_dispatch_raw[3:end, :]
+    # Create a context dictionary to store all the required data
+    context = Dict(
+        "setup" => setup,
+        "inputs" => inputs,
+        "OPTIMIZER" => OPTIMIZER,
+        "ModelScalingFactor" => ModelScalingFactor,
+        "case_name" => case_name,
+        "scen_generator" => scen_generator,
+        "cem_commit" => cem_commit,
+        "cem_start" => cem_start,
+        "cem_shut" => cem_shut,
+        "cem_soc" => cem_soc,
+        "cem_dispatch" => cem_dispatch,
+        "case" => case,
+    )
+    
+    return context
+end
+
+function run_policy_model_new(context::Dict, model_type::AbstractString, existing_capacities = []; 
+                          write_results::Bool=false)
+    start_time = time()
+    # Unpack variables from context
+    setup = context["setup"]
+    inputs = deepcopy(context["inputs"])  # Deep copy to avoid modifying original
+    OPTIMIZER = context["OPTIMIZER"]
+    ModelScalingFactor = context["ModelScalingFactor"]
+    case_name = context["case_name"]
+    scen_generator = context["scen_generator"]
+    cem_commit = context["cem_commit"]
+    cem_start = context["cem_start"]
+    cem_shut = context["cem_shut"]
+    cem_soc = context["cem_soc"]
+    cem_dispatch = context["cem_dispatch"]
+    case = context["case"]
+    # Apply any new existing capacities if provided
+    if !isempty(existing_capacities)
+        for (idx, capacity) in enumerate(existing_capacities)
+            inputs["RESOURCES"][idx].existing_cap_mw = capacity
+            if idx in inputs["STOR_ALL"]
+                inputs["RESOURCES"][idx].existing_cap_mwh = capacity.*2
+            end
+        end
+    end
+    
+    # Unpack scenario generator variables
     unique_forecast_times = scen_generator["unique_forecast_times"]
     unique_issue_times = scen_generator["unique_issue_times"]
     start_date = scen_generator["start_date"]
@@ -172,20 +247,17 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     # Set the date and time for the forecasts
     start_index = findfirst(isequal(start_date), unique_forecast_times)
 
-    Tstart = start_index;
-    Tend = decision_mdl_lkd_length - 50; # should be -48 probablys
-    # Tend = 10;
-
-    # Tstart = 1 - 24 # need data for the hours before 1 then!
-    # Tmax = 8760 + 48
+    Tstart = start_index
+    Tend = decision_mdl_lkd_length - 50 # should be -48 probably
 
     rh_len = forecast_scenario_length # scenario_length
 
-    println("model type is ", model_type)
+    # println("model type is ", model_type)
+
     if model_type == "pf"
         R = 1
     elseif model_type == "dlac-p" || model_type == "dlac-i" || model_type == "slac"
-        R = range(Tstart, Tend, step=1) # K = 1:1:Tmax-48 # scenario_length
+        R = range(Tstart, Tend, step=1)
     else
         error("Model type not recognized")
     end
@@ -193,30 +265,15 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     # Rh as a dictionary
     Rh = Dict()
 
-
     # INTERIOR_SUBPERIODS
     for r in R
         Rh[r] = r:1:r+forecast_scenario_length # scenario_length
     end
 
-    # # Rh as an array
-    # Rharray = []
+    # initialize array for saving history of time indexes
+    RhHistory = []
 
-    # for r in R
-    #     push!(Rharray, r:1:r+48)
-    # end
-
-    # initialize array for saving history of time indexes at which up down decisions are still relevant
-    RhHistory = [] # XXX not necessary for first attempt ignoring changing the intertemporal constraints
-
-
-    #### define warm start parameters
-
-
-    #### initialize elements that are saved across loops
-
-
-
+    # Extract resource information
     gen = inputs["RESOURCES"]
     zones = zone_id.(gen)
     regions = region.(gen)
@@ -225,13 +282,13 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     resource_names = inputs["RESOURCE_NAMES"]
 
     COMMIT = inputs["COMMIT"]
-    THERM_COMMIT = inputs["THERM_COMMIT"] # can be outside of loop, never changes
+    THERM_COMMIT = inputs["THERM_COMMIT"]
     STOR_LIST = inputs["STOR_ALL"]
     STOR_ALL = inputs["STOR_ALL"]
     VRE_LIST = inputs["VRE"]
     if setup["OperationalReserves"] >= 1
-        RSV = inputs["RSV"]# Generators contributing to operating reserves
-        REG = inputs["REG"]     # Generators contributing to regulation 
+        RSV = inputs["RSV"]
+        REG = inputs["REG"]
     end
 
     solar_ids = [gen[y].id for y in VRE_LIST if gen[y].solar == 1]
@@ -242,10 +299,9 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     # ZONES = ???
     num_gen = inputs["G"]
     G = inputs["G"] 
-    Z = inputs["Z"]     # Number of zones
+    Z = inputs["Z"]
 
-    # initialize dictionaries for saved variables, sVariable, could either be nested dictionaries or matrix arrays. XXX
-
+    # Initialize dictionaries for saved variables
     var_strings = ["P", "RSV", "REG", "NSE", "COMMIT", "START", "SHUT", "CHARGE", "S"]
     pri_strings = ["PowerBalance", "Reg", "RsvReq"]
 
@@ -283,7 +339,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     # initialize object to save prices
     elec_prices = zeros(Z, Tend)
     reg_prices = zeros(Z, Tend)
-    rsv_prices  = zeros(Z, Tend)
+    rsv_prices = zeros(Z, Tend)
 
     for price_key in pri_strings
         pri_dict[price_key] = zeros(Z, Tend)
@@ -294,7 +350,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     soc_link_duals = Array{Any}(undef, Tend)
     soc_int_duals = Array{Any}(undef, Tend)
 
-    # initialize constant costs
+    # Initialize constant costs
     var_om_cost_per_gen = [var_om_cost_per_mwh(gen[y]) for y in 1:G]
     var_om_cost_in_per_gen = [y in STOR_ALL ? var_om_cost_per_mwh_in(gen[y]) : 0 for y in 1:G]
     fixed_om_cost_per_gen = [fixed_om_cost_per_mwyr(gen[y]) for y in 1:G]
@@ -311,15 +367,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     fuel_cost_per_mmbtu = [fuel_costs[fuel(gen[y])][:] for y in 1:G]
     fuel_cost_per_mmbtu = transpose(hcat(fuel_cost_per_mmbtu...))
 
-
-
-    #=======================================================================
-    Define Revenues and Costs to save from Simulation
-    =======================================================================#
-
-    ### hourly components
-
-    # per generator components
+    # Initialize hourly components
     energy_revs_dp = zeros(num_gen, Tend)
     reg_revs_dp = zeros(num_gen, Tend)
     rsv_revs_dp = zeros(num_gen, Tend)
@@ -328,7 +376,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     start_costs_dp = zeros(num_gen, Tend)
     charge_costs_dp = zeros(num_gen, Tend)
 
-    # per zone components - WELFARE 
+    # Initialize welfare components
     nse_cost = zeros(Z, Tend)
     unmet_rsv_cost = zeros(Z, Tend)
 
@@ -341,6 +389,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
 
     #=======================================================================
     Define CEM wrap around initial conditions
+    - may need to adjust for equilibrium model
     =======================================================================#
     ### set up processing information required to get correct wraparound info
     # initialize number of units that are started / on
@@ -394,22 +443,12 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     end
 
 
-    #=======================================================================
-    Define Inputs for Rolling Horizon Simulation
-    =======================================================================#
-    rhinputs = deepcopy(inputs) # this could be outside of the loop
+    # Initialize scenario path information
+    prices_scen_array = Array{Any}(undef, Tend)
 
-
-    # Initialize Locked Scenario Path Information
-    scen_path = Array{Any}(undef, Tend)
-
-    Random.seed!(12345);
-    # intialize normal distribution
-    normal_dist = Normal(0,1);
-
-    # intialize the start date
+    Random.seed!(12345)
+    normal_dist = Normal(0, 1)
     date = deepcopy(start_date)
-
 
     println("Generating the SPCM Optimization")
     # GENERATE SPCM MODEL
@@ -461,245 +500,155 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     # initialize for removing temp files if garbage collection occurs
     garbage_collected = false
 
-
-    # #### Lookahead Loop
+    # Loop through time periods
     for r in R
-        # r = 1
-        # r = 7655
         global decision_date = start_date + Dates.Hour(r - 1)
 
         #=======================================================================
         DEFINE DATETIMES AND FORECAST VS ACTUAL VS MODEL TIMES OR HOURS
         =======================================================================#
-
-        horizon_start_index = findfirst(isequal(decision_date), unique_forecast_times);
+        horizon_start_index = findfirst(isequal(decision_date), unique_forecast_times)
 
         if model_type == "pf"
-            # current_issue = corr_forecast_issue_times[horizon_start_index, :issue_time];
             current_issue = nothing
-
             issue_index = nothing
-            # find next issue time and compare to start date
-            # next_issue = unique_issue_times[issue_index + 1];
-            # define active issues (XXX workshop name) as set of forecasts that are available for the hours to use for lookahead
             active_issues = nothing
-            # get the indices of the forecasts of the active issue times
             current_forecast_indices = nothing
-
-            # get the actual forecast times of the current forecast indices
             current_forecast_times = nothing
-            # get the forecast times that are after the start_data
             forecast_times_start_incl = nothing
-            # calculate the length of the forecast times after the start date
             policy_model_length = Tend
             policy_forecast_length = nothing
-
-            # extract the actuals from the last 48 - model_forecast_length
-            # actuals_length = 48 - policy_model_length + 1;
-            
             policy_actuals_length = Tend
-
             lookahead_decision_hours = nothing
         elseif model_type == "dlac-p" || model_type == "dlac-i" || model_type == "slac"
-            current_issue = corr_forecast_issue_times[horizon_start_index, :issue_time];
-
-            issue_index = findall(x -> x == current_issue, unique_issue_times)[1];
-            # find next issue time and compare to start date
-            # next_issue = unique_issue_times[issue_index + 1];
-            # define active issues (XXX workshop name) as set of forecasts that are available for the hours to use for lookahead
-            active_issues = [current_issue];
-            # get the indices of the forecasts of the active issue times
-            current_forecast_indices = findall(x -> x in active_issues, corr_forecast_issue_times[!,:issue_time]);
-        
-            # get the actual forecast times of the current forecast indices
-            current_forecast_times = corr_forecast_issue_times[current_forecast_indices, :forecast_time];
-            # get the forecast times that are after the start_data
-            forecast_times_start_incl = filter(x -> x >= decision_date, current_forecast_times);
-            # calculate the length of the forecast times after the start date
-            policy_model_length = length(forecast_times_start_incl);
-            policy_lookahead_length = policy_model_length - 1; # minus one always for the existing lookahead...
-        
-            # extract the actuals from the last 48 - model_forecast_length
-            # actuals_length = 48 - policy_model_length + 1;
-            policy_actuals_length = forecast_scenario_length - policy_lookahead_length;
-
-            lookahead_decision_hours = collect(policy_actuals_length:forecast_scenario_length);
+            current_issue = corr_forecast_issue_times[horizon_start_index, :issue_time]
+            issue_index = findall(x -> x == current_issue, unique_issue_times)[1]
+            active_issues = [current_issue]
+            current_forecast_indices = findall(x -> x in active_issues, corr_forecast_issue_times[!,:issue_time])
+            current_forecast_times = corr_forecast_issue_times[current_forecast_indices, :forecast_time]
+            forecast_times_start_incl = filter(x -> x >= decision_date, current_forecast_times)
+            policy_model_length = length(forecast_times_start_incl)
+            policy_lookahead_length = policy_model_length - 1
+            policy_actuals_length = forecast_scenario_length - policy_lookahead_length
+            lookahead_decision_hours = collect(policy_actuals_length:forecast_scenario_length)
         else
             error("Model type not recognized")
         end
 
-        # define scenarios for pf and dlac-p vs dlac-i and slac
+        # Define scenarios for different model types
         if model_type == "pf" || model_type == "dlac-p"
-            # #=======================================================================
-            # GENERATE SCENARIOS FOR LOAD, SOLAR, AND WIND
-            # =======================================================================#
-            # Y_load =  generate_norta_scenarios(number_of_scenarios, scenario_length, issue_index, horizon_start_index, 
-            #                                     active_issues, corr_forecast_issue_times, normal_dist,  
-            #                                     M_load, load_marginals_by_issue, load_landing_probabilities, false)
-
-            # Y_solar = generate_norta_scenarios(number_of_scenarios, scenario_length, issue_index, horizon_start_index, 
-            #                                     active_issues, corr_forecast_issue_times, normal_dist,  
-            #                                     M_solar, solar_marginals_by_issue, solar_landing_probabilities, true)
-
-            # Y_wind = generate_norta_scenarios(number_of_scenarios, scenario_length, issue_index, horizon_start_index, 
-            #                                     active_issues, corr_forecast_issue_times, normal_dist,  
-            #                                     M_wind, wind_marginals_by_issue, wind_landing_probabilities, false)
-
-            # # convert MWh to GWh for load
-            # Y_load_GWh = Y_load ./ ModelScalingFactor;
-            # # normalize the solar and wind scenarios to capacity factors based on the maximum actuals
-            # Y_solar_cf = Y_solar ./ max_solar_actual;
-            # Y_wind_cf = Y_wind ./ max_wind_actual;
-
-            scen_data = DataFrame() # for insertcols each new scen in loop
-
-            # Concatenate the columns of Y_load, Y_solar, and Y_wind
-            # for i in 1:size(Y_load, 1)
-            new_solar = solar_actual_avg_cf[r:r + policy_model_length - 1];
-            new_wind = wind_actual_avg_cf[r:r + policy_model_length - 1];
-            new_load = load_actual_avg_GW[r:r + policy_model_length - 1];
+            scen_data = DataFrame()
+            new_solar = solar_actual_avg_cf[r:r + policy_model_length - 1]
+            new_wind = wind_actual_avg_cf[r:r + policy_model_length - 1]
+            new_load = load_actual_avg_GW[r:r + policy_model_length - 1]
             new_scen = DataFrame(S = new_solar, W = new_wind, L = new_load)
             insertcols!(scen_data, :S => new_solar, :W => new_wind, :L => new_load, makeunique=true)
-            # end
-            # print(master_scen)
         elseif model_type == "dlac-i" || model_type == "slac"
-            load_current_marginals = load_marginals_by_issue[issue_index];
-            solar_current_marginals = solar_marginals_by_issue[issue_index];
-            wind_current_marginals = wind_marginals_by_issue[issue_index];
-            #=======================================================================
-            GENERATE SCENARIOS FOR LOAD, SOLAR, AND WIND
-            =======================================================================#
-            Y_load =  generate_norta_scenarios(number_of_scenarios, forecast_scenario_length, decision_date, horizon_start_index, 
-                                                active_issues, corr_forecast_issue_times, normal_dist,  
-                                                M_load, load_current_marginals, load_landing_probabilities,
-                                                solar_well_defined_cols, false)
-        
+            load_current_marginals = load_marginals_by_issue[issue_index]
+            solar_current_marginals = solar_marginals_by_issue[issue_index]
+            wind_current_marginals = wind_marginals_by_issue[issue_index]
+            
+            Y_load = generate_norta_scenarios(number_of_scenarios, forecast_scenario_length, decision_date, horizon_start_index, 
+                                             active_issues, corr_forecast_issue_times, normal_dist,  
+                                             M_load, load_current_marginals, load_landing_probabilities,
+                                             solar_well_defined_cols, false)
+            
             Y_solar = generate_norta_scenarios(number_of_scenarios, forecast_scenario_length, decision_date, horizon_start_index, 
-                                                active_issues, corr_forecast_issue_times, normal_dist,  
-                                                M_solar, solar_current_marginals, solar_landing_probabilities,
-                                                solar_well_defined_cols, true)
-        
+                                              active_issues, corr_forecast_issue_times, normal_dist,  
+                                              M_solar, solar_current_marginals, solar_landing_probabilities,
+                                              solar_well_defined_cols, true)
+            
             Y_wind = generate_norta_scenarios(number_of_scenarios, forecast_scenario_length, decision_date, horizon_start_index, 
-                                                active_issues, corr_forecast_issue_times, normal_dist,  
-                                                M_wind, wind_current_marginals, wind_landing_probabilities,
-                                                solar_well_defined_cols, false)
-        
-            # array_Y_load[r] = Y_load
-        
-            # convert MWh to GWh for load
-            Y_load_GWh = Y_load ./ ModelScalingFactor;
-            # normalize the solar and wind scenarios to capacity factors based on the maximum actuals
-            Y_solar_cf = Y_solar ./ max_solar_actual;
-            Y_wind_cf = Y_wind ./ max_wind_actual;
+                                             active_issues, corr_forecast_issue_times, normal_dist,  
+                                             M_wind, wind_current_marginals, wind_landing_probabilities,
+                                             solar_well_defined_cols, false)
+            
+            Y_load_GWh = Y_load ./ ModelScalingFactor
+            Y_solar_cf = Y_solar ./ max_solar_actual
+            Y_wind_cf = Y_wind ./ max_wind_actual
 
-            scen_data = DataFrame() # for insertcols each new scen in loop
+            scen_data = DataFrame()
 
             if model_type == "dlac-i"
-                # average across all scenarios for each time step
-                load_scenario_avg_GW = mean(Y_load_GWh, dims = 1);
-                solar_scenario_avg_cf = mean(Y_solar_cf, dims = 1);
-                wind_scenario_avg_cf = mean(Y_wind_cf, dims = 1);
+                load_scenario_avg_GW = mean(Y_load_GWh, dims = 1)
+                solar_scenario_avg_cf = mean(Y_solar_cf, dims = 1)
+                wind_scenario_avg_cf = mean(Y_wind_cf, dims = 1)
 
                 new_solar = vec(solar_scenario_avg_cf)
                 new_wind = vec(wind_scenario_avg_cf)
                 new_load = vec(load_scenario_avg_GW)
                 new_scen = DataFrame(S = new_solar, W = new_wind, L = new_load)
                 insertcols!(scen_data, :S => new_solar, :W => new_wind, :L => new_load, makeunique=true)
-
             elseif model_type == "slac"
                 for i in 1:size(Y_load, 1)
-                    new_solar = Y_solar_cf[i,:];
-                    new_wind = Y_wind_cf[i,:];
-                    new_load = Y_load_GWh[i,:];
+                    new_solar = Y_solar_cf[i,:]
+                    new_wind = Y_wind_cf[i,:]
+                    new_load = Y_load_GWh[i,:]
                     new_scen = DataFrame(S = new_solar, W = new_wind, L = new_load)
                     insertcols!(scen_data, :S => new_solar, :W => new_wind, :L => new_load, makeunique=true)
                 end
             end
-
         end
 
-        ### processing scenarios in columned sequential form
-        # check that number of columns is divisible by 3
+        # Process scenarios
         no_col = size(scen_data)[2]
-        if mod(no_col,3) == 0
+        if mod(no_col, 3) == 0
             W = round(Int, size(scen_data)[2] / 3)
         else
             print("Scenario input does not have the required dimensions")
         end
 
-        # determine length of lookahead available from scenario information
-        # t_lookahead = policy_model_length
-        # t_lookahead = 38 # XXX use this to check if the program runs with a different lookahead time
-
         st = r
-        en = r + policy_model_length - 1 # for defining ranges from r to t_lookahead inclusive
+        en = r + policy_model_length - 1
 
         println()
         println("Begin Horizon ", st, " to ", en)
 
-        # initialize and save dictionary for scenarios to look like pD and pP_Max of original GenX inputs
-        pd_dict = Dict() # 1xx
-        pp_max_dict = Dict() # 1xx
+        # Initialize scenario dictionaries
+        pd_dict = Dict()
+        pp_max_dict = Dict()
 
-        for scen_idx in 1:(W) # should be W = 1 only
-            # scen_idx = 1
+        for scen_idx in 1:(W)
             col_idx = 1 + (scen_idx - 1) * 3
             
-            sol_column = col_idx #1xx
-            wind_column = col_idx + 1 #1xx
-            load_column = col_idx + 2 #1xx
+            sol_column = col_idx
+            wind_column = col_idx + 1
+            load_column = col_idx + 2
 
-            # reformat load data to match original pD data type
-            load_df = scen_data[!, load_column] #1xx
+            load_df = scen_data[!, load_column]
             load_mt = reshape(load_df, (length(load_df), 1))
 
-            # save into dictionaries
-            pd_dict[scen_idx] = load_mt #1xx
+            pd_dict[scen_idx] = load_mt
+            pp_max_dict[scen_idx] = zeros(num_gen, policy_model_length)
 
-            pp_max_dict[scen_idx] = zeros(num_gen, policy_model_length) 
-
-            pp_max_dict[scen_idx][rhinputs["THERM_ALL"],:] .= ones(1, policy_model_length) 
-            pp_max_dict[scen_idx][rhinputs["STOR_ALL"],:] .= ones(1, policy_model_length) 
-            pp_max_dict[scen_idx][rhinputs["SOLAR"],:] .= transpose(scen_data[!, sol_column])
-            pp_max_dict[scen_idx][rhinputs["WIND"],:] .= transpose(scen_data[!, wind_column]) 
+            pp_max_dict[scen_idx][inputs["THERM_ALL"],:] .= ones(1, policy_model_length)
+            pp_max_dict[scen_idx][inputs["STOR_ALL"],:] .= ones(1, policy_model_length)
+            pp_max_dict[scen_idx][inputs["SOLAR"],:] .= transpose(scen_data[!, sol_column])
+            pp_max_dict[scen_idx][inputs["WIND"],:] .= transpose(scen_data[!, wind_column])
         end
-        # add dictionary of scenarios and number of scenarios to generate_model inputs
+
+        # Set up input data for this time period
+        rhinputs = deepcopy(inputs)
         rhinputs["W"] = W
-        
-        ### Scenario dependent information / begin scenario loop
         rhinputs["pD"] = pd_dict
         rhinputs["pP_Max"] = pp_max_dict
-
-        ### Data inputs consistent across all scenarios
         rhinputs["omega"] = inputs["omega"][st:en]
-
-        # rhinputs["C_Fuel_per_MWh"] = inputs["C_Fuel_per_MWh"][:, st:en] XXX fuel_cost.jl instead
-
         rhinputs["C_Start"] = inputs["C_Start"][:, st:en]
 
         for k in keys(inputs["fuel_costs"])
             rhinputs["fuel_costs"][k] = inputs["fuel_costs"][k][st:en]
         end
 
-        ### Time components consistent across all scenarios
-        # make distinction between first model time EP and all other timeEPs
-        rhinputs["INTERIOR_SUBPERIODS"] = range(2, policy_model_length, step = 1) # always hard coded to be 2 to t_lookahead, and not r + 2 to r + t_lookahead
+        rhinputs["INTERIOR_SUBPERIODS"] = range(2, policy_model_length, step = 1)
         INTERIOR_SUBPERIODS = rhinputs["INTERIOR_SUBPERIODS"]
-        START_SUBPERIODS = 1:1 # always hardcoded to be 1
+        START_SUBPERIODS = 1:1
+        rhinputs["T"] = policy_model_length
+        rhinputs["hours_per_subperiod"] = policy_model_length
 
-        # change the lookahead length based on avaialable capacity time series
-        # rhinputs["T"] = 48
-        rhinputs["T"] = policy_model_length # XXX update to select the current scenario length instead # XXX iterating per lookahead horizon
-
-        rhinputs["hours_per_subperiod"] = policy_model_length # outside loop
-
-        ### Generate model
+        # Generate and solve model 
         println("Generating the Optimization Model")
-        # EP, EP = generate_model(setup, rhinputs, OPTIMIZER)
-
-        ## Start pre-solve timer
         presolver_start_time = time()
-
+        
         ### Stochastic Model ###
         # Generate Stochastic Energy Portfolio (EP) Model
         EP = Model(OPTIMIZER)
@@ -757,10 +706,13 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
         #expressions
 
         # Objective Function Expressions
-
-        # Cost of non-served energy/curtailed demand at hour "t" in zone "z"
-        @expression(EP, eCNSE[s=1:SEG,t=1:T,z=1:Z, w=1:W], (rhinputs["omega"][t]*rhinputs["pC_D_Curtail"][s]*vNSE[s,t,z,w]))
-
+        if setup["QuadraticCost"] == 1 
+            @expression(EP, eCNSE_linear[s=1:SEG,t=1:T,z=1:Z, w=1:W], (rhinputs["omega"][t]*rhinputs["pC_D_Curtail"][s]*vNSE[s,t,z,w]))
+            @expression(EP, eCNSE_quadratic[s=1:SEG,t=1:T,z=1:Z, w=1:W], (rhinputs["omega"][t]*rhinputs["pC_D_Curtail"][s]*0.5*vNSE[s,t,z,w]^2*regularization_weight))
+            @expression(EP, eCNSE[s=1:SEG,t=1:T,z=1:Z, w=1:W], eCNSE_linear[s,t,z,w] + eCNSE_quadratic[s,t,z,w])
+        else
+            @expression(EP, eCNSE[s=1:SEG,t=1:T,z=1:Z, w=1:W], (rhinputs["omega"][t]*rhinputs["pC_D_Curtail"][s]*vNSE[s,t,z,w]))
+        end
         # Sum individual demand segment contributions to non-served energy costs to get total non-served energy costs
         # Julia is fastest when summing over one row one column at a time
         @expression(EP, eTotalCNSETS[t=1:T,z=1:Z, w=1:W], sum(eCNSE[s,t,z,w] for s in 1:SEG))
@@ -1069,8 +1021,9 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
         println("Storage Resources Module")
         STOR_ALL = rhinputs["STOR_ALL"]
 
-
+        println("Storage Resources Module")
         ### investment_energy
+        println("Storage Investment Module")
         @expression(EP, eExistingCapEnergy[y in STOR_ALL], existing_cap_mwh(gen[y]))
 
         @expression(EP, eTotalCapEnergy[y in STOR_ALL], eExistingCapEnergy[y] + EP[:vZERO])
@@ -1241,7 +1194,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
             EP[:vS][y,t-1,w]-(1/efficiency_down(gen[y]) * EP[:vP][y,t,w])+(efficiency_up(gen[y]) * EP[:vCHARGE][y,t,w]) 
                 -( self_discharge(gen[y]) * EP[:vS][y,t-1,w]))
 
-
+        println("Thermal Module")
         # thermal.jl
         THERM_COMMIT = rhinputs["THERM_COMMIT"]
         THERM_NO_COMMIT = rhinputs["THERM_NO_COMMIT"]
@@ -1250,7 +1203,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
         # thermal_commit.jl
         println("Thermal Commit Module")
         ### Expressions ###
-
+        println("Thermal (Unit Commitment) Resources Module")
         ## Power Balance Expressions ##
         @expression(EP, ePowerBalanceThermCommit[t=1:T, z=1:Z, w=1:W],
         sum(EP[:vP][y,t,w] for y in intersect(THERM_COMMIT, resources_in_zone_by_rid(gen,z))))
@@ -1361,7 +1314,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
             * cap_size(gen[y]) * EP[:vSTART][y,t,w]
             - min_power(gen[y]) * cap_size(gen[y]) *EP[:vSHUT][y,t,w])
         end
-
+        println("Thermal Commit Operational Reserves Module")
         # stochastic_thermal_commit_reserves
         THERM_COMMIT_REG_RSV = intersect(THERM_COMMIT, rhinputs["REG"], rhinputs["RSV"])
 
@@ -1376,9 +1329,12 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
 
         @constraint(EP, cMaxPowerWithRegRsv[y in THERM_COMMIT_REG_RSV, t=1:T, w=1:W], 
             EP[:vP][y,t,w]+EP[:vREG][y,t,w]+EP[:vRSV][y,t,w] <= rhinputs["pP_Max"][w][y,t] * cap_size(gen[y]) * EP[:vCOMMIT][y,t,w])
-
+        
         #### Define the Objective ####
-
+        # if setup["QuadraticCost"] == 1 
+        #     add_quadratic_regularization!(EP; W=W)
+        # end
+       
         ## assign probabilities to stochastic scenarios
         uniform_probs = 1 / W
         ## redefine objective 
@@ -1397,26 +1353,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
 
         # PowerBalanceObj = sum(cPowerBalance[t=1:T, z=1:Z, w] for w in 1:W) # T x Z, 48 x 1
 
-        ## Record pre-solver time
-        presolver_time = time() - presolver_start_time
-            #### Question - What do we do with this time now that we've split this function into 2?
-        if setup["PrintModel"] == 1
-            if modeloutput === nothing
-                filepath = joinpath(pwd(), "YourModel.lp")
-                JuMP.write_to_file(EP, filepath)
-            else
-                filepath = joinpath(modeloutput, "YourModel.lp")
-                JuMP.write_to_file(EP, filepath)
-            end
-            println("Model Printed")
-        end
 
-        ### Solve EP model ###
-        println("Solving Model") 
-        # EP, solve_time = solve_model(EP, setup)
-
-
-        # set_attribute(EP, "DualReductions", 0)
         # set_attribute(EP, "BarHomogeneous", 1)
         optimize!(EP)
         println("Debugging Solving Model")
@@ -1429,9 +1366,12 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
             compute_conflict!(EP)
             iis_model, _ = copy_conflict(EP)
             print(iis_model)
+
         end
+                ## Record pre-solver time
+        presolver_time = time() - presolver_start_time
         # println("termination status : ", termination_status(EP))
-        inputs["solve_time"] = solve_time # Store the model solve time in inputs
+        inputs["solve_time"] = presolver_time # Store the model solve time in inputs
 
         # println("Debugging Solving Model")
         # compute_conflict!(EP)
@@ -1452,6 +1392,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
             pgen_dp[:,:] = value.(EP[:vP][:,:,1])
             # non-served load
             nse_dp[:,:] = value.(EP[:vNSE][:,:,Z,1]) # 1 for 1 scenarios
+        
             # unmet demand 
             unmet_rsv_dp[:,:] = value.(EP[:vUNMET_RSV][:,1])
             # regulation provided
@@ -1543,7 +1484,7 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
             rsv_revs_dp[:,r] = rsv_prices[r] .* rsv_dp[:,r] .* ModelScalingFactor^2
 
             charge_costs_dp[:,r] = charge_dp[:,r] .* elec_prices[:,r] .* ModelScalingFactor^2
-        
+            
             nse_cost[:,r] = inputs["pC_D_Curtail"][1] * nse_dp[:,r] .* ModelScalingFactor^2
             unmet_rsv_cost[:,r] = inputs["pC_Rsv_Penalty"] * unmet_rsv_dp[:,r] .* ModelScalingFactor^2
 
@@ -1632,9 +1573,10 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
 
         end
 
+        prices_scen_array[r] = dual.(EP[:cPowerBalance])[:,:,:] .* ModelScalingFactor
+        
+    end # End of for r in R loop
 
-
-    end ### Uncomment for Rolling Horizon Loop?
 
     ###========================================================================
     ### Garbage Collection
@@ -1660,83 +1602,12 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
         rm(joinpath(results_folder, "temp_prices_scen_array.h5"))
     end
 
-
-    # #=======================================================================
-    # Save Files
-    # =======================================================================#
-
-    # create dataframes of the results
-    shut_df = DataFrame(shut_dp', resource_names)
-    start_df = DataFrame(start_dp', resource_names)
-    commit_df = DataFrame(commit_dp', resource_names)
-    pgen_df = DataFrame(pgen_dp' * ModelScalingFactor, resource_names)
-    s_df = DataFrame(s_dp' * ModelScalingFactor, resource_names)
-    charge_df = DataFrame(charge_dp' * ModelScalingFactor, resource_names)
-    rsv_df = DataFrame(rsv_dp' * ModelScalingFactor, resource_names)
-    reg_df = DataFrame(reg_dp' * ModelScalingFactor, resource_names)
-    elec_prices_df = DataFrame(elec_prices' * ModelScalingFactor, [string(Z)])
-    reg_prices_df = DataFrame(reg_prices' * ModelScalingFactor, [string(Z)])
-    rsv_prices_df = DataFrame(rsv_prices' * ModelScalingFactor, [string(Z)])
-    nse_df = DataFrame(nse_dp' * ModelScalingFactor, [string(Z)])
-    unmet_rsv_df = DataFrame(unmet_rsv_dp' * ModelScalingFactor, [string(Z)])
-
-
-    CSV.write(joinpath(results_folder, "unit_shut.csv"), shut_df)
-    CSV.write(joinpath(results_folder, "unit_start.csv"), start_df)
-    CSV.write(joinpath(results_folder, "unit_commit.csv"), commit_df)
-    CSV.write(joinpath(results_folder, "unit_pgen.csv"), pgen_df)
-    CSV.write(joinpath(results_folder, "unit_state_of_charge.csv"), s_df)
-    CSV.write(joinpath(results_folder, "unit_charge.csv"), charge_df)
-    CSV.write(joinpath(results_folder, "unit_rsv.csv"), rsv_df)
-    CSV.write(joinpath(results_folder, "unit_reg.csv"), reg_df)
-    CSV.write(joinpath(results_folder, "price_electricity.csv"), elec_prices_df)
-    CSV.write(joinpath(results_folder, "unit_rsv.csv"), rsv_df)
-    CSV.write(joinpath(results_folder, "unit_reg.csv"), reg_df)
-    CSV.write(joinpath(results_folder, "prices_reg.csv"), reg_prices_df)
-    CSV.write(joinpath(results_folder, "prices_rsv.csv"), rsv_prices_df)
-    CSV.write(joinpath(results_folder, "zone_nse.csv"), nse_df)
-    CSV.write(joinpath(results_folder, "zone_unmet_rsv.csv"), unmet_rsv_df)
-
-
-    ###========================================================================
-    ### Printing Testing data 
-    ###========================================================================
-    # create testing  folder in results path if it doesn't exist
-    testing_results_folder = joinpath(results_folder, "testing")
-    if !isdir(testing_results_folder)
-        println("Creating testing results folder at: ", testing_results_folder)
-        mkpath(testing_results_folder)
-    end
-
-    solar_capacity_gw = [gen[y].existing_cap_mw for y in VRE_LIST if gen[y].solar == 1]
-    wind_capacity_gw = [gen[y].existing_cap_mw for y in VRE_LIST if gen[y].wind == 1]
-    
-    # convert the solar and wind paths to capacity factors based on max actuals
-    solar_scen_path_cf = pgen_dp[solar_ids,:] ./ solar_capacity_gw
-    wind_scen_path_cf = pgen_dp[wind_ids,:] ./ wind_capacity_gw
-    load_scen_path_GW = load_dp
-    
-    solar_actual_avg_cf_dec_ln = solar_actual_avg_cf[1:Tend]
-    wind_actual_avg_cf_dec_ln = wind_actual_avg_cf[1:Tend]
-    load_actual_avg_GW_dec_ln = load_actual_avg_GW[1:Tend]
-    
-    # append solar, wind cf and load actuals to dataframe
-    solar_data = DataFrame("scenario path [cf]" => vec(solar_scen_path_cf), "solar actuals [cf]" => solar_actual_avg_cf_dec_ln)
-    wind_data = DataFrame("scenario path [cf]" => vec(wind_scen_path_cf), "wind actuals [cf]" => wind_actual_avg_cf_dec_ln)
-    load_data = DataFrame("scenario path [GW]" => vec(load_scen_path_GW), "load actuals [GW]" => load_actual_avg_GW_dec_ln)
-    
-    
-    if test_dictionary["test_scenario_path"] == 1
-        CSV.write(joinpath(testing_results_folder, "solar_scen_path.csv"), solar_data)
-        CSV.write(joinpath(testing_results_folder, "wind_scen_path.csv"), wind_data)
-        CSV.write(joinpath(testing_results_folder, "load_scen_path.csv"), load_data)
-    end
+    end_time = time()-start_time
 
     #=======================================================================
     Calculate Profits per Generator and Total Welfare
     =======================================================================#
-
-
+    
     ### components over whole year
     fixed_om_costs_vec = [fixed_om_cost_per_mwyr(gen[y]) * existing_cap_mw(gen[y]) * ModelScalingFactor^2 for y in 1:num_gen]
 
@@ -1763,7 +1634,8 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
 
     total_welfare = sum(operating_profit_per_gen) - sum(nse_cost) - sum(unmet_rsv_cost); 
 
-    # write the transpose so time is along rows
+
+    # write the timeseries of financial results so time is along rows
     writedlm(results_folder * "/revenue_operating_profit_per_gen.csv", operating_profit_per_gen', ',')
     writedlm(results_folder * "/revenue_total_welfare.csv", total_welfare', ',')
     writedlm(results_folder * "/revenue_energy_revs_dp.csv", energy_revs_dp', ',')
@@ -1776,15 +1648,6 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
     writedlm(results_folder * "/revenue_nse_cost.csv", nse_cost', ',')
     writedlm(results_folder * "/revenue_unmet_rsv_cost.csv", unmet_rsv_cost', ',')
 
-
-    # convert dfGen existing capacity back to MW
-    # copy_dfGen = deepcopy(dfGen)
-    # copy_dfGen[!,:Existing_Cap_MW] = copy_dfGen[!,:Existing_Cap_MW] .* ModelScalingFactor
-    # copy_dfGen[!,:Existing_Cap_MWh] = copy_dfGen[!,:Existing_Cap_MWh] .* ModelScalingFactor
-    # copy_dfGen[!,:Inv_Cost_per_MWyr] = copy_dfGen[!,:Inv_Cost_per_MWyr] .* ModelScalingFactor
-    # copy_dfGen[!,:Inv_Cost_per_MWhyr] = copy_dfGen[!,:Inv_Cost_per_MWhyr] .* ModelScalingFactor
-    # copy_dfGen[!,:Fixed_OM_Cost_per_MWyr] = copy_dfGen[!,:Fixed_OM_Cost_per_MWyr] .* ModelScalingFactor
-    # CSV.write(results_folder * "/generator_characteristics.csv", copy_dfGen, header=true)
 
     storage_durations = [gen[y].max_duration for y in STOR_ALL]
 
@@ -1808,10 +1671,8 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
 
     diff = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec;
 
-
-
     # Create a DataFrame
-    df = DataFrame(generators = generator_name_per_gen,
+    financial_results_df = DataFrame(generators = generator_name_per_gen,
                     Capacity_MW = existing_cap_mw_per_gen* ModelScalingFactor,
                     Capacity_MWh = existing_cap_mwh_per_gen * ModelScalingFactor,
                     Inv_cost_MW = total_inv_costs_MW_yr_vec,
@@ -1832,7 +1693,85 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
                     total_inv_costs = total_both_inv_costs_MW_yr,
                     diff = diff)
 
-    # Write the DataFrame to a CSV file
+
+    # Only write results to files if requested
+    if write_results
+        # Create results folder if needed
+        results_folder = joinpath(case, "results_" * model_type)
+        if !isdir(results_folder)
+            println("Creating results folder at: ", results_folder)
+            mkpath(results_folder)
+        end
+    
+        # #=======================================================================
+        # Save Files
+        # =======================================================================#
+
+        # create dataframes of the results
+        shut_df = DataFrame(shut_dp', resource_names)
+        start_df = DataFrame(start_dp', resource_names)
+        commit_df = DataFrame(commit_dp', resource_names)
+        pgen_df = DataFrame(pgen_dp' * ModelScalingFactor, resource_names)
+        s_df = DataFrame(s_dp' * ModelScalingFactor, resource_names)
+        charge_df = DataFrame(charge_dp' * ModelScalingFactor, resource_names)
+        rsv_df = DataFrame(rsv_dp' * ModelScalingFactor, resource_names)
+        reg_df = DataFrame(reg_dp' * ModelScalingFactor, resource_names)
+        elec_prices_df = DataFrame(elec_prices' * ModelScalingFactor, [string(Z)])
+        reg_prices_df = DataFrame(reg_prices' * ModelScalingFactor, [string(Z)])
+        rsv_prices_df = DataFrame(rsv_prices' * ModelScalingFactor, [string(Z)])
+        nse_df = DataFrame(nse_dp' * ModelScalingFactor, [string(Z)])
+        unmet_rsv_df = DataFrame(unmet_rsv_dp' * ModelScalingFactor, [string(Z)])
+
+        # Write result dataframes to CSV files
+        CSV.write(joinpath(results_folder, "unit_shut.csv"), shut_df)
+        CSV.write(joinpath(results_folder, "unit_start.csv"), start_df)
+        CSV.write(joinpath(results_folder, "unit_commit.csv"), commit_df)
+        CSV.write(joinpath(results_folder, "unit_pgen.csv"), pgen_df)
+        CSV.write(joinpath(results_folder, "unit_state_of_charge.csv"), s_df)
+        CSV.write(joinpath(results_folder, "unit_charge.csv"), charge_df)
+        CSV.write(joinpath(results_folder, "unit_rsv.csv"), rsv_df)
+        CSV.write(joinpath(results_folder, "unit_reg.csv"), reg_df)
+        CSV.write(joinpath(results_folder, "price_electricity.csv"), elec_prices_df)
+        CSV.write(joinpath(results_folder, "prices_reg.csv"), reg_prices_df)
+        CSV.write(joinpath(results_folder, "prices_rsv.csv"), rsv_prices_df)
+        CSV.write(joinpath(results_folder, "zone_nse.csv"), nse_df)
+        CSV.write(joinpath(results_folder, "zone_unmet_rsv.csv"), unmet_rsv_df)
+
+        ###========================================================================
+        ### Printing Testing data 
+        ###========================================================================
+        # create testing  folder in results path if it doesn't exist
+        testing_results_folder = joinpath(results_folder, "testing")
+        if !isdir(testing_results_folder)
+            println("Creating testing results folder at: ", testing_results_folder)
+            mkpath(testing_results_folder)
+        end
+
+        solar_capacity_gw = [gen[y].existing_cap_mw for y in VRE_LIST if gen[y].solar == 1]
+        wind_capacity_gw = [gen[y].existing_cap_mw for y in VRE_LIST if gen[y].wind == 1]
+        
+        # convert the solar and wind paths to capacity factors based on max actuals
+        solar_scen_path_cf = pgen_dp[solar_ids,:] ./ solar_capacity_gw
+        wind_scen_path_cf = pgen_dp[wind_ids,:] ./ wind_capacity_gw
+        load_scen_path_GW = load_dp
+        
+        solar_actual_avg_cf_dec_ln = solar_actual_avg_cf[1:Tend]
+        wind_actual_avg_cf_dec_ln = wind_actual_avg_cf[1:Tend]
+        load_actual_avg_GW_dec_ln = load_actual_avg_GW[1:Tend]
+        
+        # append solar, wind cf and load actuals to dataframe
+        solar_data = DataFrame("scenario path [cf]" => vec(solar_scen_path_cf), "solar actuals [cf]" => solar_actual_avg_cf_dec_ln)
+        wind_data = DataFrame("scenario path [cf]" => vec(wind_scen_path_cf), "wind actuals [cf]" => wind_actual_avg_cf_dec_ln)
+        load_data = DataFrame("scenario path [GW]" => vec(load_scen_path_GW), "load actuals [GW]" => load_actual_avg_GW_dec_ln)
+        
+        
+        if test_dictionary["test_scenario_path"] == 1
+            CSV.write(joinpath(testing_results_folder, "solar_scen_path.csv"), solar_data)
+            CSV.write(joinpath(testing_results_folder, "wind_scen_path.csv"), wind_data)
+            CSV.write(joinpath(testing_results_folder, "load_scen_path.csv"), load_data)
+        end
+
+    # Write NetRevenue dataframe to CSV
     println("Writing operating profit results to CSV")
     CSV.write(results_folder * "/NetRevenue.csv", df, header=true)
 
@@ -1848,109 +1787,111 @@ function run_policy_model(case::AbstractString, model_type::AbstractString, test
         save_hdf5(results_folder, maximum(R), "prices_scen_array", prices_scen_array)
     end
 
-    if model_type == "slac" 
-
+    # For SLAC, save HDF5 files if needed
+    if model_type == "slac"
+        # Remove undefined elements from prices_scen_array if any
+        prices_scen_array = filter(x -> x !== nothing, prices_scen_array)
+        save_hdf5(results_folder, Tend, "prices_scen_array", prices_scen_array)
+        
         if !isempty(STOR_ALL)
-            # print duals to hdf5
+            # Save duals to HDF5
             save_hdf5(results_folder, Tend, "max_discharge_const_duals", max_discharge_const_duals)
             save_hdf5(results_folder, Tend, "max_charge_const_duals", max_charge_const_duals)
             save_hdf5(results_folder, Tend, "soc_link_duals", soc_link_duals)
             save_hdf5(results_folder, Tend, "soc_int_duals", soc_int_duals)
+            
+            # Calculate and write battery marginal information
+            calculate_battery_marginals(results_folder, STOR_ALL, pgen_dp, s_dp, charge_dp,
+                                       max_discharge_const_duals, max_charge_const_duals, Tend)
         end
+    end
+end
 
+# Return the net profit and financial results
+PMR = diff./(total_both_inv_costs_MW_yr + fixed_om_costs_vec)
+return Dict(
+    "net_profit" => diff,
+    "PMR" => PMR*100,
+    "total_welfare" => total_welfare[1],
+    "operating_profit" => operating_profit_per_gen_vec,
+    "inv_costs" => total_both_inv_costs_MW_yr,
+    "energy_revenue" => total_energy_revs_dp[:],
+    "capacity_mw" => existing_cap_mw_per_gen * ModelScalingFactor,
+    "sys_costs" => sys_costs,
+    "solve_time" => end_time,
+    "results_df" => financial_results_df
+)
+end
 
-        # save scenarios to hdf5
-        # save_hdf5(savepath, Tend, "load_scen_array", load_scen_array)
-        # save_hdf5(savepath, Tend, "solar_scen_array", solar_scen_array)
-        # save_hdf5(savepath, Tend, "wind_scen_array", wind_scen_array)
+# Helper function for calculating battery marginals when using SLAC
+function calculate_battery_marginals(results_folder, STOR_ALL, pgen_dp, s_dp, charge_dp, 
+                                 max_discharge_const_duals, max_charge_const_duals, Tend)
+    positive_counter = 0
+    not_marginal_count = 0
+    energy_marginal_count = 0
+    discharge_marginal_count = 0
+    charge_marginal_count = 0
+    discharge_charge_marginal_count = 0
+    is_marginal_count = 0
 
-        # #=======================================================================
-        # Calculate Count of Marginal Battery Hours
-        # =======================================================================#
-        if !isempty(STOR_ALL)
+    eps = 1e-5
 
-            positive_counter = 0
-            not_marginal_count = 0
-            energy_marginal_count = 0
-            discharge_marginal_count = 0
-            charge_marginal_count = 0
-            discharge_charge_marginal_count = 0
-            is_marginal_count = 0
+    max_capacity = maximum(pgen_dp[STOR_ALL[],:])
 
-            eps = 1e-5
+    union_marginal_count = count(t -> sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps
+                                && sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps, 1:Tend)
 
-            max_capacity = maximum(pgen_dp[STOR_ALL[],:])
+    # Save the hours in which batteries appear to be binding
+    t_indices = []
 
+    for t in 1:Tend
+        # Check if energy limited
+        total_power_from_energy = s_dp[STOR_ALL[],t] / 1 - eps
 
-            union_marginal_count = count(t -> sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps
-                                        && sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps, 1:Tend)
-
-            # save the hours in which batteries appear to be binding
-            t_indices = []
-
-            for t in 1:Tend
-                # check if energy limited
-                total_power_from_energy = s_dp[STOR_ALL[],t] / 1 - eps
-
-                if total_power_from_energy < max_capacity
-                    if pgen_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] < total_power_from_energy
-                        energy_marginal_count += 1
-                        push!(t_indices, t)
-                    else
-                        not_marginal_count += 1
-                    end
-                else
-                    if (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
-                        sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
-                        discharge_charge_marginal_count += 1
-                        push!(t_indices, t)
-                    elseif (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
-                        sum(max_charge_const_duals[t][1,:]) > eps && charge_dp[STOR_ALL[],t] < eps)
-                        discharge_marginal_count += 1
-                        push!(t_indices, t)
-                    elseif (sum(max_discharge_const_duals[t][1,:]) > eps && pgen_dp[STOR_ALL[],t] < eps && 
-                        sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
-                        charge_marginal_count += 1
-                        push!(t_indices, t)
-                    else
-                        not_marginal_count += 1
-                    end
-                end
-                is_marginal_count = energy_marginal_count + discharge_marginal_count + charge_marginal_count + discharge_charge_marginal_count
+        if total_power_from_energy < max_capacity
+            if pgen_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] < total_power_from_energy
+                energy_marginal_count += 1
+                push!(t_indices, t)
+            else
+                not_marginal_count += 1
             end
-
-            positive_charge_and_pgen_count = count(t -> charge_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] > eps, 1:Tend)
-
-            energy_limited_count = count(x -> x <= maximum(pgen_dp[STOR_ALL[],:]), s_dp[STOR_ALL[],:] / 1) # divide by one hour to get MW
-
-            # if energy limited
-            # then must discharge less than energy divided by 1 in that next hour
-
-            println("The number of times battery is marginal is: ", is_marginal_count)
-
-            total_count = is_marginal_count + not_marginal_count
-            total_count == Tend
-
-            # miscellaneous checks
-            max_charge_count = count(x -> x == maximum(charge_dp[STOR_ALL[], :]), charge_dp[STOR_ALL[], :])
-            # max_battery_discharge = maximum(pgen_dp[STOR_ALL[],:])
-            # nonzero_gen_count = sum(pgen_dp[STOR_ALL[], :]) > 0 && pgen_dp[STOR_ALL[],:] < max_battery_discharge
-
-
-            textfile = results_folder * "/" * "battery_marginals_counts.txt"
-
-            # Create a text file
-            open(textfile, "w") do file
-                # Write the summary information
-                write(file, "Total Count: $total_count\n")
-                write(file, "Energy Limited Count: $energy_limited_count\n")
-                write(file, "Energy Marginal Count: $energy_marginal_count\n")
-                write(file, "Simultaneous Discharge and Charge Marginal Count: $discharge_charge_marginal_count\n")
-                write(file, "Discharge Marginal Count: $discharge_marginal_count\n")
-                write(file, "Charge Marginal Count: $charge_marginal_count\n")
-                write(file, "Is Marginal Count: $is_marginal_count\n")
-                write(file, "Not Marginal Count: $not_marginal_count\n")
+        else
+            if (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
+                sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
+                discharge_charge_marginal_count += 1
+                push!(t_indices, t)
+            elseif (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
+                sum(max_charge_const_duals[t][1,:]) > eps && charge_dp[STOR_ALL[],t] < eps)
+                discharge_marginal_count += 1
+                push!(t_indices, t)
+            elseif (sum(max_discharge_const_duals[t][1,:]) > eps && pgen_dp[STOR_ALL[],t] < eps && 
+                sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
+                charge_marginal_count += 1
+                push!(t_indices, t)
+            else
+                not_marginal_count += 1
             end
         end
+        is_marginal_count = energy_marginal_count + discharge_marginal_count + charge_marginal_count + discharge_charge_marginal_count
+    end
+
+    positive_charge_and_pgen_count = count(t -> charge_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] > eps, 1:Tend)
+    energy_limited_count = count(x -> x <= maximum(pgen_dp[STOR_ALL[],:]), s_dp[STOR_ALL[],:] / 1)
+
+    println("The number of times battery is marginal is: ", is_marginal_count)
+
+    total_count = is_marginal_count + not_marginal_count
+    textfile = joinpath(results_folder, "battery_marginals_counts.txt")
+
+    # Create a text file with the results
+    open(textfile, "w") do file
+        write(file, "Total Count: $total_count\n")
+        write(file, "Energy Limited Count: $energy_limited_count\n")
+        write(file, "Energy Marginal Count: $energy_marginal_count\n")
+        write(file, "Simultaneous Discharge and Charge Marginal Count: $discharge_charge_marginal_count\n")
+        write(file, "Discharge Marginal Count: $discharge_marginal_count\n")
+        write(file, "Charge Marginal Count: $charge_marginal_count\n")
+        write(file, "Is Marginal Count: $is_marginal_count\n")
+        write(file, "Not Marginal Count: $not_marginal_count\n")
     end
 end

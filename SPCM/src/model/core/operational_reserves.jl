@@ -298,6 +298,10 @@ function operational_reserves_constraints!(EP, inputs)
     eRegulationRequirement = EP[:eRegReq]
     eReserveRequirement = EP[:eRsvReq]
 
+    @constraint(EP, cREG_MAX[y in REG,t=1:T], vREG[y,t] <= EP[:eRegReq][t])
+
+    @constraint(EP, cRSV_MAX[y in RSV,t=1:T], vRSV[y,t] <= EP[:eRsvReq][t])
+
     ## Total system reserve constraints
     # Regulation requirements as a percentage of demand and scheduled
     # variable renewable energy production in each hour.
