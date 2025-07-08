@@ -1,7 +1,7 @@
 
 
 module SPCMviaGenX
-
+ENV["GENX_PRECOMPILE"] = "false"
 # thanks, ChatGPT
 function include_all_in_folder(folder)
     base_path = joinpath(@__DIR__, folder)
@@ -156,7 +156,7 @@ abstract type AbstractResource end
 # activate scenario generation
 seq_norta_path = joinpath("SPCM","src","scenario_generation", "sequential_norta")
 
-# push!(LOAD_PATH, seq_norta_path)
+push!(LOAD_PATH, seq_norta_path)
 # activate the project at the sequential_norta directory
 using Pkg
 # Pkg.add(path=seq_norta_path)
