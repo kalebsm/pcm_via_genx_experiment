@@ -1,0 +1,12 @@
+Resource,Zone,Retrofit_Id,StartCap,RetCap,RetroCap,NewCap,EndCap,CapacityConstraintDual,StartEnergyCap,RetEnergyCap,NewEnergyCap,EndEnergyCap,StartChargeCap,RetChargeCap,NewChargeCap,EndChargeCap
+MA_natural_gas_combined_cycle,1,None,0.0,0.0,0.0,15818.688590639578,15818.688590639578,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+CT_natural_gas_combined_cycle,2,None,0.0,0.0,0.0,7534.151109575,7534.151109575,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+ME_natural_gas_combined_cycle,3,None,0.0,0.0,0.0,278.855847,278.855847,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+MA_solar_pv,1,None,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+CT_onshore_wind,2,None,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+CT_solar_pv,2,None,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+ME_onshore_wind,3,None,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+MA_battery,1,None,0.0,0.0,0.0,-0.0,0.0,0.0,0.0,0.0,-0.0,0.0,0.0,0.0,0.0,0.0
+CT_battery,2,None,0.0,0.0,0.0,-0.0,0.0,0.0,0.0,0.0,-0.0,0.0,0.0,0.0,0.0,0.0
+ME_battery,3,None,0.0,0.0,0.0,-0.0,0.0,0.0,0.0,0.0,-0.0,0.0,0.0,0.0,0.0,0.0
+Total,n/a,n/a,0.0,0.0,0.0,23631.69554721458,23631.69554721458,n/a,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0

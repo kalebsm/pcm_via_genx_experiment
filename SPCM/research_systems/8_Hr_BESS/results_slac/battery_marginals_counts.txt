@@ -1,0 +1,8 @@
+Total Count: 8686
+Energy Limited Count: 1333
+Energy Marginal Count: 597
+Simultaneous Discharge and Charge Marginal Count: 95
+Discharge Marginal Count: 0
+Charge Marginal Count: 0
+Is Marginal Count: 692
+Not Marginal Count: 7994

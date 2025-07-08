@@ -1,0 +1,7 @@
+Resource,Zone,region,cluster,Technology,New_Build,Can_Retire,Existing_Cap_MW,Max_Cap_MW,Min_Cap_MW,Inv_Cost_per_MWyr,Fixed_OM_Cost_per_MWyr,Var_OM_Cost_per_MWh,Heat_Rate_MMBTU_per_MWh,Fuel,Num_VRE_bins
+WindOffshore_NY_New,1,NY,1,WindOffshore,1,1,0.0,-1.0,0,593851.0076869725,42750.02142857143,0.0,0,None,1
+SolarUtility_NY_Existing,1,NY,1,SolarUtility,0,1,254.4,254.4,0,0.0,21608.88881661824,0.0,0,None,1
+SolarUtility_NY_New,1,NY,1,SolarUtility,1,1,0.0,-1.0,0,145819.63421422683,10804.44440830912,0.0,0,None,1
+SolarBTM_NY_New,1,NY,1,SolarBTM,1,1,0.0,-1.0,0,168705.4497537156,9193.50456362232,0.0,0,None,1
+WindLand_NY_Existing,1,NY,1,WindLand,0,1,2864.3,2864.3,0,0.0,32309.373241641097,0.0,0,None,1
+WindLand_NY_New,1,NY,1,WindLand,1,1,0.0,-1.0,0,165906.74076066297,16154.686620820548,0.0,0,None,1

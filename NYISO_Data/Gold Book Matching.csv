@@ -1,0 +1,535 @@
+﻿Operator,   Station        Unit,Zone,PTID,Town,Cnty,St,In-Service,Name Plate Rating (MW),CRIS_Summer,CRIS_Winter,Capability_Summer,Capability_Winter,Dual,Unit_Type,Fuel_1,Fuel_2,Net Energy (GWh)
+Jamestown Board of Public Utilities,Jamestown 5,A,1658,Jamestown,13,36,1951-08-01,28.7,23,23,21.9,21.1,YES,ST,NG,FO2,1.7
+Jamestown Board of Public Utilities,Jamestown 6,A,1658,Jamestown,13,36,1968-08-01,25,22.4,22.4,19.1,18.3,YES,ST,NG,FO2,8.9
+Jamestown Board of Public Utilities,Jamestown 7,A,1659,Jamestown,13,36,2002-01-01,47.3,40,40,39.8,45.7,,GT,NG,,41.9
+New York Power Authority,Lewiston PS (Fleet),A,23760,Niagara Falls,63,36,1961-01-01,240,240,240,240,240,,PS,WAT,,-226.2
+New York Power Authority,Moses Niagara (Fleet),A,23760,Niagara Falls,63,36,1961-01-01,"2,860.00","2,460.00","2,460.00","2,435.00","2,435.00",,HY,WAT,,"15,767.30"
+Indeck-Yerkes LP,Indeck-Yerkes,A,23781,Tonawanda,29,36,1990-02-01,59.9,49.7,60.5,43.8,56.5,YES,CC,NG,FO2,30.8
+Erie Blvd. Hydro - NYS Barge,Hydraulic Race,A,23848,Lockport,63,36,1942-01-01,4.7,3.1,3.1,4.7,4.7,,HY,WAT,,7.4
+Indeck-Olean LP,Indeck-Olean,A,23982,Olean,9,36,1993-12-01,90.6,79.4,88.5,77.5,85.7,YES,CC,NG,FO2,35.2
+"Covanta Niagara, LP",American Ref-Fuel 1,A,24010,Niagara,63,36,1993-05-01,25,19.6,19.6,18.8,17.9,,ST,REF,,245.3
+"Covanta Niagara, LP",American Ref-Fuel 2,A,24010,Niagara,63,36,1993-05-01,25,19.6,19.6,18.8,17.9,,ST,REF,,
+Model City Energy LLC,Model City Energy,A,24167,Lewiston,63,36,2001-06-01,5.6,5.6,5.6,5.6,5.6,,IC,MTE,,28.6
+"Modern Innovative Energy, LLC",Modern LF,A,323580,Lewiston,63,36,2006-02-01,6.4,6.4,6.4,6.4,6.4,,IC,MTE,,33.7
+"Niagara Wind Power, LLC",Steel Wind,A,323596,Lackawanna,29,36,2007-01-23,20,0,0,0,0,,WT,WND,,59.7
+"WM Renewable Energy,LLC",Chaffee,A,323603,Chaffee,29,36,2007-08-09,6.4,6.4,6.4,6.4,6.4,,IC,MTE,,40
+"Valcour Bliss Windpark, LLC",Bliss Wind Power,A,323608,Bliss,121,36,2008-03-20,100.5,100.5,100.5,100.5,100.5,,WT,WND,,169.8
+"RWE Clean Energy Wholesale Services, Inc.",Chautauqua LFGE,A,323629,Jamestown,13,36,2010-02-12,9.6,0,0,0,0,,IC,MTE,,0.8
+"Erie Wind, LLC",Erie Wind,A,323693,Lackawanna,29,36,2012-02-01,15,0,0,0,0,,WT,WND,,42.6
+Arkwright Summit Wind Farm LLC,Arkwright Summit Wind Farm,A,323751,Arkwright,13,36,2018-09-01,78.4,78.4,78.4,78.4,78.4,,WT,WND,,224.7
+"RWE Clean Energy Wholesale Services, Inc.",Lockport CC1,A,323769,Lockport,63,36,1992-07-01,73.8,75.1,87.3,69.6,74.5,YES,CC,NG,FO2,88.3
+"RWE Clean Energy Wholesale Services, Inc.",Lockport CC2,A,323770,Lockport,63,36,1992-07-01,73.8,75.1,87.2,69.6,74.5,YES,CC,NG,FO2,
+"RWE Clean Energy Wholesale Services, Inc.",Lockport CC3,A,323771,Lockport,63,36,1992-07-01,73.8,75,87.2,69.6,74.5,YES,CC,NG,FO2,
+"Cassadaga Wind, LLC",Cassadaga Wind,A,323784,Charlotte,13,36,2021-04-01,126.5,126,126,0,0,,WT,WND,,235.1
+Orangeville Energy Storage LLC,Orangeville ESR,A,323794,Orangeville,121,36,2021-10-19,20,0,0,0,0,,ES,BAT,,-3.5
+Galt Power Inc.,KCE NY 6,A,323823,Hamburg,29,36,2023-07-01,20,20,20,20,20,,ES,BAT,,-1.7
+"Ball Hill Wind Energy, LLC",Ball Hill Wind,A,323825,Hanover,13,36,2024-02-01,107.5,100,100,107.5,107.5,,WT,WND,,55.4
+"World Generation X, LLC",Fortistar - N.Tonawanda (BTM:NG),A,323836,N Tonawanda,29,36,1993-06-01,68.5,59,75,53.3,60.7,YES,CC,NG,FO2,32.5
+"Seneca Power Partners, L.P.",Allegany,B,23514,Hume,3,36,1995-03-01,67,62.9,82.2,62.8,62.7,,CC,NG,,11.7
+"R.E. Ginna Nuclear Power Plant, LLC",R. E. Ginna,B,23603,Ontario,117,36,1970-07-01,614,582,582,581.5,581.8,,NP,UR,,"4,644.90"
+Rochester Gas and Electric Corp.,Station 2  1,B,23604,Rochester,55,36,1913-07-01,8.5,6.5,6.5,8.5,8.5,,HY,WAT,,12
+Rochester Gas and Electric Corp.,Station 26  1,B,23604,Rochester,55,36,1952-08-01,3,3,3,3,3,,HY,WAT,,
+Rochester Gas and Electric Corp.,Station 5  1,B,23604,Rochester,55,36,1918-07-01,14,11.8,11.8,14,14,,HY,WAT,,
+Rochester Gas and Electric Corp.,Station 5  2,B,23604,Rochester,55,36,1918-07-01,13.6,11.8,11.8,13.6,13.6,,HY,WAT,,
+Rochester Gas and Electric Corp.,Station 5  3,B,23604,Rochester,55,36,1918-07-01,18,16.5,16.5,18,18,,HY,WAT,,
+"Seneca Power Partners, L.P.",Batavia,B,24024,Batavia,37,36,1992-06-01,67.3,57.1,71.7,47.7,58,,CC,NG,,3
+Erie Blvd. Hydro - Oak Orchard,Glenwood 1,B,24046,Medina,73,36,1950-01-01,0.5,0.5,0.5,0.5,0.5,,HY,WAT,,2.5
+Erie Blvd. Hydro - Oak Orchard,Glenwood 2,B,24046,Medina,73,36,1950-01-01,0.5,0.5,0.5,0.5,0.5,,HY,WAT,,2.3
+Erie Blvd. Hydro - Oak Orchard,Glenwood 3,B,24046,Medina,73,36,1950-01-01,0.5,0.5,0.5,0.5,0.5,,HY,WAT,,2.9
+Erie Blvd. Hydro - Oak Orchard,Oak Orchard,B,24046,Waterport,73,36,1941-01-01,0.4,0.3,0.3,0.4,0.4,,HY,WAT,,0.3
+Erie Blvd. Hydro - Oak Orchard,Waterport 1,B,24046,Waterport,73,36,1941-01-01,2.3,1.6,1.6,2.3,2.3,,HY,WAT,,8.6
+Erie Blvd. Hydro - Oak Orchard,Waterport 2,B,24046,Waterport,73,36,1968-01-01,2.5,1.8,1.8,2.5,2.5,,HY,WAT,,6.7
+Western New York Wind Corp.,Western NY Wind Power,B,24143,Wethersfield,121,36,2000-10-01,6.6,0,0,0,0,,WT,WND,,0
+"WM Renewable Energy,LLC",Mill Seat,B,323607,Riga,55,36,2007-07-20,6.4,6.4,6.4,6.4,6.4,,IC,MTE,,52.5
+"Innovative Energy Systems, Inc.",Hyland LFGE,B,323620,Angelica,3,36,2008-09-08,4.8,4.8,4.8,4.8,4.8,,IC,MTE,,34.1
+Galt Power Inc.,Synergy Biogas,B,323694,Wyoming,121,36,2012-09-01,2,0,0,0,0,,IC,MTE,,4.6
+"RED-Rochester, LLC",Red Rochester (BTM:NG),B,323720,Rochester,55,36,2021-04-05,117,14.8,14.8,13.3,10.2,YES,ST,NG,FO2,2
+New York State Elec. & Gas Corp.,Allegheny 8,C,23528,Kittanning PA,5,42,1990-10-01,16,14.7,14.7,13.3,16,,HY,WAT,,159.9
+New York State Elec. & Gas Corp.,Allegheny 9,C,23528,Kittanning PA,5,42,1990-10-01,22,20.2,20.2,18.2,22,,HY,WAT,,
+"Nine Mile Point Nuclear Station, LLC",Nine Mile Point 1,C,23575,Scriba,75,36,1969-11-01,641.8,630.5,630.5,621.4,622.3,,NB,UR,,"4,666.60"
+"Nine Mile Point Nuclear Station, LLC",Nine Mile Point 2,C,23744,Scriba,75,36,1988-08-01,"1,399.00","1,310.00","1,310.00","1,274.70","1,297.60",,NB,UR,,"10,837.10"
+Emera Energy Services Subsidiary No. 3 LLC,Greenidge 4 (BTM:NG),C,23583,Torrey,123,36,1953-12-01,112.5,106.3,106.3,25.9,42.4,,ST,NG,WD,143
+"Constellation Energy Generation, LLC",James A. FitzPatrick,C,23598,Scriba,75,36,1975-07-01,882,858.9,858.9,852.8,852.9,,NB,UR,,"7,373.10"
+"Oswego Harbor Power, LLC",Oswego 5,C,23606,Oswego,75,36,1976-02-01,901.8,850.3,850.3,809.5,817.2,,ST,FO6,,9
+"Oswego Harbor Power, LLC",Oswego 6,C,23613,Oswego,75,36,1980-07-01,901.8,835.2,835.2,803,808.7,YES,ST,FO6,NG,25.1
+"WM Renewable Energy,LLC",High Acres,C,23767,Fairport,117,36,1991-06-01,9.6,9.6,9.6,9.6,9.6,,IC,MTE,,24.3
+Indeck Energy Services of Silver Springs,Indeck-Silver Springs,C,23768,Silver Springs,121,36,1991-04-01,56.6,51.5,66.1,51.4,59.8,YES,CC,NG,FO2,36.7
+Indeck-Oswego LP,Indeck-Oswego,C,23783,Oswego,75,36,1990-05-01,57.4,51.6,66.7,51.8,60.6,YES,CC,NG,FO2,37.3
+"Seneca Energy II, LLC",Seneca Energy 1,C,23797,Seneca Falls,99,36,1996-03-01,8.8,8.8,8.8,8.8,8.8,,IC,MTE,,78.2
+"Seneca Energy II, LLC",Seneca Energy 2,C,23797,Seneca Falls,99,36,1997-08-01,8.8,8.8,8.8,8.8,8.8,,IC,MTE,,
+"Seneca Energy II, LLC",Ontario LFGE,C,23819,Canandaigua,69,36,2003-12-01,11.2,11.2,11.2,11.2,11.2,,IC,MTE,,78.3
+"SBF New York, L.L.C.",Syracuse,C,23985,Syracuse,67,36,1993-09-01,102.7,88.8,109.3,83.2,102.8,YES,CC,NG,FO2,10.8
+Erie Blvd. Hydro - Seneca Oswego,Baldwinsville 1,C,24041,Baldwinsville,67,36,1927-01-01,0.3,0.2,0.2,0.3,0.3,,HY,WAT,,1.3
+Erie Blvd. Hydro - Seneca Oswego,Baldwinsville 2,C,24041,Baldwinsville,67,36,1927-01-01,0.3,0.2,0.2,0.3,0.3,,HY,WAT,,1.3
+Erie Blvd. Hydro - Seneca Oswego,Fulton 1,C,24041,Fulton,75,36,1924-01-01,0.8,0.8,0.8,0.8,0.8,,HY,WAT,,2.8
+Erie Blvd. Hydro - Seneca Oswego,Fulton 2,C,24041,Fulton,75,36,1928-01-01,0.5,0.4,0.4,0.5,0.5,,HY,WAT,,3
+Erie Blvd. Hydro - Seneca Oswego,Granby 1,C,24041,Granby,75,36,1983-05-01,5,5.1,5.1,5,5,,HY,WAT,,20.2
+Erie Blvd. Hydro - Seneca Oswego,Granby 2,C,24041,Granby,75,36,1983-05-01,5,5.1,5.1,5,5,,HY,WAT,,16
+Erie Blvd. Hydro - Seneca Oswego,Minetto 2,C,24041,Minetto,75,36,1915-01-01,1.6,1.5,1.5,1.6,1.6,,HY,WAT,,6.5
+Erie Blvd. Hydro - Seneca Oswego,Minetto 3,C,24041,Minetto,75,36,1915-01-01,1.6,1.5,1.5,1.6,1.6,,HY,WAT,,6.8
+Erie Blvd. Hydro - Seneca Oswego,Minetto 4,C,24041,Minetto,75,36,1915-01-01,1.6,1.5,1.5,1.6,1.6,,HY,WAT,,5.8
+Erie Blvd. Hydro - Seneca Oswego,Minetto 5,C,24041,Minetto,75,36,1975-01-01,1.6,1.5,1.5,1.6,1.6,,HY,WAT,,6.1
+Erie Blvd. Hydro - Seneca Oswego,Minetto 6,C,24041,Minetto,75,36,1975-01-01,1.6,1.5,1.5,1.6,1.6,,HY,WAT,,6.9
+Erie Blvd. Hydro - Seneca Oswego,Oswego Falls E 1,C,24041,Oswego,75,36,1914-01-01,1.5,1.5,1.5,1.5,1.5,,HY,WAT,,8.6
+Erie Blvd. Hydro - Seneca Oswego,Oswego Falls E 2,C,24041,Oswego,75,36,1914-01-01,1.5,1.5,1.5,1.5,1.5,,HY,WAT,,7.5
+Erie Blvd. Hydro - Seneca Oswego,Oswego Falls E 3,C,24041,Oswego,75,36,1914-01-01,1.5,1.5,1.5,1.5,1.5,,HY,WAT,,7.6
+Erie Blvd. Hydro - Seneca Oswego,Oswego Falls W 4,C,24041,Oswego,75,36,1914-01-01,0.9,1,1,0.9,0.9,,HY,WAT,,1.9
+Erie Blvd. Hydro - Seneca Oswego,Oswego Falls W 5,C,24041,Oswego,75,36,1914-01-01,0.9,1,1,0.9,0.9,,HY,WAT,,3.1
+Erie Blvd. Hydro - Seneca Oswego,Oswego Falls W 6,C,24041,Oswego,75,36,2007-01-01,0.5,0.5,0.5,0.5,0.5,,HY,WAT,,2
+Erie Blvd. Hydro - Seneca Oswego,Oswego Falls W 7,C,24041,Oswego,75,36,2007-01-01,0.5,0.5,0.5,0.5,0.5,,HY,WAT,,1.3
+Erie Blvd. Hydro - Seneca Oswego,Varick 2,C,24041,Oswego,75,36,1926-01-01,2.2,1.9,1.9,2.2,2.2,,HY,WAT,,6.6
+Erie Blvd. Hydro - Seneca Oswego,Varick 3,C,24041,Oswego,75,36,1926-01-01,2.2,2.1,2.1,2.2,2.2,,HY,WAT,,7.5
+Erie Blvd. Hydro - Seneca Oswego,Varick 4,C,24041,Oswego,75,36,1926-01-01,2.2,1.9,1.9,2.2,2.2,,HY,WAT,,2.7
+Erie Blvd. Hydro - Seneca Oswego,Varick 5,C,24041,Oswego,75,36,1926-01-01,2.2,1.9,1.9,2.2,2.2,,HY,WAT,,5.9
+Erie Blvd. Hydro - South Salmon,Bennetts Bridge 1,C,24043,Altmar,75,36,1964-01-01,6.4,7,7,6.4,6.4,,HY,WAT,,11.2
+Erie Blvd. Hydro - South Salmon,Bennetts Bridge 2,C,24043,Altmar,75,36,1966-01-01,6.4,7,7,6.4,6.4,,HY,WAT,,19.5
+Erie Blvd. Hydro - South Salmon,Bennetts Bridge 3,C,24043,Altmar,75,36,1970-01-01,7,7.7,7.7,7,7,,HY,WAT,,35.7
+Erie Blvd. Hydro - South Salmon,Bennetts Bridge 4,C,24043,Altmar,75,36,1970-01-01,7,7.7,7.7,7,7,,HY,WAT,,29.5
+Erie Blvd. Hydro - South Salmon,Lighthouse Hill 1,C,24043,Altmar,75,36,1930-01-01,3.8,4.1,4.1,3.8,3.8,,HY,WAT,,15.6
+Erie Blvd. Hydro - South Salmon,Lighthouse Hill 2,C,24043,Altmar,75,36,1930-01-01,3.8,4.1,4.1,3.8,3.8,,HY,WAT,,8.5
+Carr Street Generating Station LP,Carr St.-E. Syr,C,24060,Dewitt,67,36,1993-08-01,122.6,89,116.8,89.8,104.4,YES,CC,NG,FO2,66
+"Dynegy Marketing and Trade, LLC",Independence GS1,C,24169,Scriba,75,36,1994-11-01,313.5,253.2,303,245.1,299.3,,CC,NG,,"4,049.20"
+"Dynegy Marketing and Trade, LLC",Independence GS2,C,24170,Scriba,75,36,1994-11-01,313.5,253.2,302.9,245.1,299.3,,CC,NG,,
+"Dynegy Marketing and Trade, LLC",Independence GS3,C,24171,Scriba,75,36,1994-11-01,313.5,253.3,303,245.1,299.3,,CC,NG,,
+"Dynegy Marketing and Trade, LLC",Independence GS4,C,24172,Scriba,75,36,1994-11-01,313.5,253.2,302.8,245.1,299.3,,CC,NG,,
+Canastota Windpower LLC,Fenner Wind Power,C,24204,Fenner,53,36,2001-12-01,30,30,30,0,0,,WT,WND,,70.4
+"Broome Energy Resources, LLC",Broome LFGE,C,323600,Binghamton,7,36,2007-09-01,2.4,2.1,2.1,2.4,2.4,,IC,MTE,,13
+"Canandaigua Power Partners, LLC",Canandaigua Wind Power,C,323617,Avoca,101,36,2008-12-05,125,125,125,125,125,,WT,WND,,266.1
+Sheldon Energy LLC,High Sheldon Wind Farm,C,323625,Sheldon,121,36,2009-02-01,118.1,112.5,112.5,118.1,118.1,,WT,WND,,177.5
+"Valcour Wethersfield Windpark, LLC",Wethersfield Wind Power,C,323626,Wethersfield,121,36,2008-12-11,126,126,126,126,126,,WT,WND,,193.1
+"Broome Energy Resources, LLC",Broome 2 LFGE,C,323671,Binghamton,7,36,2013-01-31,2.1,2,2,2.1,2.1,,IC,MTE,,13.9
+Howard Wind LLC,Howard Wind,C,323690,Howard,101,36,2011-12-01,55.4,57.4,57.4,55.4,55.4,,WT,WND,,107.8
+Stony Creek Energy LLC,Orangeville Wind Farm,C,323706,Orangeville,121,36,2013-12-01,93.9,94.4,94.4,93.9,93.9,,WT,WND,,221.8
+Marsh Hill Energy LLC,Marsh Hill Wind Farm,C,323713,Jasper,101,36,2014-12-01,16.2,0,0,0,0,,WT,WND,,38.4
+Galt Power Inc.,East Pulaski ESR ,C,323781,Oswego,75,36,2019-05-01,2,0,0,0,0,,ES,BAT,,
+Galt Power Inc.,Puckett Solar,C,323809,Greene,17,36,2022-09-27,20,20,20,20,20,,PV,SUN,,31.3
+Galt Power Inc.,Janis Solar,C,323808,Willet,23,36,2023-02-23,20,20,20,20,20,,PV,SUN,,28.9
+"NextEra Energy Marketing, LLC",Eight Point Wind,C,323820,Greenwood,101,36,2023-02-08,111.2,101.2,101.2,111.2,111.2,,WT,WND,,232.4
+"Baron Winds, LLC",Baron Winds,C,323822,Cohocton,101,36,2023-02-07,238.4,300,300,121.8,121.8,,WT,WND,,295.7
+New York Power Authority,St Lawrence - FDR (Fleet),D,23600,Massena,89,36,1958-07-01,"1,088.00",856,856,856,800,,HY,WAT,,"7,138.60"
+New York State Elec. & Gas Corp.,Cadyville 1,D,23628,Schuyler Falls,19,36,1921-08-01,1.2,1,1,1.2,1.2,,HY,WAT,,153.7
+New York State Elec. & Gas Corp.,Cadyville 2,D,23628,Schuyler Falls,19,36,1921-08-01,1.2,1,1,1.2,1.2,,HY,WAT,,
+New York State Elec. & Gas Corp.,Cadyville 3,D,23628,Schuyler Falls,19,36,1986-09-01,3.1,2.7,2.7,3.1,3.1,,HY,WAT,,
+New York State Elec. & Gas Corp.,High Falls  1,D,23628,Saranac,19,36,1948-08-01,4,4.3,4.3,4,4,,HY,WAT,,
+New York State Elec. & Gas Corp.,High Falls  2,D,23628,Saranac,19,36,1949-08-01,4,4.3,4.3,4,4,,HY,WAT,,
+New York State Elec. & Gas Corp.,High Falls  3,D,23628,Saranac,19,36,1956-08-01,7,8.2,8.2,7,7,,HY,WAT,,
+New York State Elec. & Gas Corp.,Kent Falls 1,D,23628,Schuyler Falls,19,36,1928-08-01,3.6,3,3,3.6,3.6,,HY,WAT,,
+New York State Elec. & Gas Corp.,Kent Falls 2,D,23628,Schuyler Falls,19,36,1928-08-01,3.6,3,3,3.6,3.6,,HY,WAT,,
+New York State Elec. & Gas Corp.,Kent Falls 3,D,23628,Schuyler Falls,19,36,1985-07-01,6.4,6,6,6.4,6.4,,HY,WAT,,
+New York State Elec. & Gas Corp.,Mill C 1,D,23628,Plattsburgh,19,36,1944-08-01,1,0.9,0.9,1,1,,HY,WAT,,
+New York State Elec. & Gas Corp.,Mill C 2,D,23628,Plattsburgh,19,36,1943-08-01,1.2,1.2,1.2,1.2,1.2,,HY,WAT,,
+New York State Elec. & Gas Corp.,Mill C 3,D,23628,Plattsburgh,19,36,1984-11-01,3.8,3.7,3.7,3.8,3.8,,HY,WAT,,
+New York State Elec. & Gas Corp.,Rainbow Falls 1,D,23628,Ausable,19,36,1926-08-01,1.3,1.5,1.5,1.3,1.3,,HY,WAT,,
+New York State Elec. & Gas Corp.,Rainbow Falls 2,D,23628,Ausable,19,36,1927-08-01,1.3,1.5,1.5,1.3,1.3,,HY,WAT,,
+"Seneca Power Partners, L.P.",Massena,D,23902,Massena,89,36,1992-07-01,102.1,82.2,107.9,79.5,92.3,YES,CC,NG,FO2,21.9
+Erie Blvd. Hydro - North Salmon,Allens Falls,D,24042,Allens Falls,89,36,1927-01-01,4.4,5,5,4.4,4.4,,HY,WAT,,31.5
+Erie Blvd. Hydro - North Salmon,Chasm 1,D,24042,Chateaugay,33,36,1913-01-01,1,1.1,1.1,1,1,,HY,WAT,,7.5
+Erie Blvd. Hydro - North Salmon,Chasm 2,D,24042,Chateaugay,33,36,1913-01-01,1,1.1,1.1,1,1,,HY,WAT,,8.8
+Erie Blvd. Hydro - North Salmon,Chasm 3,D,24042,Chateaugay,33,36,1926-01-01,1.4,1.6,1.6,1.4,1.4,,HY,WAT,,10.1
+Erie Blvd. Hydro - North Salmon,Franklin 1,D,24042,Franklin,33,36,1911-01-01,1.1,1.1,1.1,1.1,1.1,,HY,WAT,,5.5
+Erie Blvd. Hydro - North Salmon,Franklin 2,D,24042,Franklin,33,36,1926-01-01,1.1,1.1,1.1,1.1,1.1,,HY,WAT,,6.8
+Erie Blvd. Hydro - North Salmon,Macomb,D,24042,Malone,33,36,1940-01-01,1,1.1,1.1,1,1,,HY,WAT,,7.1
+Erie Blvd. Hydro - North Salmon,Parishville,D,24042,Parishville,89,36,1925-01-01,2.4,2.4,2.4,2.4,2.4,,HY,WAT,,16.3
+Erie Blvd. Hydro - North Salmon,Piercefield 1,D,24042,Piercefield,89,36,1957-01-01,1.5,1.6,1.6,1.5,1.5,,HY,WAT,,9
+Erie Blvd. Hydro - North Salmon,Piercefield 2,D,24042,Piercefield,89,36,1924-01-01,0.6,0.6,0.6,0.6,0.6,,HY,WAT,,1.7
+Erie Blvd. Hydro - North Salmon,Piercefield 3,D,24042,Piercefield,89,36,1924-01-01,0.6,0.6,0.6,0.6,0.6,,HY,WAT,,3.5
+"Valcour Ellenburg Windapark,LLC",Ellenburg Wind Power,D,323604,Ellenburg,19,36,2008-03-31,81,81,81,81,81,,WT,WND,,115.7
+"Valcour Clinton Windpark,LLC",Clinton Wind Power,D,323605,Clinton,19,36,2008-04-09,100.5,100.5,100.5,100.5,100.5,,WT,WND,,125.3
+"Valcour Altona Windpark, LLC",Altona Wind Power,D,323606,Altona,19,36,2008-09-23,97.5,97.5,97.5,97.5,97.5,,WT,WND,,124.6
+"Valcour  Chateaugay Windpark, LLC",Chateaugay Wind Power,D,323614,Chateaugay,33,36,2008-10-07,106.5,106.5,106.5,106.5,106.5,,WT,WND,,144.6
+"Innovative Energy Systems, Inc.",Clinton LFGE,D,323618,Morrisonville,19,36,2008-10-01,6.4,6.4,6.4,6.4,6.4,,IC,MTE,,47.3
+Marble River LLC,Marble River Wind,D,323696,Ellenburg,19,36,2012-07-01,215.2,215.2,215.2,215.2,215.2,,WT,WND,,386.7
+Jericho Rise Wind Farm LLC,Jericho Rise Wind Farm,D,323719,Chateaugay,33,36,2016-12-01,77.7,77.7,77.7,77.7,77.7,,WT,WND,,184.8
+New York Power Authority,North Country ESR,D,323785,Chateaugay,33,36,2023-02-01,20,0,0,0,0,,ES,BAT,,-1
+"Saranac Power Partners ,L.P",Saranac Energy CC1,D,323796,Plattsburgh,19,36,1994-06-01,142.8,126.9,149.2,121.8,147,,CC,NG,,159.2
+"Saranac Power Partners ,L.P",Saranac Energy CC2,D,323797,Plattsburgh,19,36,1994-06-01,142.8,126.8,149.2,116.1,148.1,,CC,NG,,
+"Northbrook Lyons Falls, LLC",Lyons Falls Hydro (BTM:NG),E,23570,Lyons Falls,49,36,1986-01-01,8.6,0,0,0,0,,HY,WAT,,28.9
+New York Power Authority,Jarvis 1,E,23743,Hinckley,65,36,1991-07-01,4.5,4.5,4.5,9,9,,HY,WAT,,16.7
+New York Power Authority,Jarvis 2,E,23743,Hinckley,65,36,1991-07-01,4.5,4.5,4.5,9,9,,HY,WAT,,14.7
+"Seneca Power Partners, L.P.",Sterling,E,23777,Sherrill,65,36,1991-06-01,65.3,57.4,72.1,49.7,60.3,,CC,NG,,2.1
+"Black River Hydroelectric, LLC",Glen Park Hydro,E,23778,Glen Park,45,36,1986-01-01,32.6,40.4,40.4,32.6,32.6,,HY,WAT,,130.1
+"Seneca Power Partners, L.P.",Carthage Energy,E,23857,Carthage,45,36,1991-08-01,62.9,59,70.6,56.4,63.1,YES,CC,NG,FO2,2.3
+"SBF New York, L.L.C.",Beaver Falls,E,23983,Beaver Falls,49,36,1995-03-01,107.8,80.2,94.9,78.1,91.2,YES,CC,NG,FO2,4.4
+Erie Blvd. Hydro - Oswegatchie,Browns Falls 1,E,24044,Oswegatchie,89,36,1923-01-01,7.5,8,8,7.5,7.5,,HY,WAT,,34.6
+Erie Blvd. Hydro - Oswegatchie,Browns Falls 2,E,24044,Oswegatchie,89,36,1923-01-01,7.5,8,8,7.5,7.5,,HY,WAT,,24.5
+Erie Blvd. Hydro - Oswegatchie,Eel Weir 1,E,24044,Heuvelton,89,36,1928-01-01,0.5,0.3,0.3,0.5,0.5,,HY,WAT,,2
+Erie Blvd. Hydro - Oswegatchie,Eel Weir 2,E,24044,Heuvelton,89,36,1938-01-01,1.1,0.8,0.8,1.1,1.1,,HY,WAT,,2.9
+Erie Blvd. Hydro - Oswegatchie,Eel Weir 3,E,24044,Heuvelton,89,36,1938-01-01,1.1,0.8,0.8,1.1,1.1,,HY,WAT,,4.1
+Erie Blvd. Hydro - Oswegatchie,Flat Rock 1,E,24044,Flat Rock,89,36,1924-01-01,3,2.6,2.6,3,3,,HY,WAT,,12.3
+Erie Blvd. Hydro - Oswegatchie,Flat Rock 2,E,24044,Flat Rock,89,36,1924-01-01,3,2.6,2.6,3,3,,HY,WAT,,9
+Erie Blvd. Hydro - Oswegatchie,Heuvelton 1,E,24044,Heuvelton,89,36,1924-01-01,0.5,0.4,0.4,0.5,0.5,,HY,WAT,,2.6
+Erie Blvd. Hydro - Oswegatchie,Heuvelton 2,E,24044,Heuvelton,89,36,1924-01-01,0.5,0.4,0.4,0.5,0.5,,HY,WAT,,2.3
+Erie Blvd. Hydro - Oswegatchie,Lower Newton Falls 1,E,24044,Newton Falls,89,36,2002-07-01,0.5,0.6,0.6,0.5,0.5,,HY,WAT,,2.4
+Erie Blvd. Hydro - Oswegatchie,Oswegatchie 1,E,24044,Oswegatchie,89,36,1937-01-01,0.6,1.3,1.3,0.6,0.6,,HY,WAT,,4.4
+Erie Blvd. Hydro - Oswegatchie,Oswegatchie 2,E,24044,Oswegatchie,89,36,1937-01-01,0.2,0.5,0.5,0.2,0.2,,HY,WAT,,4.3
+Erie Blvd. Hydro - Oswegatchie,South Edwards 1,E,24044,South Edwards,89,36,1937-01-01,1,1.2,1.2,1,1,,HY,WAT,,9.3
+Erie Blvd. Hydro - Oswegatchie,South Edwards 2,E,24044,South Edwards,89,36,1937-01-01,1,1.2,1.2,1,1,,HY,WAT,,5.9
+Erie Blvd. Hydro - Oswegatchie,South Edwards 3,E,24044,South Edwards,89,36,1921-01-01,0.7,0.8,0.8,0.7,0.7,,HY,WAT,,4.5
+Erie Blvd. Hydro - Oswegatchie,South Edwards 4,E,24044,South Edwards,89,36,1937-01-01,0.2,0.2,0.2,0.2,0.2,,HY,WAT,,1.8
+Erie Blvd. Hydro - Oswegatchie,Talcville 1,E,24044,Edwards,89,36,1986-12-01,0.5,0.4,0.4,0.5,0.5,,HY,WAT,,0
+Erie Blvd. Hydro - Oswegatchie,Talcville 2,E,24044,Edwards,89,36,1986-12-01,0.5,0.4,0.4,0.5,0.5,,HY,WAT,,0.6
+Erie Blvd. Hydro - Oswegatchie,Upper Newton Falls 2,E,24044,Newton Falls,89,36,2002-07-01,0.5,0.4,0.4,0.5,0.5,,HY,WAT,,3.6
+Erie Blvd. Hydro - Oswegatchie,Upper Newton Falls 3,E,24044,Newton Falls,89,36,2002-07-01,0.5,0.4,0.4,0.5,0.5,,HY,WAT,,2.7
+Erie Blvd. Hydro - Oswegatchie,Upper Newton Falls 4,E,24044,Newton Falls,89,36,2002-07-01,0.5,0.4,0.4,0.5,0.5,,HY,WAT,,1.2
+Erie Blvd. Hydro - Black River,Beebee Island 1,E,24047,Watertown,45,36,1963-01-01,4,4.4,4.4,4,4,,HY,WAT,,21.3
+Erie Blvd. Hydro - Black River,Beebee Island 2,E,24047,Watertown,45,36,1968-01-01,4,4.4,4.4,4,4,,HY,WAT,,33.2
+Erie Blvd. Hydro - Black River,Black River 1,E,24047,Black River,45,36,1920-01-01,2,2.3,2.3,2,2,,HY,WAT,,9.4
+Erie Blvd. Hydro - Black River,Black River 2,E,24047,Black River,45,36,1920-01-01,2,2.3,2.3,2,2,,HY,WAT,,12.1
+Erie Blvd. Hydro - Black River,Black River 3,E,24047,Black River,45,36,1920-01-01,2,2.3,2.3,2,2,,HY,WAT,,7.1
+Erie Blvd. Hydro - Black River,Deferiet 1,E,24047,Deferiet,45,36,1925-01-01,3.6,3.7,3.7,3.6,3.6,,HY,WAT,,20.1
+Erie Blvd. Hydro - Black River,Deferiet 2,E,24047,Deferiet,45,36,1925-01-01,3.6,3.7,3.7,3.6,3.6,,HY,WAT,,26.1
+Erie Blvd. Hydro - Black River,Deferiet 3,E,24047,Deferiet,45,36,1925-01-01,3.6,3.7,3.7,3.6,3.6,,HY,WAT,,21.4
+Erie Blvd. Hydro - Black River,Herrings 1,E,24047,Herrings,45,36,1924-01-01,1.8,1.8,1.8,1.8,1.8,,HY,WAT,,5.6
+Erie Blvd. Hydro - Black River,Herrings 2,E,24047,Herrings,45,36,1924-01-01,1.8,1.8,1.8,1.8,1.8,,HY,WAT,,11.2
+Erie Blvd. Hydro - Black River,Herrings 3,E,24047,Herrings,45,36,1924-01-01,1.8,1.8,1.8,1.8,1.8,,HY,WAT,,9.4
+Erie Blvd. Hydro - Black River,Kamargo 1,E,24047,Black River,45,36,1921-01-01,1.8,1.8,1.8,1.8,1.8,,HY,WAT,,9.6
+Erie Blvd. Hydro - Black River,Kamargo 2,E,24047,Black River,45,36,1921-01-01,1.8,1.8,1.8,1.8,1.8,,HY,WAT,,11.3
+Erie Blvd. Hydro - Black River,Kamargo 3,E,24047,Black River,45,36,1921-01-01,1.8,1.8,1.8,1.8,1.8,,HY,WAT,,7.1
+Erie Blvd. Hydro - Black River,Sewalls 1,E,24047,Watertown,45,36,1925-01-01,1,1.1,1.1,1,1,,HY,WAT,,7.8
+Erie Blvd. Hydro - Black River,Sewalls 2,E,24047,Watertown,45,36,1925-01-01,1,1.1,1.1,1,1,,HY,WAT,,6.6
+Erie Blvd. Hydro - Beaver River,Belfort 1,E,24048,Belfort,49,36,1903-01-01,0.4,0.4,0.4,0.4,0.4,,HY,WAT,,2.5
+Erie Blvd. Hydro - Beaver River,Belfort 2,E,24048,Belfort,49,36,1915-01-01,0.6,0.6,0.6,0.6,0.6,,HY,WAT,,3.2
+Erie Blvd. Hydro - Beaver River,Belfort 3,E,24048,Belfort,49,36,1918-01-01,1,1,1,1,1,,HY,WAT,,7.1
+Erie Blvd. Hydro - Beaver River,Eagle 1,E,24048,Watson,49,36,1914-01-01,1.3,1.2,1.2,1.3,1.3,,HY,WAT,,7.8
+Erie Blvd. Hydro - Beaver River,Eagle 2,E,24048,Watson,49,36,1915-01-01,1.4,1.3,1.3,1.4,1.4,,HY,WAT,,6.7
+Erie Blvd. Hydro - Beaver River,Eagle 3,E,24048,Watson,49,36,1919-01-01,1.4,1.3,1.3,1.4,1.4,,HY,WAT,,5.4
+Erie Blvd. Hydro - Beaver River,Eagle 4,E,24048,Watson,49,36,1925-01-01,2.1,2,2,2.1,2.1,,HY,WAT,,12.1
+Erie Blvd. Hydro - Beaver River,Effley 1,E,24048,Belfort,49,36,1902-01-01,0.4,0.3,0.3,0.4,0.4,,HY,WAT,,2.8
+Erie Blvd. Hydro - Beaver River,Effley 2,E,24048,Belfort,49,36,1907-01-01,0.4,0.3,0.3,0.4,0.4,,HY,WAT,,0.1
+Erie Blvd. Hydro - Beaver River,Effley 3,E,24048,Belfort,49,36,1910-01-01,0.6,0.5,0.5,0.6,0.6,,HY,WAT,,4
+Erie Blvd. Hydro - Beaver River,Effley 4,E,24048,Belfort,49,36,1923-01-01,1.6,1.5,1.5,1.6,1.6,,HY,WAT,,9.4
+Erie Blvd. Hydro - Beaver River,Elmer 1,E,24048,Belfort,49,36,1916-01-01,0.8,0.9,0.9,0.8,0.8,,HY,WAT,,4.6
+Erie Blvd. Hydro - Beaver River,Elmer 2,E,24048,Belfort,49,36,1916-01-01,0.8,0.9,0.9,0.8,0.8,,HY,WAT,,6.5
+Erie Blvd. Hydro - Beaver River,High Falls 1,E,24048,Indian River,49,36,1925-01-01,1.6,1.9,1.9,1.6,1.6,,HY,WAT,,8.3
+Erie Blvd. Hydro - Beaver River,High Falls 2,E,24048,Indian River,49,36,1925-01-01,1.6,1.9,1.9,1.6,1.6,,HY,WAT,,11.1
+Erie Blvd. Hydro - Beaver River,High Falls 3,E,24048,Indian River,49,36,1925-01-01,1.6,1.9,1.9,1.6,1.6,,HY,WAT,,15.2
+Erie Blvd. Hydro - Beaver River,Moshier 1,E,24048,Belfort,43,36,1929-01-01,4,4,4,4,4,,HY,WAT,,22.2
+Erie Blvd. Hydro - Beaver River,Moshier 2,E,24048,Belfort,43,36,1929-01-01,4,4,4,4,4,,HY,WAT,,20.5
+Erie Blvd. Hydro - Beaver River,Soft Maple 1,E,24048,Croghan,49,36,1925-01-01,7.5,8,8,7.5,7.5,,HY,WAT,,20.9
+Erie Blvd. Hydro - Beaver River,Soft Maple 2,E,24048,Croghan,49,36,1925-01-01,7.5,8,8,7.5,7.5,,HY,WAT,,25
+Erie Blvd. Hydro - Beaver River,Taylorville 1,E,24048,Belfort,49,36,1913-01-01,1.1,1,1,1.1,1.1,,HY,WAT,,7
+Erie Blvd. Hydro - Beaver River,Taylorville 2,E,24048,Belfort,49,36,1913-01-01,1.1,1,1,1.1,1.1,,HY,WAT,,6.9
+Erie Blvd. Hydro - Beaver River,Taylorville 3,E,24048,Belfort,49,36,1913-01-01,1.1,1,1,1.1,1.1,,HY,WAT,,7.2
+Erie Blvd. Hydro - Beaver River,Taylorville 4,E,24048,Belfort,49,36,1927-01-01,1.2,1.1,1.1,1.2,1.2,,HY,WAT,,5.1
+Erie Blvd. Hydro - West Canada,Prospect,E,24049,Prospect,43,36,1959-01-01,17.3,21.7,21.7,17.3,17.3,,HY,WAT,,78
+Erie Blvd. Hydro - West Canada,Trenton Falls 5,E,24049,Trenton,65,36,1919-01-01,6.8,9.6,9.6,6.8,6.8,,HY,WAT,,51.5
+Erie Blvd. Hydro - West Canada,Trenton Falls 6,E,24049,Trenton,65,36,1919-01-01,6.4,9.1,9.1,6.4,6.4,,HY,WAT,,50.9
+Erie Blvd. Hydro - West Canada,Trenton Falls 7,E,24049,Trenton,65,36,1922-01-01,6.4,9.1,9.1,6.4,6.4,,HY,WAT,,37.8
+Erie Blvd. Hydro - East Canada Mohawk,Inghams 1,E,24050,Little Falls,43,36,1912-01-01,3.2,3.5,3.5,3.2,3.2,,HY,WAT,,14.4
+Erie Blvd. Hydro - East Canada Mohawk,Inghams 2,E,24050,Little Falls,43,36,1912-01-01,3.2,3.5,3.5,3.2,3.2,,HY,WAT,,16.1
+Erie Blvd. Hydro - Upper Raquette,Blake,E,24056,Stark,89,36,1957-01-01,14.4,15.6,15.6,14.4,14.4,,HY,WAT,,69.8
+Erie Blvd. Hydro - Upper Raquette,Five Falls,E,24056,Colton,89,36,1955-01-01,22.5,24.4,24.4,22.5,22.5,,HY,WAT,,117.8
+Erie Blvd. Hydro - Upper Raquette,Rainbow Falls,E,24056,Colton,89,36,1956-01-01,22.5,24.4,24.4,22.5,22.5,,HY,WAT,,118.6
+Erie Blvd. Hydro - Upper Raquette,South Colton,E,24056,South Colton,89,36,1954-01-01,19.4,20.9,20.9,19.4,19.4,,HY,WAT,,95.4
+Erie Blvd. Hydro - Upper Raquette,Stark,E,24056,Stark,89,36,1957-01-01,22.5,24.6,24.6,22.5,22.5,,HY,WAT,,110.5
+Erie Blvd. Hydro - Lower Raquette,Colton 1,E,24057,Colton,89,36,1962-01-01,10,10,10,10,10,,HY,WAT,,81
+Erie Blvd. Hydro - Lower Raquette,Colton 2,E,24057,Colton,89,36,1918-01-01,10,10,10,10,10,,HY,WAT,,76.9
+Erie Blvd. Hydro - Lower Raquette,Colton 3,E,24057,Colton,89,36,1928-01-01,10,10,10,10,10,,HY,WAT,,13.7
+Erie Blvd. Hydro - Lower Raquette,East Norfolk,E,24057,East Norfolk,89,36,1928-01-01,3.6,4,4,3.6,3.6,,HY,WAT,,9.8
+Erie Blvd. Hydro - Lower Raquette,Hannawa Falls 1,E,24057,Hannawa Falls,89,36,1914-01-01,3.6,3.7,3.7,3.6,3.6,,HY,WAT,,27.7
+Erie Blvd. Hydro - Lower Raquette,Hannawa Falls 2,E,24057,Hannawa Falls,89,36,1920-01-01,3.6,3.7,3.7,3.6,3.6,,HY,WAT,,26.3
+Erie Blvd. Hydro - Lower Raquette,Higley 1,E,24057,Colton,89,36,1913-01-01,1.2,1.1,1.1,1.2,1.2,,HY,WAT,,9.8
+Erie Blvd. Hydro - Lower Raquette,Higley 2,E,24057,Colton,89,36,1913-01-01,1.2,1.1,1.1,1.2,1.2,,HY,WAT,,8
+Erie Blvd. Hydro - Lower Raquette,Higley 3,E,24057,Colton,89,36,1943-01-01,2.1,2,2,2.1,2.1,,HY,WAT,,10.8
+Erie Blvd. Hydro - Lower Raquette,Higley 4,E,24057,Colton,89,36,1943-01-01,2.1,2,2,2.1,2.1,,HY,WAT,,10.5
+Erie Blvd. Hydro - Lower Raquette,Norfolk,E,24057,Norfolk,89,36,1928-01-01,4.5,4.8,4.8,4.5,4.5,,HY,WAT,,31.4
+Erie Blvd. Hydro - Lower Raquette,Norwood,E,24057,Norwood,89,36,1928-01-01,2,2.2,2.2,2,2,,HY,WAT,,13.5
+Erie Blvd. Hydro - Lower Raquette,Raymondville,E,24057,Raymondville,89,36,1928-01-01,2,2.1,2.1,2,2,,HY,WAT,,14.2
+Erie Blvd. Hydro - Lower Raquette,Sugar Island 1,E,24057,Potsdam,89,36,1924-01-01,2.5,2.1,2.1,2.5,2.5,,HY,WAT,,13.7
+Erie Blvd. Hydro - Lower Raquette,Sugar Island 2,E,24057,Potsdam,89,36,1924-01-01,2.5,2,2,2.5,2.5,,HY,WAT,,16
+Erie Blvd. Hydro - Lower Raquette,Yaleville 1,E,24057,Norwood,89,36,1940-01-01,0.5,0.2,0.2,0.5,0.5,,HY,WAT,,2.5
+Erie Blvd. Hydro - Lower Raquette,Yaleville 2,E,24057,Norwood,89,36,1940-01-01,0.2,0.3,0.3,0.2,0.2,,HY,WAT,,1.2
+"Madison Windpower, LLC",Madison Wind Power,E,24146,Madison,53,36,2000-09-01,11.6,11.5,11.5,11.6,11.6,,WT,WND,,12.4
+"Flat Rock Windpower, LLC",Maple Ridge Wind 1,E,323574,Lowville,49,36,2006-01-01,231,231,231,231,231,,WT,WND,,397
+"Flat Rock Windpower II, LLC",Maple Ridge Wind 2,E,323611,Lowville,49,36,2007-12-01,90.8,90.7,90.7,90.8,90.8,,WT,WND,,155.9
+"Northbrook Lyons Falls, LLC",Hampshire Paper,E,323593,Gouverneur,89,36,1987-03-01,3.4,3.5,3.5,3.4,3.4,,HY,WAT,,8.8
+"Munnsville Wind Farm, LLC",Munnsville Wind Power,E,323609,Bouckville,53,36,2007-08-20,34.5,34.5,34.5,34.5,34.5,,WT,WND,,75.7
+"Innovative Energy Systems, Inc.",DANC LFGE,E,323619,Watertown,45,36,2008-09-08,6.4,6.4,6.4,6.4,6.4,,IC,MTE,,22.5
+"WM Renewable Energy,LLC",Madison County LF,E,323628,Wampsville,53,36,2010-03-01,1.6,1.6,1.6,0,0,,IC,MTE,,0
+Hardscrabble Wind Power LLC,Hardscrabble Wind,E,323673,Fairfield,43,36,2011-02-01,74,74,74,74,74,,WT,WND,,155.3
+"WM Renewable Energy,LLC",Oneida-Herkimer  LFGE,E,323681,Boonville,65,36,2012-04-01,3.2,3.2,3.2,3.2,3.2,,IC,MTE,,26.2
+EDF Renewable Energy,Copenhagen Wind Farm,E,323753,Copenhagen,49,36,2018-12-01,79.9,79.9,79.9,0,0,,WT,WND,,221.8
+Avangrid Renewables LLC,Roaring Brook Wind,E,323790,Martinsburg,49,36,2021-08-30,79.7,79.7,79.7,79.7,79.7,,WT,WND,,171.2
+Number Three Wind LLC,Number Three Wind Power,E,323818,Lowville,49,36,2023-07-01,103.9,105.8,105.8,103.9,103.9,,WT,WND,,163.4
+"Bluestone Wind, LLC",BlueStone Wind,E,323821,Sanford,7,36,2024-02-01,111.8,124.2,124.2,111.8,111.8,,WT,WND,,67.6
+Boralex Hydro Operations Inc,NYS Dam ,F,23527,Waterford,91,36,1990-12-01,11.4,11.3,11.3,11.4,11.4,,HY,WAT,,49.3
+New York State Elec. & Gas Corp.,Mechanicville 1,F,23645,Stillwater,91,36,1983-09-01,9.2,10,10,9.2,9.2,,HY,WAT,,79.6
+New York State Elec. & Gas Corp.,Mechanicville 2,F,23645,Stillwater,91,36,1983-09-01,9.3,10,10,9.3,9.3,,HY,WAT,,
+New Athens Generating Company LLC,Athens 1,F,23668,Athens,39,36,2004-05-01,441,316.6,399.9,329.4,411.8,YES,CC,NG,FO2,473.3
+New Athens Generating Company LLC,Athens 2,F,23670,Athens,39,36,2004-05-01,441,315.6,398.6,333.3,409.9,YES,CC,NG,FO2,794
+New Athens Generating Company LLC,Athens 3,F,23677,Athens,39,36,2004-05-01,441,312.8,395.1,331.1,407.9,YES,CC,NG,FO2,569.4
+Boralex Hydro Operations Inc,Warrensburg,F,23737,Warrensburg,113,36,1988-12-01,2.9,3,3,2.9,2.9,,HY,WAT,,16.2
+New York Power Authority,Gilboa 1,F,23756,Gilboa NY,95,36,1973-07-01,290,290.7,290.7,293.1,291.5,,PS,WAT,,-73.4
+New York Power Authority,Gilboa 2,F,23757,Gilboa NY,95,36,1973-07-01,290,291.2,291.2,292.1,292.5,,PS,WAT,,-16.1
+New York Power Authority,Gilboa 3,F,23758,Gilboa NY,95,36,1973-07-01,290,291.7,291.7,292.9,291.7,,PS,WAT,,99.3
+New York Power Authority,Gilboa 4,F,23759,Gilboa NY,95,36,1973-07-01,290,291.5,291.5,291.7,293.7,,PS,WAT,,-135.6
+Rensselaer Generating LLC,Rensselaer,F,23796,Rensselaer,83,36,1993-12-01,96.9,79,79,76.3,81.7,YES,CC,NG,FO2,24.7
+"Wheelabrator Hudson Falls, LLC",Wheelabrator Hudson Falls,F,23798,Hudson Falls,115,36,1991-10-01,14.4,12.7,12.7,10.4,10.2,,ST,REF,,62.9
+"Selkirk Cogen Partners , L.P.",Selkirk-I,F,23801,Selkirk,1,36,1992-03-01,107.2,82.1,107.2,76.1,104.6,YES,CC,NG,FO2,43.8
+"Selkirk Cogen Partners , L.P.",Selkirk-II,F,23799,Selkirk,1,36,1994-09-01,338.8,291.3,380.5,277.2,336.9,YES,CC,NG,FO2,96.4
+Indeck-Corinth LP,Indeck-Corinth,F,23802,Corinth,91,36,1995-07-01,147,131.2,134,131.1,135.8,YES,CC,NG,FO2,483.2
+"Castleton Power, LLC",Castleton Energy Center,F,23900,Castleton,83,36,1992-01-01,72,69,86.6,67.9,77.3,YES,CC,NG,FO2,90
+New York Power Authority,Crescent 1,F,24018,Crescent,1,36,1991-07-01,2.8,3.2,3.2,2.8,2.8,,HY,WAT,,14.4
+New York Power Authority,Crescent 2,F,24018,Crescent,1,36,1991-07-01,2.8,3.2,3.2,2.8,2.8,,HY,WAT,,16.5
+New York Power Authority,Crescent 3,F,24018,Crescent,1,36,1991-07-01,3,3.2,3.2,3,3,,HY,WAT,,17.7
+New York Power Authority,Crescent 4,F,24018,Crescent,1,36,1991-07-01,3,3.2,3.2,3,3,,HY,WAT,,15.7
+New York Power Authority,Vischer Ferry 1,F,24020,Vischer Ferry,91,36,1991-07-01,2.8,3.2,3.2,2.8,2.9,,HY,WAT,,12.5
+New York Power Authority,Vischer Ferry 2,F,24020,Vischer Ferry,91,36,1991-07-01,2.8,3.2,3.2,2.8,2.9,,HY,WAT,,15.1
+New York Power Authority,Vischer Ferry 3,F,24020,Vischer Ferry,91,36,1991-07-01,3,3.2,3.2,3,2.9,,HY,WAT,,16.8
+New York Power Authority,Vischer Ferry 4,F,24020,Vischer Ferry,91,36,1991-07-01,3,3.2,3.2,3,2.9,,HY,WAT,,13.4
+Erie Blvd. Hydro - East Canada Capital,Beardslee 1,F,24051,Little Falls,43,36,1924-01-01,10,9.5,9.5,10,10,,HY,WAT,,19.4
+Erie Blvd. Hydro - East Canada Capital,Beardslee 2,F,24051,Little Falls,43,36,1924-01-01,10,9.5,9.5,10,10,,HY,WAT,,33.8
+Erie Blvd. Hydro - East Canada Capital,Ephratah 1,F,24051,Caroga Lake,35,36,1920-01-01,1.4,0.7,0.7,1.4,1.4,,HY,WAT,,1
+Erie Blvd. Hydro - East Canada Capital,Ephratah 2,F,24051,Caroga Lake,35,36,1911-01-01,1.2,0.6,0.6,1.2,1.2,,HY,WAT,,1.5
+Erie Blvd. Hydro - East Canada Capital,Ephratah 3,F,24051,Caroga Lake,35,36,1911-01-01,1.3,0,0,1.3,1.3,,HY,WAT,,0.1
+Erie Blvd. Hydro - East Canada Capital,Ephratah 4,F,24051,Caroga Lake,35,36,1911-01-01,1.3,0.7,0.7,1.3,1.3,,HY,WAT,,6.5
+Erie Blvd. Hydro - Upper Hudson,E J West 1,F,24058,Hadley,91,36,1930-01-01,10,11.9,11.9,11.9,11.9,,HY,WAT,,28.7
+Erie Blvd. Hydro - Upper Hudson,E J West 2,F,24058,Hadley,91,36,1930-01-01,10,11.9,11.9,11.9,11.9,,HY,WAT,,40.6
+Erie Blvd. Hydro - Upper Hudson,Feeder Dam 1,F,24058,S Glens Falls,91,36,1924-01-01,1.2,0.9,0.9,1.2,1.2,,HY,WAT,,5.8
+Erie Blvd. Hydro - Upper Hudson,Feeder Dam 2,F,24058,S Glens Falls,91,36,1924-01-01,1.2,0.9,0.9,1.2,1.2,,HY,WAT,,5.5
+Erie Blvd. Hydro - Upper Hudson,Feeder Dam 3,F,24058,S Glens Falls,91,36,1924-01-01,1.2,0.9,0.9,1.2,1.2,,HY,WAT,,4.6
+Erie Blvd. Hydro - Upper Hudson,Feeder Dam 4,F,24058,S Glens Falls,91,36,1924-01-01,1.2,0.9,0.9,1.2,1.2,,HY,WAT,,5.9
+Erie Blvd. Hydro - Upper Hudson,Feeder Dam 5,F,24058,S Glens Falls,91,36,1924-01-01,1.2,0.9,0.9,1.2,1.2,,HY,WAT,,6.1
+Erie Blvd. Hydro - Upper Hudson,Sherman Island 2,F,24058,Queensbury,113,36,1923-01-01,7.2,8.1,8.1,8.1,8.1,,HY,WAT,,46.3
+Erie Blvd. Hydro - Upper Hudson,Sherman Island 3,F,24058,Queensbury,113,36,1923-01-01,8.7,9.7,9.7,9.7,9.7,,HY,WAT,,41.6
+Erie Blvd. Hydro - Upper Hudson,Sherman Island 4,F,24058,Queensbury,113,36,1923-01-01,7.2,8.1,8.1,8.1,8.1,,HY,WAT,,29.4
+Erie Blvd. Hydro - Upper Hudson,Sherman Island 5,F,24058,Queensbury,113,36,1923-01-01,7.2,8.1,8.1,8.1,8.1,,HY,WAT,,38.5
+Erie Blvd. Hydro - Upper Hudson,Spier Falls 1,F,24058,Moreau,91,36,1924-01-01,6.8,8.4,8.4,8.1,8.1,,HY,WAT,,56.5
+Erie Blvd. Hydro - Upper Hudson,Spier Falls 2,F,24058,Moreau,91,36,1930-01-01,37.6,46.9,46.9,38.1,38.1,,HY,WAT,,195.8
+Erie Blvd. Hydro - Upper Hudson,Stewarts Bridge 1,F,24058,Hadley,91,36,1952-01-01,30,35.8,35.8,32.5,32.5,,HY,WAT,,112.5
+Erie Blvd. Hydro - Lower Hudson,Johnsonville 1,F,24059,Johnsonville,83,36,1909-01-01,1.2,1.3,1.3,1.2,1.2,,HY,WAT,,6.4
+Erie Blvd. Hydro - Lower Hudson,Johnsonville 2,F,24059,Johnsonville,83,36,1909-01-01,1.2,1.3,1.3,1.2,1.2,,HY,WAT,,7.2
+Erie Blvd. Hydro - Lower Hudson,Schaghticoke 1,F,24059,Schaghticoke,83,36,1908-01-01,3.3,4.1,4.1,3.3,3.3,,HY,WAT,,25
+Erie Blvd. Hydro - Lower Hudson,Schaghticoke 2,F,24059,Schaghticoke,83,36,1908-01-01,3.3,4.1,4.1,3.3,3.3,,HY,WAT,,30
+Erie Blvd. Hydro - Lower Hudson,Schaghticoke 3,F,24059,Schaghticoke,83,36,1908-01-01,3.3,4.1,4.1,3.3,3.3,,HY,WAT,,22.5
+Erie Blvd. Hydro - Lower Hudson,Schaghticoke 4,F,24059,Schaghticoke,83,36,1908-01-01,3.3,4.1,4.1,3.3,3.3,,HY,WAT,,8.9
+Erie Blvd. Hydro - Lower Hudson,School Street 1,F,24059,Cohoes,1,36,1974-01-01,7.2,6.9,6.9,7.2,7.2,,HY,WAT,,35.3
+Erie Blvd. Hydro - Lower Hudson,School Street 2,F,24059,Cohoes,1,36,1915-01-01,7.2,6.9,6.9,7.2,7.2,,HY,WAT,,0
+Erie Blvd. Hydro - Lower Hudson,School Street 3,F,24059,Cohoes,1,36,1915-01-01,7.2,6.9,6.9,7.2,7.2,,HY,WAT,,39.2
+Erie Blvd. Hydro - Lower Hudson,School Street 4,F,24059,Cohoes,1,36,1922-01-01,7.2,6.9,6.9,7.2,7.2,,HY,WAT,,31.7
+Erie Blvd. Hydro - Lower Hudson,School Street 5,F,24059,Cohoes,1,36,1924-01-01,10,9.6,9.6,10,10,,HY,WAT,,61.8
+GB II New York LLC,Bethlehem GS1,F,323560,Bethlehem,1,36,2005-07-01,297.7,278.3,308.2,272.8,308.7,YES,CC,NG,FO2,"6,232.60"
+GB II New York LLC,Bethlehem GS2,F,323561,Bethlehem,1,36,2005-07-01,297.7,278.3,308.3,272.8,308.7,YES,CC,NG,FO2,
+GB II New York LLC,Bethlehem GS3,F,323562,Bethlehem,1,36,2005-07-01,297.7,278.4,308.3,272.8,308.7,YES,CC,NG,FO2,
+"Innovative Energy Systems, Inc.",Colonie LFGTE,F,323577,Colonie,1,36,2006-03-01,6.4,6.4,6.4,6.4,6.4,,IC,MTE,,34.6
+Albany Energy LLC,Albany LFGE,F,323615,Albany,1,36,1998-05-01,5.6,4.5,4.5,5.6,5.6,,IC,MTE,,8.8
+"Innovative Energy Systems, Inc.",Fulton LFGE,F,323630,Johnstown,35,36,2010-06-04,3.2,3.2,3.2,3.2,3.2,,IC,MTE,,14.6
+"SBF New York, L.L.C.",Beacon LESR,F,323632,Stephentown,83,36,2010-11-29,20,0,0,0,0,,ES,FW,,-6.9
+"Empire Generating Co, LLC",Empire CC1,F,323656,Rensselaer,83,36,2010-09-02,335,294.2,360.2,293.7,331.4,YES,CC,NG,FO2,"1,313.80"
+"Empire Generating Co, LLC",Empire CC2,F,323658,Rensselaer,83,36,2010-09-02,335,298.2,365.1,293.7,331.4,YES,CC,NG,FO2,"1,679.80"
+Galt Power Inc.,LaChute,F,323717,Ticonderoga,31,36,1987-12-01,8.9,8.9,8.9,8.9,8.9,,HY,WAT,,39.3
+Galt Power Inc.,KCE NY 1,F,323755,Stillwater,91,36,2019-03-13,20,0,0,0,0,,ES,BAT,,-2.8
+"Gravity Renewables, Inc.",Dahowa Hydroelectric,F,323763,Middle Falls,115,36,1987-12-01,12.3,10.5,10.5,12.3,12.3,,HY,WAT,,42.8
+Galt Power Inc.,Branscomb Solar,F,323811,Easton,115,36,2021-12-18,20,20,20,20,20,,PV,SUN,,33
+Galt Power Inc.,Darby Solar,F,323810,Easton,115,36,2023-07-01,20,20,20,20,20,,PV,SUN,,15
+Galt Power Inc.,Regan Solar,F,323812,Greene,57,36,2022-12-28,20,20,20,20,20,,PV,SUN,,9
+Galt Power Inc.,Grissom Solar,F,323813,Mohawk,57,36,2023-02-23,20,20,20,20,20,,PV,SUN,,22.3
+Galt Power Inc.,Stillwater Solar,F,323814,Stillwater,91,36,2024-02-01,20,20,20,20,20,,PV,SUN,,1.3
+Galt Power Inc.,Pattersonville Solar,F,323815,Schenectady,93,36,2024-02-24,20,20,20,20,20,,PV,SUN,,
+Hecate Energy,Albany County Solar 1,F,323833,Colonie,1,36,2024-02-15,20,20,20,20,20,,PV,SUN,,
+Hecate Energy ,Albany County Solar 2,F,323834,Colonie,1,36,2024-02-15,20,20,20,20,20,,PV,SUN,,
+"GenOn Bowline,LLC",Bowline 1,G,23526,West Haverstraw,87,36,1972-09-01,621,594,594,577.8,582.5,YES,ST,NG,FO6,701.2
+"GenOn Bowline,LLC",Bowline 2,G,23595,West Haverstraw,87,36,1974-05-01,621,575,575,565.2,577.1,YES,ST,NG,FO6,234.6
+"Danskammer Energy ,LLC",Danskammer 1,G,23586,Newburgh,71,36,1951-12-01,72,69,69,68.5,68.9,YES,ST,NG,FO6,1.5
+"Danskammer Energy ,LLC",Danskammer 2,G,23589,Newburgh,71,36,1954-09-01,73.5,64.7,64.7,65,65.4,YES,ST,NG,FO6,1.3
+"Danskammer Energy ,LLC",Danskammer 3,G,23590,Newburgh,71,36,1959-10-01,147.1,139.2,139.2,140.1,142.2,,ST,NG,,4.4
+"Danskammer Energy ,LLC",Danskammer 4,G,23591,Newburgh,71,36,1967-09-01,239.4,238.2,238.2,225.8,230.7,,ST,NG,,12
+"Roseton Generating, LLC",Roseton 1,G,23587,Newburgh,71,36,1974-12-01,621,614.8,614.8,615.7,613.3,YES,ST,NG,FO6,77.2
+"Roseton Generating, LLC",Roseton 2,G,23588,Newburgh,71,36,1974-09-01,621,607.7,607.7,612.5,613,YES,ST,NG,FO6,115.5
+New York Power Authority,Grahamsville,G,23607,Grahamsville,105,36,1956-12-01,18,16.3,16.3,18,18,,HY,WAT,,76
+New York Power Authority,Neversink,G,23608,Grahamsville,105,36,1953-12-01,25,22,22,25,25,,HY,WAT,,21.3
+Central Hudson Gas & Electric Corp.,Coxsackie GT,G,23611,Coxsackie,39,36,1969-12-01,21.6,21.6,26,19.7,22.7,YES,GT,NG,KER,0.5
+Central Hudson Gas & Electric Corp.,South Cairo,G,23612,Cairo,39,36,1970-06-01,21.6,19.8,25.9,14.6,20.7,,GT,KER,,0.1
+"Seneca Power Partners, L.P.",Hillburn GT,G,23639,Hillburn,87,36,1971-04-01,46.5,37.9,51.8,36,42.7,YES,JE,NG,KER,0.4
+"Seneca Power Partners, L.P.",Shoemaker GT,G,23640,Middletown,71,36,1971-05-01,41.9,33.1,45.2,35.4,40.7,YES,JE,NG,KER,0.5
+"Eagle Creek Hydro Power, LLC",Mongaup 1,G,23641,Forestburg,105,36,1923-07-01,1,0.9,0.9,0.9,0.9,,HY,WAT,,60
+"Eagle Creek Hydro Power, LLC",Mongaup 2,G,23641,Forestburg,105,36,1923-07-01,1,1,1,0.9,0.9,,HY,WAT,,
+"Eagle Creek Hydro Power, LLC",Mongaup 3,G,23641,Forestburg,105,36,1923-07-01,1,1,1,0.9,0.9,,HY,WAT,,
+"Eagle Creek Hydro Power, LLC",Mongaup 4,G,23641,Forestburg,105,36,1926-01-01,1,1,1,0.9,0.9,,HY,WAT,,
+"Eagle Creek Hydro Power, LLC",Rio,G,23641,Glen Spey,105,36,1927-12-01,10.8,10.8,10.8,9.3,9.5,,HY,WAT,,
+"Eagle Creek Hydro Power, LLC",Swinging Bridge 2,G,23641,Forestburg,105,36,1930-02-01,9,7.9,7.9,7.7,7.9,,HY,WAT,,
+New York Power Authority,Ashokan 1,G,23654,Ashokan,111,36,1982-11-01,2.3,1.8,1.8,4.6,4.6,,HY,WAT,,5.7
+New York Power Authority,Ashokan 2,G,23654,Ashokan,111,36,1982-11-01,2.3,1.8,1.8,4.6,4.6,,HY,WAT,,5
+Central Hudson Gas & Electric Corp.,DCRRA,G,23765,Poughkeepsie,27,36,1987-09-01,9.2,8.8,8.8,6.2,5,,ST,REF,,10
+Erie Blvd. Hydropower LP,West Delaware Hydro,G,323627,Grahamsville,105,36,1988-12-01,7.5,7.5,7.5,7.5,7.5,,HY,WAT,,16.8
+"CPV Valley, LLC",CPV Valley CC1,G,323721,Wawayanda,71,36,2018-03-01,385,340,380.5,322.7,370,YES,CC,NG,FO2,"1,322.70"
+"CPV Valley, LLC",CPV Valley CC2,G,323722,Wawayanda,71,36,2018-03-01,385,340,380.5,322.7,370,YES,CC,NG,FO2,"1,312.20"
+"Cricket Valley Energy Center, LLC",Cricket Valley CC1,G,323756,Dover,27,36,2019-10-29,392.3,364.2,402.4,347.1,378.9,,CC,NG,,"1,799.40"
+"Cricket Valley Energy Center, LLC",Cricket Valley CC2,G,323757,Dover,28,36,2020-01-03,392.3,361.2,399.1,345,379.5,,CC,NG,,"1,633.60"
+"Cricket Valley Energy Center, LLC",Cricket Valley CC3,G,323758,Dover,29,36,2020-01-17,392.3,364.2,402.4,358.7,380.8,,CC,NG,,"1,782.10"
+Orange and Rockland,Pomona ESR,G,323819,Pomona,87,36,2023-07-07,3,0,0,0,0,,ES,BAT,,-0.1
+"Wheelabrator Westchester, LP",Wheelabrator Westchester,H,23653,Peekskill,119,36,1984-04-01,59.7,53.5,53.5,52.5,53.7,,ST,REF,,398.7
+Direct Energy Marketing Inc,Arthur Kill GT 1,J,23520,Staten Island,85,36,1970-06-01,20,16.5,21.6,12.3,15.8,,GT,NG,,0.6
+Direct Energy Marketing Inc,Arthur Kill ST 2,J,23512,Staten Island,85,36,1959-08-01,376.2,357.7,357.7,362.2,361,,ST,NG,,817.9
+Direct Energy Marketing Inc,Arthur Kill ST 3,J,23513,Staten Island,85,36,1969-06-01,535.5,518,518,522.7,530,,ST,NG,,225.8
+"Consolidated Edison Co. of NY, Inc.",Brooklyn Navy Yard,J,23515,Brooklyn,47,36,1996-11-01,322,266.9,348.6,247.5,295.3,YES,CC,NG,FO2,"1,953.90"
+Astoria Generating Company L.P.,Astoria GT 01,J,23523,Queens,81,36,1967-07-01,16,15.7,20.5,13.8,17.6,,GT,NG,,0.6
+Astoria Generating Company L.P.,Astoria 2,J,24149,Queens,81,36,1954-03-01,180,177,177,171.2,168.5,,ST,NG,,10.4
+Astoria Generating Company L.P.,Astoria 3,J,23516,Queens,81,36,1958-09-01,376,369.9,369.9,372.4,374.4,YES,ST,NG,FO2,354.5
+Astoria Generating Company L.P.,Astoria 5,J,23518,Queens,81,36,1962-05-01,387,376.3,376.3,373.3,371.7,YES,ST,NG,FO2,359.3
+NRG Power Marketing LLC,Astoria GT 2-1,J,24094,Queens,81,36,1970-06-01,46.5,41.2,50.7,0,0,YES,JE,NG,KER,0.5
+NRG Power Marketing LLC,Astoria GT 2-2,J,24095,Queens,81,36,1970-06-01,46.5,42.4,52.2,0,0,YES,JE,NG,KER,0.3
+NRG Power Marketing LLC,Astoria GT 2-3,J,24096,Queens,81,36,1970-06-01,46.5,41.2,50.7,0,0,YES,JE,NG,KER,0.5
+NRG Power Marketing LLC,Astoria GT 2-4,J,24097,Queens,81,36,1970-06-01,46.5,41,50.5,0,0,YES,JE,NG,KER,0.5
+NRG Power Marketing LLC,Astoria GT 3-1,J,24098,Queens,81,36,1970-06-01,46.5,41.2,50.7,0,0,YES,JE,NG,KER,0.1
+NRG Power Marketing LLC,Astoria GT 3-2,J,24099,Queens,81,36,1970-06-01,46.5,43.5,53.5,0,0,YES,JE,NG,KER,0.3
+NRG Power Marketing LLC,Astoria GT 3-3,J,24100,Queens,81,36,1970-06-01,46.5,43,52.9,0,0,YES,JE,NG,KER,0.6
+NRG Power Marketing LLC,Astoria GT 3-4,J,24101,Queens,81,36,1970-06-01,46.5,43,52.9,0,0,YES,JE,NG,KER,0.5
+NRG Power Marketing LLC,Astoria GT 4-1,J,24102,Queens,81,36,1970-07-01,46.5,42.6,52.4,0,0,YES,JE,NG,KER,0.4
+NRG Power Marketing LLC,Astoria GT 4-2,J,24103,Queens,81,36,1970-07-01,46.5,41.4,51,0,0,YES,JE,NG,KER,0.5
+NRG Power Marketing LLC,Astoria GT 4-3,J,24104,Queens,81,36,1970-07-01,46.5,41.1,50.6,0,0,YES,JE,NG,KER,0.4
+NRG Power Marketing LLC,Astoria GT 4-4,J,24105,Queens,81,36,1970-07-01,46.5,42.8,52.7,0,0,YES,JE,NG,KER,0.5
+"Helix Ravenswood, LLC",Ravenswood ST 01,J,23533,Queens,81,36,1963-02-01,400,365.1,365.1,367,374,YES,ST,NG,FO4,257.2
+"Helix Ravenswood, LLC",Ravenswood ST 02,J,23534,Queens,81,36,1963-05-01,400,391.6,391.6,375.3,375.2,YES,ST,NG,FO4,211
+"Helix Ravenswood, LLC",Ravenswood ST 03,J,23535,Queens,81,36,1965-06-01,"1,027.00",986.8,986.8,987.3,972.8,YES,ST,NG,FO4,323.9
+"Helix Ravenswood, LLC",Ravenswood CC 04,J,23820,Queens,81,36,2004-05-01,250,231.2,276.7,228.6,274,YES,CC,NG,FO2,"1,909.60"
+"Helix Ravenswood, LLC",Ravenswood 10,J,24258,Queens,81,36,1970-08-01,25,21.2,27,0,0,YES,JE,NG,KER,0.8
+"Consolidated Edison Co. of NY, Inc.",East River 1,J,323558,Manhattan,61,36,2005-04-01,185,160.5,199,151.5,197.8,YES,CC,NG,KER,"1,029.20"
+"Consolidated Edison Co. of NY, Inc.",East River 2,J,323559,Manhattan,61,36,2005-04-05,185,162.4,201.4,155,199.1,YES,CC,NG,KER,992.4
+"Consolidated Edison Co. of NY, Inc.",East River 6,J,23660,Manhattan,61,36,1951-11-01,156.2,144.3,144.3,131.6,140.5,YES,ST,NG,FO6,498.6
+"Consolidated Edison Co. of NY, Inc.",East River 7,J,23524,Manhattan,61,36,1955-06-01,200,186.7,186.7,182.4,186.7,YES,ST,NG,FO6,557.9
+"East Coast Power, LLC",Linden Cogen,J,23786,Linden NJ,39,34,1992-05-01,800,790.8,924.9,737.1,806.8,YES,CC,NG,BUT,"4,390.70"
+Calpine Energy Services LP,KIAC_JFK (BTM:NG),J,323774,Jamaica,81,36,1995-02-01,121.2,117,117,106.4,97.8,YES,CC,NG,FO2,423.3
+Astoria Generating Company L.P.,Gowanus 2-1,J,24114,Brooklyn,47,36,1971-06-01,20,17.9,23.4,16.6,21.1,YES,GT,NG,FO2,0.4
+Astoria Generating Company L.P.,Gowanus 2-2,J,24115,Brooklyn,47,36,1971-06-01,20,18.8,24.6,16.5,21.9,YES,GT,NG,FO2,0.7
+Astoria Generating Company L.P.,Gowanus 2-3,J,24116,Brooklyn,47,36,1971-06-01,20,20.6,26.9,19.1,23.4,YES,GT,NG,FO2,0.8
+Astoria Generating Company L.P.,Gowanus 2-4,J,24117,Brooklyn,47,36,1971-06-01,20,19.3,25.2,16.6,21,YES,GT,NG,FO2,0.6
+Astoria Generating Company L.P.,Gowanus 2-5,J,24118,Brooklyn,47,36,1971-06-01,20,18.6,24.3,17.6,23.3,YES,GT,NG,FO2,0.9
+Astoria Generating Company L.P.,Gowanus 2-6,J,24119,Brooklyn,47,36,1971-06-01,20,20.3,26.5,18.8,23.2,YES,GT,NG,FO2,0.8
+Astoria Generating Company L.P.,Gowanus 2-7,J,24120,Brooklyn,47,36,1971-06-01,20,19.6,25.6,18.8,23.6,YES,GT,NG,FO2,1.1
+Astoria Generating Company L.P.,Gowanus 2-8,J,24121,Brooklyn,47,36,1971-06-01,20,17.7,23.1,16.9,21.6,YES,GT,NG,FO2,0.9
+Astoria Generating Company L.P.,Gowanus 3-1,J,24122,Brooklyn,47,36,1971-07-01,20,17.7,23.1,17.7,21,YES,GT,NG,FO2,0.4
+Astoria Generating Company L.P.,Gowanus 3-2,J,24123,Brooklyn,47,36,1971-07-01,20,17.7,23.1,16.9,22.5,YES,GT,NG,FO2,0.5
+Astoria Generating Company L.P.,Gowanus 3-3,J,24124,Brooklyn,47,36,1971-07-01,20,19.8,25.9,17.6,23.4,YES,GT,NG,FO2,0.4
+Astoria Generating Company L.P.,Gowanus 3-4,J,24125,Brooklyn,47,36,1971-07-01,20,17.9,23.4,16.8,21.9,YES,GT,NG,FO2,0.6
+Astoria Generating Company L.P.,Gowanus 3-5,J,24126,Brooklyn,47,36,1971-07-01,20,19,24.8,17.6,22.5,YES,GT,NG,FO2,0.4
+Astoria Generating Company L.P.,Gowanus 3-6,J,24127,Brooklyn,47,36,1971-07-01,20,17.6,23,15.6,20.8,YES,GT,NG,FO2,0.3
+Astoria Generating Company L.P.,Gowanus 3-7,J,24128,Brooklyn,47,36,1971-07-01,20,18.1,23.6,18.4,23.3,YES,GT,NG,FO2,0.6
+Astoria Generating Company L.P.,Gowanus 3-8,J,24129,Brooklyn,47,36,1971-07-01,20,19,24.8,17.9,23.1,YES,GT,NG,FO2,0.4
+New York Power Authority,Gowanus 5,J,24156,Brooklyn,47,36,2001-08-01,47,45.4,45.4,40,40,,GT,NG,,28
+New York Power Authority,Gowanus 6,J,24157,Brooklyn,47,36,2001-08-01,47,46.1,46.1,39.9,39.9,,GT,NG,,27.5
+"Consolidated Edison Co. of NY, Inc.",59 St.  GT 1,J,24138,Manhattan,61,36,1969-06-01,17.1,15.4,20.1,13.9,17.4,YES,GT,NG,KER,0.3
+New York Power Authority,Kent,J,24152,Brooklyn,47,36,2001-08-01,47,46.9,46.9,46,46,,GT,NG,,33.1
+New York Power Authority,Pouch,J,24155,Staten Island,85,36,2001-08-01,47,47.1,47.1,45.4,46,,GT,NG,,43.9
+New York Power Authority,Hellgate 1,J,24158,Bronx,5,36,2001-08-01,47,45,45,39.9,39.9,,GT,NG,,58.8
+New York Power Authority,Hellgate 2,J,24159,Bronx,5,36,2001-08-01,47,45,45,39.6,40,,GT,NG,,43.8
+New York Power Authority,Harlem River 1,J,24160,Bronx,5,36,2001-08-01,47,46,46,39.9,39.9,,GT,NG,,59.6
+New York Power Authority,Harlem River 2,J,24161,Bronx,5,36,2001-08-01,47,45.2,45.2,39.6,40,,GT,NG,,35.5
+New York Power Authority,Vernon Blvd 2,J,24162,Queens,81,36,2001-08-01,47,46.2,46.2,40,40,,GT,NG,,61.3
+New York Power Authority,Vernon Blvd 3,J,24163,Queens,81,36,2001-08-01,47,43.8,43.8,39.9,39.9,,GT,NG,,61.5
+Astoria Generating Company L.P.,Narrows 1-1,J,24228,Brooklyn,47,36,1972-05-01,22,21,27.4,18.3,23.6,YES,GT,NG,FO2,2.1
+Astoria Generating Company L.P.,Narrows 1-2,J,24229,Brooklyn,47,36,1972-05-01,22,19.5,25.5,17,22.2,YES,GT,NG,FO2,0.7
+Astoria Generating Company L.P.,Narrows 1-3,J,24230,Brooklyn,47,36,1972-05-01,22,20.4,26.6,17.2,22.6,YES,GT,NG,FO2,1.2
+Astoria Generating Company L.P.,Narrows 1-4,J,24231,Brooklyn,47,36,1972-05-01,22,20.1,26.3,17.9,23.3,YES,GT,NG,FO2,1.7
+Astoria Generating Company L.P.,Narrows 1-5,J,24232,Brooklyn,47,36,1972-05-01,22,19.8,25.9,19,24.7,YES,GT,NG,FO2,2.8
+Astoria Generating Company L.P.,Narrows 1-6,J,24233,Brooklyn,47,36,1972-05-01,22,18.9,24.7,15.6,20.6,YES,GT,NG,FO2,0.7
+Astoria Generating Company L.P.,Narrows 1-7,J,24234,Brooklyn,47,36,1972-05-01,22,18.4,24,18.5,24.4,YES,GT,NG,FO2,1.8
+Astoria Generating Company L.P.,Narrows 1-8,J,24235,Brooklyn,47,36,1972-05-01,22,19.9,26,16.5,21.7,YES,GT,NG,FO2,1
+Astoria Generating Company L.P.,Narrows 2-1,J,24236,Brooklyn,47,36,1972-06-01,22,19.4,25.3,18.8,23.9,YES,GT,NG,FO2,2.5
+Astoria Generating Company L.P.,Narrows 2-2,J,24237,Brooklyn,47,36,1972-06-01,22,18.7,24.4,16.7,21.8,YES,GT,NG,FO2,1.4
+Astoria Generating Company L.P.,Narrows 2-3,J,24238,Brooklyn,47,36,1972-06-01,22,18.4,24,17.9,22.2,YES,GT,NG,FO2,1.4
+Astoria Generating Company L.P.,Narrows 2-4,J,24239,Brooklyn,47,36,1972-06-01,22,18.4,24,19.4,24.5,YES,GT,NG,FO2,3.2
+Astoria Generating Company L.P.,Narrows 2-5,J,24240,Brooklyn,47,36,1972-06-01,22,19.9,26,20.3,24.9,YES,GT,NG,FO2,3.6
+Astoria Generating Company L.P.,Narrows 2-6,J,24241,Brooklyn,47,36,1972-06-01,22,18.1,23.6,16.1,20.3,YES,GT,NG,FO2,1.1
+Astoria Generating Company L.P.,Narrows 2-7,J,24242,Brooklyn,47,36,1972-06-01,22,20.7,27,18.5,23.7,YES,GT,NG,FO2,2.1
+Astoria Generating Company L.P.,Narrows 2-8,J,24243,Brooklyn,47,36,1972-06-01,22,17.5,22.9,16.6,21.3,YES,GT,NG,FO2,1
+New York Power Authority,Astoria CC 1,J,323568,Queens,81,36,2006-01-01,288,246.2,270.2,237,270.2,YES,CC,NG,FO2,"3,413.00"
+New York Power Authority,Astoria CC 2,J,323569,Queens,81,36,2006-01-01,288,246.2,270.2,237,270.2,YES,CC,NG,FO2,
+Astoria Energy LLC,Astoria East Energy - CC1,J,323581,Queens,81,36,2006-04-01,320,292.6,355.3,289.6,334.9,YES,CC,NG,FO2,"4,113.30"
+Astoria Energy LLC,Astoria East Energy - CC2,J,323582,Queens,81,36,2006-04-01,320,292.6,355.3,289.6,334.9,YES,CC,NG,FO2,
+"Astoria Energy II, LLC",Astoria Energy 2 - CC3,J,323677,Queens,81,36,2011-07-01,330,288,376.3,285.3,329.8,YES,CC,NG,FO2,"3,903.60"
+"Astoria Energy II, LLC",Astoria Energy 2 - CC4,J,323678,Queens,81,36,2011-07-01,330,288,376.3,285.3,329.8,YES,CC,NG,FO2,
+"Bayonne Energy Center, LLC",Bayonne EC  CTG1,J,323682,Bayonne NJ,17,34,2012-06-01,64,63.2,66.1,62,62.6,YES,JE,NG,KER,101.8
+"Bayonne Energy Center, LLC",Bayonne EC  CTG2,J,323683,Bayonne NJ,17,34,2012-06-01,64,63.2,66.1,58,62.5,YES,JE,NG,KER,76.9
+"Bayonne Energy Center, LLC",Bayonne EC  CTG3,J,323684,Bayonne NJ,17,34,2012-06-01,64,63.2,66.1,58,63,YES,JE,NG,KER,47
+"Bayonne Energy Center, LLC",Bayonne EC  CTG4,J,323685,Bayonne NJ,17,34,2012-06-01,64,63.2,66.1,61.1,62.8,YES,JE,NG,KER,79.5
+"Bayonne Energy Center, LLC",Bayonne EC  CTG5,J,323686,Bayonne NJ,17,34,2012-06-01,64,63.2,66.1,58.5,62.4,YES,JE,NG,KER,38.1
+"Bayonne Energy Center, LLC",Bayonne EC  CTG6,J,323687,Bayonne NJ,17,34,2012-06-01,64,63.2,66.1,59,62.9,YES,JE,NG,KER,39.5
+"Bayonne Energy Center, LLC",Bayonne EC  CTG7,J,323688,Bayonne NJ,17,34,2012-06-01,64,63.2,66.1,59.3,62.5,YES,JE,NG,KER,88.3
+"Bayonne Energy Center, LLC",Bayonne EC  CTG8,J,323689,Bayonne NJ,17,34,2012-06-01,64,63.2,66.1,60,63,YES,JE,NG,KER,72.2
+"Bayonne Energy Center, LLC",Bayonne EC  CTG9,J,323749,Bayonne NJ,17,34,2018-06-01,64,63.4,66.3,61.3,65,YES,JE,NG,KER,101.8
+"Bayonne Energy Center, LLC",Bayonne EC  CTG10,J,323750,Bayonne NJ,17,34,2018-06-01,64,63.4,66.3,61.4,64.9,YES,JE,NG,KER,106.6
+Cubit Power One Inc.,Arthur Kill Cogen,J,323718,Staten Island,85,36,2018-05-22,11.1,11.1,11.1,11.1,10.7,,IC,NG,,51.3
+New York Power Authority,Greenport IC 4,K,1652,Greenport,103,36,1957-06-06,1.2,1.7,1.7,1,1,,IC,FO2,,0
+New York Power Authority,Greenport IC 5,K,1652,Greenport,103,36,1965-07-08,1.8,1.7,1.7,1.5,1.5,,IC,FO2,,0
+New York Power Authority,Greenport IC 6,K,1652,Greenport,103,36,1971-09-17,3.8,2.7,2.7,3.1,3.1,,IC,FO2,,0
+Freeport Electric,Freeport 1-2,K,1660,Freeport,59,36,1949-08-01,2.9,2,2,2.5,2,,IC,FO2,,0
+Freeport Electric,Freeport 1-3,K,1660,Freeport,59,36,1954-08-01,3.4,2.1,2.1,2.9,2.1,,IC,FO2,,0
+Freeport Electric,Freeport 2-3,K,1660,Freeport,59,36,1973-05-01,18.2,18.1,18.1,15.7,18.3,,GT,KER,,0.1
+"Rockville Centre, Village of",Charles P Keller 09,K,1661,Rockville Centre,59,36,1954-09-01,3.5,3.3,3.3,1.9,1.9,YES,IC,NG,FO2,0
+"Rockville Centre, Village of",Charles P Keller 10,K,1661,Rockville Centre,59,36,1954-09-01,3.5,3.2,3.2,1.9,1.9,YES,IC,NG,FO2,0
+"Rockville Centre, Village of",Charles P Keller 11,K,1661,Rockville Centre,59,36,1962-09-01,5.2,5.2,5.2,2.8,2.8,YES,IC,NG,FO2,0
+"Rockville Centre, Village of",Charles P Keller 12,K,1661,Rockville Centre,59,36,1967-09-01,5.5,5.5,5.5,3,3,YES,IC,NG,FO2,0
+"Rockville Centre, Village of",Charles P Keller 13,K,1661,Rockville Centre,59,36,1974-09-01,5.5,5.6,5.6,3,3,YES,IC,NG,FO2,0
+"Rockville Centre, Village of",Charles P Keller 14,K,1661,Rockville Centre,59,36,1994-09-01,6.2,6.3,6.3,3.4,3.4,YES,IC,NG,FO2,0.2
+Long Island Power Authority,Wading River 1,K,23522,Shoreham,103,36,1989-08-01,79.5,81.2,106.1,79.7,97.6,,GT,FO2,,5.1
+Long Island Power Authority,Wading River 2,K,23547,Shoreham,103,36,1989-08-01,79.5,81.3,106.2,76.4,96.6,,GT,FO2,,2.8
+Long Island Power Authority,Wading River 3,K,23601,Shoreham,103,36,1989-08-01,79.5,81.3,106.2,75.3,97.9,,GT,FO2,,4.7
+Long Island Power Authority,Barrett ST 01,K,23545,Island Park,59,36,1956-11-01,188,200.2,200.2,195,192.5,YES,ST,NG,FO6,806.9
+Long Island Power Authority,Barrett ST 02,K,23546,Island Park,59,36,1963-10-01,188,197.5,197.5,188,190.2,YES,ST,NG,FO6,491.7
+Long Island Power Authority,Barrett GT 01,K,23704,Island Park,59,36,1970-06-01,18,18.1,23.6,14,20,YES,GT,NG,FO2,4.1
+Long Island Power Authority,Barrett GT 02,K,23705,Island Park,59,36,1970-06-01,18,17.4,22.7,13.6,19.8,YES,GT,NG,FO2,4.9
+Long Island Power Authority,Barrett 03,K,23706,Island Park,59,36,1970-06-01,18,17.9,23.4,13.7,19.1,YES,GT,NG,FO2,3.9
+Long Island Power Authority,Barrett 04,K,23707,Island Park,59,36,1970-07-01,18,17.7,23.1,15.8,18.2,YES,GT,NG,FO2,2.9
+Long Island Power Authority,Barrett 05,K,23708,Island Park,59,36,1970-07-01,18,17.8,23.3,13.5,16.5,YES,GT,NG,FO2,3.2
+Long Island Power Authority,Barrett 06,K,23709,Island Park,59,36,1970-07-01,18,17.8,23.3,14.1,18.8,YES,GT,NG,FO2,3.8
+Long Island Power Authority,Barrett 08,K,23711,Island Park,59,36,1970-07-01,18,17.3,22.6,12.3,15.6,YES,GT,NG,FO2,3.8
+Long Island Power Authority,Barrett 09,K,23700,Island Park,59,36,1971-06-01,41.8,43.4,55.2,31.2,49.2,YES,JE,NG,FO2,18.6
+Long Island Power Authority,Barrett 10,K,23701,Island Park,59,36,1971-06-01,41.8,42.7,54.3,39.6,48,YES,JE,NG,FO2,37.9
+Long Island Power Authority,Barrett 11,K,23702,Island Park,59,36,1971-06-01,41.8,43.3,55.1,39,48.3,YES,JE,NG,FO2,30.1
+Long Island Power Authority,Barrett 12,K,23703,Island Park,59,36,1971-06-01,41.8,44,56,39.4,47.7,YES,JE,NG,FO2,16.1
+Long Island Power Authority,Northport 1,K,23551,Northport,103,36,1967-07-01,387,395,395,398,398.3,YES,ST,NG,FO6,730.1
+Long Island Power Authority,Northport 2,K,23552,Northport,103,36,1968-06-01,387,396,396,399.4,399.2,YES,ST,NG,FO6,659.1
+Long Island Power Authority,Northport 3,K,23553,Northport,103,36,1972-07-01,387,399.2,399.2,388.5,398,YES,ST,NG,FO6,719.6
+Long Island Power Authority,Northport 4,K,23650,Northport,103,36,1977-12-01,387,399.2,399.2,368,368.2,YES,ST,NG,FO6,281.3
+Long Island Power Authority,Port Jefferson GT 02,K,24210,Port Jefferson,103,36,2002-07-01,53,44,52,40.6,43.4,YES,GT,NG,FO2,23.8
+Long Island Power Authority,Port Jefferson GT 03,K,24211,Port Jefferson,103,36,2002-07-01,53,43.1,50.9,40,48.3,YES,GT,NG,FO2,39.8
+Long Island Power Authority,Port Jefferson 3,K,23555,Port Jefferson,103,36,1958-11-01,188,194.5,194.5,189.7,194.5,YES,ST,NG,FO6,169.9
+Long Island Power Authority,Port Jefferson 4,K,23616,Port Jefferson,103,36,1960-11-01,188,198.7,198.7,194,189.4,YES,ST,NG,FO6,122.2
+Long Island Power Authority,Hempstead (RR),K,23647,Hempstead,59,36,1989-10-01,78.6,73.7,73.7,74.8,75.8,,ST,REF,,499
+Long Island Power Authority,Glenwood GT 02,K,23688,Glenwood,59,36,1972-06-01,55,52.7,68.8,59.3,62.9,,GT,FO2,,0.3
+Long Island Power Authority,Glenwood GT 03,K,23689,Glenwood,59,36,1972-06-01,55,54.7,71.5,52,65.9,,GT,FO2,,0.3
+Long Island Power Authority,Glenwood GT 04,K,24219,Glenwood,59,36,2002-06-01,53,42.3,50,43.3,46.2,YES,GT,NG,FO2,70.4
+Long Island Power Authority,Glenwood GT 05,K,24220,Glenwood,59,36,2002-06-01,53,42,49.6,44.1,46.3,YES,GT,NG,FO2,84
+Long Island Power Authority,Holtsville 01,K,23690,Holtsville,103,36,1974-07-01,56.7,56.7,72.1,55,65.2,,JE,FO2,,2
+Long Island Power Authority,Holtsville 02,K,23691,Holtsville,103,36,1974-07-01,56.7,55.3,70.3,57,65.4,,JE,FO2,,1.5
+Long Island Power Authority,Holtsville 03,K,23692,Holtsville,103,36,1974-07-01,56.7,52.1,66.3,51.1,63.7,,JE,FO2,,1.5
+Long Island Power Authority,Holtsville 04,K,23693,Holtsville,103,36,1974-07-01,56.7,52.7,67,54.3,63.9,,JE,FO2,,1.2
+Long Island Power Authority,Holtsville 05,K,23694,Holtsville,103,36,1974-07-01,56.7,55.3,70.3,53.4,62.2,,JE,FO2,,2
+Long Island Power Authority,Holtsville 06,K,23695,Holtsville,103,36,1975-07-01,56.7,53,67.4,49.1,65,,JE,FO2,,2.7
+Long Island Power Authority,Holtsville 07,K,23696,Holtsville,103,36,1975-07-01,56.7,55.1,70.1,53,62.2,,JE,FO2,,0.8
+Long Island Power Authority,Holtsville 08,K,23697,Holtsville,103,36,1975-07-01,56.7,57.4,73,52.1,64.8,,JE,FO2,,0.7
+Long Island Power Authority,Holtsville 09,K,23698,Holtsville,103,36,1975-07-01,56.7,57.5,73.1,54.2,66.7,,JE,FO2,,2.3
+Long Island Power Authority,Holtsville 10,K,23699,Holtsville,103,36,1975-07-01,56.7,55.1,70.1,46.1,63,,JE,FO2,,1.1
+Long Island Power Authority,Shoreham 1,K,23715,Shoreham,103,36,1971-07-01,52.9,48.9,63.9,42,63,,GT,FO2,,0.3
+Long Island Power Authority,Shoreham 2,K,23716,Shoreham,103,36,1984-04-01,18.6,18.5,23.5,17.4,21.5,,JE,FO2,,0.5
+"RWE Clean Energy Wholesale Services, Inc.",Shoreham GT3,K,24213,Shoreham,103,36,2002-08-01,50,45.4,45.4,42.1,45.8,,GT,FO2,,6.3
+"RWE Clean Energy Wholesale Services, Inc.",Shoreham GT4,K,24214,Shoreham,103,36,2002-08-01,50,43.9,43.9,41.2,45.4,,GT,FO2,,7.1
+Long Island Power Authority,East Hampton GT 01,K,23717,E Hampton,103,36,1970-12-01,21.3,19.2,24.4,18.2,23.5,,JE,FO2,,10.2
+Long Island Power Authority,East Hampton 2,K,23722,E Hampton,103,36,1962-12-01,2,2,2,2,2,,IC,FO2,,0.7
+Long Island Power Authority,East Hampton 3,K,23722,E Hampton,103,36,1962-12-01,2,2,2,2,2,,IC,FO2,,0.5
+Long Island Power Authority,East Hampton 4,K,23722,E Hampton,103,36,1962-12-01,2,2,2,2,2,,IC,FO2,,0.8
+Long Island Power Authority,Southold 1,K,23719,Southold,103,36,1964-08-01,14,12.3,16.1,9.4,12.7,,GT,FO2,,0.7
+Long Island Power Authority,S Hampton 1,K,23720,South Hampton,103,36,1963-03-01,11.5,10.3,13.5,7.8,11.7,,GT,FO2,,0
+"RWE Clean Energy Wholesale Services, Inc.",Freeport CT 1,K,23764,Freeport,59,36,2004-06-01,60,48.3,51.3,45.9,47.1,YES,GT,NG,FO2,54.6
+Freeport Electric,Freeport CT 2,K,23818,Freeport,59,36,2004-03-01,50,50.3,50.3,43,43,YES,GT,NG,KER,24
+New York Power Authority,Flynn,K,23794,Holtsville,103,36,1994-05-01,170,135.5,168.4,139.5,160,YES,CC,NG,FO2,401.2
+Long Island Power Authority,Greenport GT1,K,23814,Greenport,103,36,2003-07-02,54,51.9,52.4,51.2,55.5,,JE,FO2,,15.6
+"MPH Rockaway Peakers, LLC",Far Rockaway GT1,K,24212,Far Rockaway,81,36,2002-07-01,60.5,53.5,73.1,48.9,50,,JE,NG,,62.9
+"MPH Rockaway Peakers, LLC",Far Rockaway GT2,K,23815,Jamaica Bay,81,36,2003-07-02,60.5,55.4,75.7,55.7,60,YES,JE,NG,FO2,55.6
+Calpine Energy Services LP,Bethpage,K,23823,Hicksville,59,36,1989-09-01,83.6,54.9,55.1,52,56.9,YES,CC,NG,FO2,258.9
+Long Island Power Authority,Bethpage 3,K,323564,Hicksville,59,36,2005-05-01,96,79.9,91.4,76,77.3,,CC,NG,,174.9
+Calpine Energy Services LP,Bethpage GT4,K,323586,Hicksville,59,36,2002-07-01,60,48.2,51.2,43.6,46.7,,GT,NG,,156.2
+Calpine Energy Services LP,Stony Brook   (BTM:NG),K,24151,Stony Brook,103,36,1995-04-01,47,0,0,0,0,YES,GT,NG,FO2,288.5
+New York Power Authority,Brentwood,K,24164,Brentwood,103,36,2001-08-01,47,47.1,47.1,45,46,,GT,NG,,36.9
+"RWE Clean Energy Wholesale Services, Inc.",Pilgrim GT1,K,24216,Brentwood,103,36,2002-08-01,50,45.6,45.6,41.9,44.6,,GT,NG,,53.6
+"RWE Clean Energy Wholesale Services, Inc.",Pilgrim GT2,K,24217,Brentwood,103,36,2002-08-01,50,46.2,46.2,41.9,45.4,,GT,NG,,43.6
+Long Island Power Authority,Pinelawn Power 1,K,323563,Babylon,103,36,2005-06-01,82,78,78,73.4,77.3,YES,CC,NG,KER,81.7
+Long Island Power Authority,Caithness_CC_1,K,323624,Brookhaven,103,36,2009-08-01,375,315.6,389.8,306.9,359,YES,CC,NG,FO2,"2,464.30"
+Long Island Power Authority,Islip (RR),K,323679,Ronkonkoma,103,36,1990-03-01,12.5,11.2,11.2,8.5,8,,ST,REF,,54.1
+Long Island Power Authority,Long Island Solar Farm,K,323691,Upton,103,36,2011-11-01,31.5,31.5,31.5,31.5,31.5,,PV,SUN,,45.6
+Long Island Power Authority,Calverton Solar,K,323806,Riverhead,103,36,2022-06-02,22.9,22.9,22.9,22.9,22.9,,PV,SUN,,43.5
+Long Island Power Authority,Babylon (RR),K,323704,Babylon,103,36,1989-04-01,17,15.5,15.5,15.6,15.3,,ST,REF,,118.1
+Long Island Power Authority,Huntington (RR),K,323705,Huntington,103,36,1991-12-01,28,24.7,24.7,24.7,24.5,,ST,REF,,195.1
+,,,,,,,,,,,,,,,,,
+,,Table III-2a - NYISO Market Totals:,,,,,,"42,696.70","39,307.60","42,251.50","37,374.90","39,704.80",,,,,"122,649.00"
