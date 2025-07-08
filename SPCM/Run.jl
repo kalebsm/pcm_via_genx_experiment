@@ -7,7 +7,7 @@ using CSV
 using DataFrames
 mainpath = pwd()
 case_path = joinpath(mainpath,"SPCM", "Research_Systems", "2_Hr_BESS_QUAD")
-# run_genx_case!(case_path, Gurobi.Optimizer)
+run_genx_case!(case_path, Gurobi.Optimizer)
 context = initialize_policy_model(case_path)
 cem_capacities = CSV.read(joinpath(case_path, "results", "capacity.csv"), DataFrame).EndCap[1:context["inputs"]["G"]]
 # Start with initial capacities
