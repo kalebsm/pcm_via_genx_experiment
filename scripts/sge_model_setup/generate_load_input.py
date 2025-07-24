@@ -23,7 +23,7 @@ case_names_list = get_case_names(generator_assumptions_path)
 
 
 # load in ercot actuals data
-ercot_actuals_loc = os.path.join(scenario_generation_path, 'sequential_NORTA', 'data')
+ercot_actuals_loc = os.path.join(scenario_generation_path, 'sequential_norta', 'data')
 ercot_actuals_df = pd.read_csv(ercot_actuals_loc + '/actuals_ercot2018.csv')
 lac_length = len(ercot_actuals_df)
 

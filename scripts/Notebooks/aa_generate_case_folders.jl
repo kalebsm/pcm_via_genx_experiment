@@ -41,17 +41,17 @@ println(case_names_list)
 # create folders in GenX and SPCM research systems for each case
 for case_name in case_names_list
     genx_cem_unabr_case_loc = joinpath(genx_cem_loc, case_name)
-    genx_cem_abbr_case_loc = joinpath(genx_cem_loc, case_name * "_abbr")
+    # genx_cem_abbr_case_loc = joinpath(genx_cem_loc, case_name * "_abbr")
     spcm_lac_case_loc = joinpath(spcm_lac_loc, case_name)
 
     if !isdir(genx_cem_unabr_case_loc)
         mkpath(genx_cem_unabr_case_loc)
     end
     create_case_folders(case_name, genx_cem_unabr_case_loc)
-    if !isdir(genx_cem_abbr_case_loc)
-        mkpath(genx_cem_abbr_case_loc)
-    end
-    create_case_folders(case_name, genx_cem_abbr_case_loc)
+    # if !isdir(genx_cem_abbr_case_loc)
+    #     mkpath(genx_cem_abbr_case_loc)
+    # end
+    # create_case_folders(case_name, genx_cem_abbr_case_loc)
     if !isdir(spcm_lac_case_loc)
         mkpath(spcm_lac_case_loc)
     end

@@ -57,14 +57,15 @@ for case_name in case_names_list:
 
     create_case_folders(case_name, genx_cem_unabr_case_loc)
 
-    # create the abbreviated case folder
-    if not os.path.exists(genx_cem_abbr_case_loc):
-        os.makedirs(genx_cem_abbr_case_loc)
-        print(f"Created {genx_cem_abbr_case_loc} folder.")
-    else:
-        print(f"{genx_cem_abbr_case_loc} folder already exists.")
+    # # no need to create the abbreviated case folder
+    # # create the abbreviated case folder
+    # if not os.path.exists(genx_cem_abbr_case_loc):
+    #     os.makedirs(genx_cem_abbr_case_loc)
+    #     print(f"Created {genx_cem_abbr_case_loc} folder.")
+    # else:
+    #     print(f"{genx_cem_abbr_case_loc} folder already exists.")
 
-    create_case_folders(case_name, genx_cem_abbr_case_loc)
+    # create_case_folders(case_name, genx_cem_abbr_case_loc)
 
     # create the SPCM/LAC case folder
     if not os.path.exists(spcm_lac_case_loc):
