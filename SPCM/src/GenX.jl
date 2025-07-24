@@ -13,14 +13,14 @@ function include_all_in_folder(folder)
 end
 
 # activate scenario generation
-seq_norta_path = joinpath("src", "scenario_generation", "sequential_norta")
+# seq_norta_path = joinpath("src", "scenario_generation", "sequential_norta")
 
-# push!(LOAD_PATH, seq_norta_path)
-# activate the project at the sequential_norta directory
-Pkg.activate(seq_norta_path)
-Pkg.instantiate()
+# # push!(LOAD_PATH, seq_norta_path)
+# # activate the project at the sequential_norta directory
+# Pkg.activate(seq_norta_path)
+# Pkg.instantiate()
 
-include(joinpath(seq_norta_path,"src","sequential_norta.jl"))
+# include(joinpath(seq_norta_path,"src","sequential_norta.jl"))
 # include_all_in_folder("sequential_norta")
 
 #export package_activate
