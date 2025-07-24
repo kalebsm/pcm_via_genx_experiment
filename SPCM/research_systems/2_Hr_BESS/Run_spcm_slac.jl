@@ -1,4 +1,17 @@
-using SPCMviaGenX
+import Pkg
+
+# Activate the main project
+Pkg.activate(joinpath(@__DIR__, "..", ".."))
+Pkg.instantiate()
+
+# Include your core module
+ENV["GENX_PRECOMPILE"] = "false"
+include(joinpath(@__DIR__, "..", "..", "src", "SPCMviaGenX.jl"))
+using .SPCMviaGenX
+
+# Load the dev-tracked package
+using SequentialNorta
+
 using Gurobi
 using YAML
 using BenchmarkTools
@@ -34,5 +47,7 @@ test_dictionary = Dict(
     "test_prices_scen_path" => 1
 )
 
-run_policy_model(case, model_type, test_dictionary)
+model_context = initialize_policy_model(case)
+
+model_ep, inputs, context = run_policy_instance(model_context, model_type, test_dictionary; write_results=true)
 
