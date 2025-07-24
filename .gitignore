@@ -14,11 +14,12 @@ data/
 SPCM/research_systems/
 GenX.jl/research_systems
 # any files in figures/plots and figures/tables
-figures/plots/*
-figures/pdf_tables/*
-figures/jpg/*
-figures/latex/*
+figures/plots/
+figures/pdf_tables/
+figures/jpg/
+figures/latex/
 figures/csv/*
+figures/veps/*
 
 
 # any zip file
@@ -244,3 +245,5 @@ packrat/lib*/
 GenX.jl
 .vscode/settings.json
 GenX.jl
+SPCM/precompile/case/results/status.csv
+/.vscode
