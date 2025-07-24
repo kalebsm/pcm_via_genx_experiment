@@ -28,8 +28,7 @@ export cluster_inputs
 export mga
 export morris
 export choose_output_dir
-export run_policy_model
-export run_policy_model_new
+export run_policy_instance
 export initialize_policy_model
 export existing_cap_mw
 export regularization_weight
@@ -154,13 +153,13 @@ abstract type AbstractResource end
 # using Pkg
 
 # activate scenario generation
-seq_norta_path = joinpath("SPCM","src","scenario_generation", "sequential_norta")
+seq_norta_path = joinpath(@__DIR__, "scenario_generation", "sequential_norta")
 
 # push!(LOAD_PATH, seq_norta_path)
 # activate the project at the sequential_norta directory
-using Pkg
-# Pkg.add(path=seq_norta_path)
-Pkg.develop(path=seq_norta_path)
+# using Pkg
+# # Pkg.add(path=seq_norta_path)
+# Pkg.develop(path=seq_norta_path)
 # Pkg.instantiate()
 
 # # include(joinpath(seq_norta_path,"src","sequential_norta.jl"))
