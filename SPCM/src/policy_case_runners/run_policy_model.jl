@@ -142,8 +142,16 @@ function initialize_policy_model(case::AbstractString)
 
     ### XXX This needs to be fixed to only take from one location
     # define CEM path
-    cem_path = joinpath(case, "..", "..", "..", "GenX.jl", "research_systems", case_name)
-    # cem_path = joinpath(case, "..", "..", "..", "SPCM", "research_systems", case_name)
+    cem_path = ""  # Predefine cem_path in the outer scope
+    try 
+        cem_path = joinpath(case, "..", "..", "..", "GenX.jl", "research_systems", case_name)
+        cem_results_path = joinpath(cem_path, "results")
+        cem_commit_raw = CSV.read(joinpath(cem_results_path, "commit.csv"), DataFrame)
+    catch
+        println("Failed to find GenX.jl path, trying SPCM path")
+        cem_path = joinpath(case, "..", "..", "..", "SPCM", "research_systems", case_name)
+    end
+
     # cem_results_path = joinpath(case, "results")
     cem_results_path = joinpath(cem_path, "results")
     cem_commit_raw = CSV.read(joinpath(cem_results_path, "commit.csv"), DataFrame)
@@ -1138,6 +1146,7 @@ function run_policy_instance(context::Dict, model_type::AbstractString,
         # add_similar_to_expression!(expr[STOR_REG, :], -vREG_charge[STOR_REG, :])
         # add_similar_to_expression!(expr[STOR_RSV, :], -vRSV_charge[STOR_RSV, :])
         # @constraint(EP, cSTOR_maxChargeRegRsv[y in STOR_ALL, t in 1:T, w in 1:W], expr[y, t, w]>=0)
+        
         @constraint(EP, cSTOR_MaxChargeRegRsv[y in STOR_ALL, t in 1:T, w in 1:W], 
             EP[:vCHARGE][y,t,w]-EP[:vREG_charge][y,t,w]-EP[:vRSV_charge][y,t,w] >= 0 )
         
@@ -1365,7 +1374,7 @@ function run_policy_instance(context::Dict, model_type::AbstractString,
             compute_conflict!(EP)
             iis_model, _ = copy_conflict(EP)
             print(iis_model)
-            return EP, inputs, context
+            return EP, inputs, context, iis_model
         end
                 ## Record pre-solver time
         presolver_time = time() - presolver_start_time
@@ -1670,6 +1679,14 @@ function run_policy_instance(context::Dict, model_type::AbstractString,
 
     diff = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec;
 
+    sys_costs = sum(total_both_inv_costs_MW_yr, dims=1) +
+                sum(fixed_om_costs, dims=1) + 
+                sum(total_var_om_costs_dp, dims=1) + 
+                sum(total_fuel_costs_dp, dims=1) + 
+                sum(total_start_costs_dp, dims=1) + 
+                sum(nse_cost, dims=1) +
+                sum(unmet_rsv_cost, dims=1);
+
     # Create a DataFrame
     financial_results_df = DataFrame(generators = generator_name_per_gen,
                     Capacity_MW = existing_cap_mw_per_gen* ModelScalingFactor,
@@ -1772,7 +1789,7 @@ function run_policy_instance(context::Dict, model_type::AbstractString,
 
     # Write NetRevenue dataframe to CSV
     println("Writing operating profit results to CSV")
-    CSV.write(results_folder * "/NetRevenue.csv", df, header=true)
+    CSV.write(results_folder * "/NetRevenue.csv", financial_results_df, header=true)
 
     #=======================================================================
     Create HDF5 Files for saving Arrays of scenarios, duals, and prices
