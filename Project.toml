@@ -1,4 +1,0 @@
-[deps]
-GenX = "5d317b1e-30ec-4ed6-a8ce-8d2d88d7cfac"
-PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
-SPCMviaGenX = "33cf8570-a1bd-4044-9fa6-aea68ef068e7"

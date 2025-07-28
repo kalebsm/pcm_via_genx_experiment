@@ -42,7 +42,8 @@ def sge_model_setup():
                 "generate_op_res_input.py",
                 "generate_genx_settings.py",
                 "generate_gurobi_settings.py",
-                "generate_run_file.py",
+                "generate_cem_run_files.py",
+                "generate_lac_run_files.py",
                 ]
 
     for script in python_files:

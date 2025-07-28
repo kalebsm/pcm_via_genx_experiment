@@ -64,6 +64,79 @@ function check_memory_usage()
     end
 end
 
+# Helper function for calculating battery marginals when using SLAC
+function calculate_battery_marginals(results_folder, STOR_ALL, pgen_dp, s_dp, charge_dp, 
+                                 max_discharge_const_duals, max_charge_const_duals, Tend)
+    positive_counter = 0
+    not_marginal_count = 0
+    energy_marginal_count = 0
+    discharge_marginal_count = 0
+    charge_marginal_count = 0
+    discharge_charge_marginal_count = 0
+    is_marginal_count = 0
+
+    eps = 1e-5
+
+    max_capacity = maximum(pgen_dp[STOR_ALL[],:])
+
+    union_marginal_count = count(t -> sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps
+                                && sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps, 1:Tend)
+
+    # Save the hours in which batteries appear to be binding
+    t_indices = []
+
+    for t in 1:Tend
+        # Check if energy limited
+        total_power_from_energy = s_dp[STOR_ALL[],t] / 1 - eps
+
+        if total_power_from_energy < max_capacity
+            if pgen_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] < total_power_from_energy
+                energy_marginal_count += 1
+                push!(t_indices, t)
+            else
+                not_marginal_count += 1
+            end
+        else
+            if (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
+                sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
+                discharge_charge_marginal_count += 1
+                push!(t_indices, t)
+            elseif (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
+                sum(max_charge_const_duals[t][1,:]) > eps && charge_dp[STOR_ALL[],t] < eps)
+                discharge_marginal_count += 1
+                push!(t_indices, t)
+            elseif (sum(max_discharge_const_duals[t][1,:]) > eps && pgen_dp[STOR_ALL[],t] < eps && 
+                sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
+                charge_marginal_count += 1
+                push!(t_indices, t)
+            else
+                not_marginal_count += 1
+            end
+        end
+        is_marginal_count = energy_marginal_count + discharge_marginal_count + charge_marginal_count + discharge_charge_marginal_count
+    end
+
+    positive_charge_and_pgen_count = count(t -> charge_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] > eps, 1:Tend)
+    energy_limited_count = count(x -> x <= maximum(pgen_dp[STOR_ALL[],:]), s_dp[STOR_ALL[],:] / 1)
+
+    println("The number of times battery is marginal is: ", is_marginal_count)
+
+    total_count = is_marginal_count + not_marginal_count
+    textfile = joinpath(results_folder, "battery_marginals_counts.txt")
+
+    # Create a text file with the results
+    open(textfile, "w") do file
+        write(file, "Total Count: $total_count\n")
+        write(file, "Energy Limited Count: $energy_limited_count\n")
+        write(file, "Energy Marginal Count: $energy_marginal_count\n")
+        write(file, "Simultaneous Discharge and Charge Marginal Count: $discharge_charge_marginal_count\n")
+        write(file, "Discharge Marginal Count: $discharge_marginal_count\n")
+        write(file, "Charge Marginal Count: $charge_marginal_count\n")
+        write(file, "Is Marginal Count: $is_marginal_count\n")
+        write(file, "Not Marginal Count: $not_marginal_count\n")
+    end
+end
+
 global regularization_weight = 5e-2
 
 function initialize_policy_model(case::AbstractString)
@@ -1374,7 +1447,7 @@ function run_policy_instance(context::Dict, model_type::AbstractString,
             compute_conflict!(EP)
             iis_model, _ = copy_conflict(EP)
             print(iis_model)
-            return EP, inputs, context, iis_model
+            return EP, inputs, context, iis_model, results = nothing
         end
                 ## Record pre-solver time
         presolver_time = time() - presolver_start_time
@@ -1679,13 +1752,13 @@ function run_policy_instance(context::Dict, model_type::AbstractString,
 
     diff = operating_profit_per_gen_vec - total_inv_costs_MW_yr_vec - total_inv_costs_MWhour_yr_vec;
 
-    sys_costs = sum(total_both_inv_costs_MW_yr, dims=1) +
-                sum(fixed_om_costs, dims=1) + 
-                sum(total_var_om_costs_dp, dims=1) + 
-                sum(total_fuel_costs_dp, dims=1) + 
-                sum(total_start_costs_dp, dims=1) + 
-                sum(nse_cost, dims=1) +
-                sum(unmet_rsv_cost, dims=1);
+    sys_costs = sum(total_both_inv_costs_MW_yr) +
+                sum(fixed_om_costs) +
+                sum(total_var_om_costs_dp) +
+                sum(total_fuel_costs_dp) +
+                sum(total_start_costs_dp) +
+                sum(nse_cost) +
+                sum(unmet_rsv_cost);
 
     # Create a DataFrame
     financial_results_df = DataFrame(generators = generator_name_per_gen,
@@ -1787,127 +1860,57 @@ function run_policy_instance(context::Dict, model_type::AbstractString,
             CSV.write(joinpath(testing_results_folder, "load_scen_path.csv"), load_data)
         end
 
-    # Write NetRevenue dataframe to CSV
-    println("Writing operating profit results to CSV")
-    CSV.write(results_folder * "/NetRevenue.csv", financial_results_df, header=true)
+        # Write NetRevenue dataframe to CSV
+        println("Writing operating profit results to CSV")
+        CSV.write(results_folder * "/NetRevenue.csv", financial_results_df, header=true)
 
-    #=======================================================================
-    Create HDF5 Files for saving Arrays of scenarios, duals, and prices
-    =======================================================================#
+        #=======================================================================
+        Create HDF5 Files for saving Arrays of scenarios, duals, and prices
+        =======================================================================#
 
-    if test_dictionary["test_prices_scen_path"] == 1
-        # # if undef in prices_scen_array, then remove undefined elements
-        # # Remove undefined elements from prices_scen_array if any
-        # prices_scen_array = filter(x -> x !== nothing, prices_scen_array)
+        if test_dictionary["test_prices_scen_path"] == 1
+            # # if undef in prices_scen_array, then remove undefined elements
+            # # Remove undefined elements from prices_scen_array if any
+            # prices_scen_array = filter(x -> x !== nothing, prices_scen_array)
 
-        save_hdf5(results_folder, maximum(R), "prices_scen_array", prices_scen_array)
-    end
+            save_hdf5(results_folder, maximum(R), "prices_scen_array", prices_scen_array)
+        end
 
-    # For SLAC, save HDF5 files if needed
-    if model_type == "slac"
-        # Remove undefined elements from prices_scen_array if any
-        prices_scen_array = filter(x -> x !== nothing, prices_scen_array)
-        save_hdf5(results_folder, Tend, "prices_scen_array", prices_scen_array)
-        
-        if !isempty(STOR_ALL)
-            # Save duals to HDF5
-            save_hdf5(results_folder, Tend, "max_discharge_const_duals", max_discharge_const_duals)
-            save_hdf5(results_folder, Tend, "max_charge_const_duals", max_charge_const_duals)
-            save_hdf5(results_folder, Tend, "soc_link_duals", soc_link_duals)
-            save_hdf5(results_folder, Tend, "soc_int_duals", soc_int_duals)
+        # For SLAC, save HDF5 files if needed
+        if model_type == "slac"
+            # Remove undefined elements from prices_scen_array if any
+            prices_scen_array = filter(x -> x !== nothing, prices_scen_array)
+            save_hdf5(results_folder, Tend, "prices_scen_array", prices_scen_array)
             
-            # Calculate and write battery marginal information
-            calculate_battery_marginals(results_folder, STOR_ALL, pgen_dp, s_dp, charge_dp,
-                                       max_discharge_const_duals, max_charge_const_duals, Tend)
-        end
-    end
-end
-
-# Return the net profit and financial results
-PMR = diff./(total_both_inv_costs_MW_yr + fixed_om_costs_vec)
-return Dict(
-    "net_profit" => diff,
-    "PMR" => PMR*100,
-    "total_welfare" => total_welfare[1],
-    "operating_profit" => operating_profit_per_gen_vec,
-    "inv_costs" => total_both_inv_costs_MW_yr,
-    "energy_revenue" => total_energy_revs_dp[:],
-    "capacity_mw" => existing_cap_mw_per_gen * ModelScalingFactor,
-    "sys_costs" => sys_costs,
-    "solve_time" => end_time,
-    "results_df" => financial_results_df
-)
-end
-
-# Helper function for calculating battery marginals when using SLAC
-function calculate_battery_marginals(results_folder, STOR_ALL, pgen_dp, s_dp, charge_dp, 
-                                 max_discharge_const_duals, max_charge_const_duals, Tend)
-    positive_counter = 0
-    not_marginal_count = 0
-    energy_marginal_count = 0
-    discharge_marginal_count = 0
-    charge_marginal_count = 0
-    discharge_charge_marginal_count = 0
-    is_marginal_count = 0
-
-    eps = 1e-5
-
-    max_capacity = maximum(pgen_dp[STOR_ALL[],:])
-
-    union_marginal_count = count(t -> sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps
-                                && sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps, 1:Tend)
-
-    # Save the hours in which batteries appear to be binding
-    t_indices = []
-
-    for t in 1:Tend
-        # Check if energy limited
-        total_power_from_energy = s_dp[STOR_ALL[],t] / 1 - eps
-
-        if total_power_from_energy < max_capacity
-            if pgen_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] < total_power_from_energy
-                energy_marginal_count += 1
-                push!(t_indices, t)
-            else
-                not_marginal_count += 1
-            end
-        else
-            if (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
-                sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
-                discharge_charge_marginal_count += 1
-                push!(t_indices, t)
-            elseif (sum(max_discharge_const_duals[t][1,:]) < eps && pgen_dp[STOR_ALL[],t] > eps && 
-                sum(max_charge_const_duals[t][1,:]) > eps && charge_dp[STOR_ALL[],t] < eps)
-                discharge_marginal_count += 1
-                push!(t_indices, t)
-            elseif (sum(max_discharge_const_duals[t][1,:]) > eps && pgen_dp[STOR_ALL[],t] < eps && 
-                sum(max_charge_const_duals[t][1,:]) < eps && charge_dp[STOR_ALL[],t] > eps)
-                charge_marginal_count += 1
-                push!(t_indices, t)
-            else
-                not_marginal_count += 1
+            if !isempty(STOR_ALL)
+                # Save duals to HDF5
+                save_hdf5(results_folder, Tend, "max_discharge_const_duals", max_discharge_const_duals)
+                save_hdf5(results_folder, Tend, "max_charge_const_duals", max_charge_const_duals)
+                save_hdf5(results_folder, Tend, "soc_link_duals", soc_link_duals)
+                save_hdf5(results_folder, Tend, "soc_int_duals", soc_int_duals)
+                
+                # Calculate and write battery marginal information
+                calculate_battery_marginals(results_folder, STOR_ALL, pgen_dp, s_dp, charge_dp,
+                                        max_discharge_const_duals, max_charge_const_duals, Tend)
             end
         end
-        is_marginal_count = energy_marginal_count + discharge_marginal_count + charge_marginal_count + discharge_charge_marginal_count
     end
 
-    positive_charge_and_pgen_count = count(t -> charge_dp[STOR_ALL[],t] > eps && pgen_dp[STOR_ALL[],t] > eps, 1:Tend)
-    energy_limited_count = count(x -> x <= maximum(pgen_dp[STOR_ALL[],:]), s_dp[STOR_ALL[],:] / 1)
+    # Return the net profit and financial results
+    PMR = diff./(total_both_inv_costs_MW_yr + fixed_om_costs_vec)
+    equilibrium_results = Dict(
+        "net_profit" => diff,
+        "PMR" => PMR*100,
+        "total_welfare" => total_welfare[1],
+        "operating_profit" => operating_profit_per_gen_vec,
+        "inv_costs" => total_both_inv_costs_MW_yr,
+        "energy_revenue" => total_energy_revs_dp[:],
+        "capacity_mw" => existing_cap_mw_per_gen * ModelScalingFactor,
+        "sys_costs" => sys_costs,
+        "solve_time" => end_time,
+        "results_df" => financial_results_df
+    )
+    EP = nothing
+    return EP, inputs, context, equilibrium_results
 
-    println("The number of times battery is marginal is: ", is_marginal_count)
-
-    total_count = is_marginal_count + not_marginal_count
-    textfile = joinpath(results_folder, "battery_marginals_counts.txt")
-
-    # Create a text file with the results
-    open(textfile, "w") do file
-        write(file, "Total Count: $total_count\n")
-        write(file, "Energy Limited Count: $energy_limited_count\n")
-        write(file, "Energy Marginal Count: $energy_marginal_count\n")
-        write(file, "Simultaneous Discharge and Charge Marginal Count: $discharge_charge_marginal_count\n")
-        write(file, "Discharge Marginal Count: $discharge_marginal_count\n")
-        write(file, "Charge Marginal Count: $charge_marginal_count\n")
-        write(file, "Is Marginal Count: $is_marginal_count\n")
-        write(file, "Not Marginal Count: $not_marginal_count\n")
-    end
 end

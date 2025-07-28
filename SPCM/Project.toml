@@ -1,4 +1,4 @@
-name = "SPCMviaGenX"
+name = "PCMviaGenX"
 uuid = "33cf8570-a1bd-4044-9fa6-aea68ef068e7"
 authors = ["Smith, Kaleb", "Bonaldo, Luca", "Chakrabarti, Sambuddha", "Cheng, Fangwei", "Ding, Yifu", "Jenkins, Jesse D.", "Luo, Qian", "Macdonald, Ruaridh", "Mallapragada, Dharik", "Manocha, Aneesha", "Mantegna, Gabe ", "Morris, Jack", "Patankar, Neha", "Pecci, Filippo", "Schwartz, Aaron", "Schwartz, Jacob", "Schivley, Greg", "Sepulveda, Nestor", "Xu, Qingyu", "Zhou, Justin"]
 version = "0.4.4"
@@ -49,6 +49,7 @@ DataFrames = "1.3.4"
 DataStructures = "0.18.13"
 Dates = "1"
 Distances = "0.10.7"
+DrWatson = "2.19.0"
 GR = "0.73.17"
 Gurobi = "0.11.4"
 HiGHS = "1.1.4"

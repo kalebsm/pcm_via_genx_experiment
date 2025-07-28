@@ -1,3 +1,0 @@
-Resource,Zone,Model,New_Build,Can_Retire,Existing_Cap_MW,Max_Cap_MW,Min_Cap_MW,Inv_Cost_per_MWyr,Fixed_OM_Cost_per_MWyr,Var_OM_Cost_per_MWh,Heat_Rate_MMBTU_per_MWh,Fuel,Cap_Size,Start_Cost_per_MW,Start_Fuel_MMBTU_per_MW,Up_Time,Down_Time,Ramp_Up_Percentage,Ramp_Dn_Percentage,Min_Power,Reg_Max,Rsv_Max,Reg_Cost,Rsv_Cost,region,cluster
-NG 2-on-1 Combined Cycle (F-Frame),1,1,1,0,34646.96955,-1,0,112443.9783,51750,3.255,6.363,NG,143.3689655,33.58207681,0,3,2,0.306884872,0.341950679,0.774371888,0.25,0.5,0,0,ERCOT,0
-NG Combustion Turbine (F-Frame),1,1,1,0,12954.40642,-1,0,101161.1352,39150,10.41,9.717,DFO,34.14817073,24.81885367,0,2,2,0.343446753,0.382860437,0.597069443,0.25,0.5,0,0,ERCOT,0
