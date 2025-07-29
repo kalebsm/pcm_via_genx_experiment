@@ -58,9 +58,9 @@ _your output data references here_
 ## Contributing modeling software
 | Model | Version | Repository Link | DOI |
 |-------|---------|-----------------|-----|
-| model 1 | version | link to code repository | link to DOI dataset |
-| model 2 | version | link to code repository | link to DOI dataset |
-| component 1 | version | link to code repository | link to DOI dataset |
+| ATB-calc | v0.0 | [link to code repository](https://github.com/NREL/ATB-calc) | [link to DOI dataset ](https://doi.org/10.11578/dc.20230914.2)|
+| GenX | v0.4.4 | [link to code repository](https://github.com/kalebsm/GenX/tree/caee5563bc1118c24fe99a30e1ed72e052191478) \ [link to original code repository](https://github.com/GenXProject/GenX.jl) | [link to DOI dataset](https://zenodo.org/records/15865702) |
+| SequentialNorta | v0.0 | link to code repository | link to DOI dataset |
 
 ## Reproduce my experiment
 Fill in detailed info here or link to other documentation to thoroughly walkthrough how to use the contents of this repository to reproduce your experiment. Below is an example.
