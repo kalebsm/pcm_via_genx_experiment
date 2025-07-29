@@ -62,15 +62,36 @@ _your output data references here_
 | GenX | v0.4.4 | [link to code repository](https://github.com/kalebsm/GenX/tree/caee5563bc1118c24fe99a30e1ed72e052191478) \ [link to original code repository](https://github.com/GenXProject/GenX.jl) | [link to DOI dataset](https://zenodo.org/records/15865702) |
 | SequentialNorta | v0.0 | link to code repository | link to DOI dataset |
 
+## Program requirements
+Running the scripts and computations will require the installation of the following:
+1. A python version 3.10 or higher
+2. A julia version 1.11 or higher
+3. Gurobi license 9.4 or higher
+
+Additionally, these experiments were originally run on an Intel i7-10700K CPU, 3.7 Ghz machine with 8 GB RAM. The total time for all 11 cases of the experiment to run on that machine was approximately 33 hours, or 3 hours per experiment (without parallelization).
+
 ## Reproduce my experiment
-Fill in detailed info here or link to other documentation to thoroughly walkthrough how to use the contents of this repository to reproduce your experiment. Below is an example.
+1. open a git bash terminal in the desired folder and enter: `git clone --recurse-submodules https://github.com/kalebsm/spcm_genx_experiment.git`
+2. download the following ERCOT data from NREL ARPA-E PERFORM dataset and save in `spcm_genx_experiment\SPCM\src\scenario_generation\sequential_norta\data`
+
+| #   | File Name                                | Data Type | Forecast Type         | Location Path                                               |
+|-----|-------------------------------------------|-----------|------------------------|-------------------------------------------------------------|
+| 1   | BA_lad_actuals_2018.h5                    | Load      | Actuals                | ERCOT/2018/Load/Actuals/BA_level/                           |
+| 2   | BA_load_day-ahead_fcst_2018.h5            | Load      | Day-ahead Forecast     | ERCOT/2018/Load/Forecast/Day-ahead/BA_level/               |
+| 3   | BA_solar_actuals_Existing_2018.h5         | Solar     | Actuals                | ERCOT/2018/Solar/Actuals/BA-level/                          |
+| 4   | BA_solar_2day-ahead_fcst_Existing_2018.h5 | Solar     | 2-Day Ahead Forecast   | ERCOT/2018/Solar/2Day_ahead/BA_level/                      |
+| 5   | BA_solar_day-ahead_fcst_Existing_2018.h5  | Solar     | Day-ahead Forecast     | ERCOT/2018/Solar/Day-ahead/BA_level/                       |
+| 6   | BA_wind_actuals_Existing_2018.h5         | Wind*     | Actuals                | ERCOT/2018/Wind/Actuals/BA-level/                          |
+| 7   | BA_wind_2day-ahead_fcst_Existing_2018.h5  | Wind      | 2-Day Ahead Forecast   | ERCOT/2018/Wind/2Day_ahead/BA_level/                       |
+| 8   | BA_wind_day-ahead_fcst_Existing_2018.h5   | Wind      | Day-ahead Forecast     | ERCOT/2018/Wind/Day-ahead/BA_level/                        |
 
 
-1. `git clone --recurse-submodules <insert spcm_genx_experiment url here> https://github.com/kalebsm/spcm_genx_experiment.git`
-2. Install submodule repositories via the submodule links. One is a Fork of GenX, the other is a main branch of ATB-calc
-3. Install the software components required to conduct the experiment from [contributing modeling software](#contributing-modeling-software)
-4. Download and install the supporting [input data](#input-data) required to conduct the experiment
-5. Run the following scripts in the `workflow` directory to re-create this experiment:
+
+
+3. Install submodule repositories via the submodule links. One is a Fork of GenX, the other is a main branch of ATB-calc
+4. Install the software components required to conduct the experiment from [contributing modeling software](#contributing-modeling-software)
+5. Download and install the supporting [input data](#input-data) required to conduct the experiment
+6. Run the following scripts in the `workflow` directory to re-create this experiment:
 
 | Script Name | Description | How to Run |
 | --- | --- | --- |
