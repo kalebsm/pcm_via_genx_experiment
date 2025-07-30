@@ -76,40 +76,39 @@ Additionally, these experiments were originally run on an Intel i7-10700K CPU, 3
 
 | #   | File Name                                | Data Type | Forecast Type         | Location Path                                               |
 |-----|-------------------------------------------|-----------|------------------------|-------------------------------------------------------------|
-| 1   | BA_lad_actuals_2018.h5                    | Load      | Actuals                | ERCOT/2018/Load/Actuals/BA_level/                           |
+| 1   | BA_load_actuals_2018.h5                    | Load      | Actuals                | ERCOT/2018/Load/Actuals/BA_level/                           |
 | 2   | BA_load_day-ahead_fcst_2018.h5            | Load      | Day-ahead Forecast     | ERCOT/2018/Load/Forecast/Day-ahead/BA_level/               |
 | 3   | BA_solar_actuals_Existing_2018.h5         | Solar     | Actuals                | ERCOT/2018/Solar/Actuals/BA-level/                          |
 | 4   | BA_solar_2day-ahead_fcst_Existing_2018.h5 | Solar     | 2-Day Ahead Forecast   | ERCOT/2018/Solar/2Day_ahead/BA_level/                      |
 | 5   | BA_solar_day-ahead_fcst_Existing_2018.h5  | Solar     | Day-ahead Forecast     | ERCOT/2018/Solar/Day-ahead/BA_level/                       |
-| 6   | BA_wind_actuals_Existing_2018.h5         | Wind*     | Actuals                | ERCOT/2018/Wind/Actuals/BA-level/                          |
+| 6   | BA_wind_actuals_Existing_2018.h5         | Wind     | Actuals                | ERCOT/2018/Wind/Actuals/BA-level/                          |
 | 7   | BA_wind_2day-ahead_fcst_Existing_2018.h5  | Wind      | 2-Day Ahead Forecast   | ERCOT/2018/Wind/2Day_ahead/BA_level/                       |
 | 8   | BA_wind_day-ahead_fcst_Existing_2018.h5   | Wind      | Day-ahead Forecast     | ERCOT/2018/Wind/Day-ahead/BA_level/                        |
 
+Download ATB data
+
+3. Download Gurobi Academic license https://www.gurobi.com/account
+
+4. Set up Python virtual environment using Git Bash with the following
+
+| Step | Git Bash | Description |
+| 4.1 |	python -m venv venv |	Create a virtual environment |
+| 4.2 |	chmod +x venv_setup.sh | Make the setup script executable |
+| 4.3 |	./venv_setup.sh |	Run the setup script |
+| 4.4 |	source ./venv/Scripts/activate | Activate the environment |
+| 4.5 |	python scripts/sge_model_setup/sge_model_setup.py |	Run the model setup script |
+| 4.6 |	deactivate | Exit the environment |
+
+5. Run CEM and LAC simulations using Julia
+
+| Step | Git Bash | Description |
+| 5.1 |	julia scripts/sge_run_cem_lac.jl |	Run both CEM and LAC simulations |
+
+6. Reproduce my figures
+| Step | Git Bash | Description |
+| 6.1 | cd .. | Description |
+| 6.2 | source ./venv/Scripts/activate | Description |
+| 6.3 | python figures/run_all_figures.py | Description |
 
 
-
-3. Install submodule repositories via the submodule links. One is a Fork of GenX, the other is a main branch of ATB-calc
-4. Install the software components required to conduct the experiment from [contributing modeling software](#contributing-modeling-software)
-5. Download and install the supporting [input data](#input-data) required to conduct the experiment
-6. Run the following scripts in the `workflow` directory to re-create this experiment:
-
-| Script Name | Description | How to Run |
-| --- | --- | --- |
-| `step_one.py` | Script to run the first part of my experiment | `python3 step_one.py -f /path/to/inputdata/file_one.csv` |
-| `step_two.py` | Script to run the second part of my experiment | `python3 step_two.py -o /path/to/my/outputdir` |
-
-4. Download and unzip the [output data](#output-data) from my experiment 
-5. Run the following scripts in the `workflow` directory to compare my outputs to those from the publication
-
-| Script Name | Description | How to Run |
-| --- | --- | --- |
-| `compare.py` | Script to compare my outputs to the original | `python3 compare.py --orig /path/to/original/data.csv --new /path/to/new/data.csv` |
-
-## Reproduce my figures
-Use the scripts found in the `figures` directory to reproduce the figures used in this publication.
-
-| Figure Number(s) | Script Name | Description | How to Run |
-| --- | --- | --- | --- |
-| 1, 2 | `generate_plot.py` | Description of figure, ie. "Plots the difference between our two scenarios" | `python3 generate_plot.py -input /path/to/inputs -output /path/to/outuptdir` |
-| 3 | `generate_figure.py` | Description of figure, ie. "Shows how the mean and peak differences are calculated" | `python3 generate_figure.py -input /path/to/inputs -output /path/to/outuptdir` |
 
