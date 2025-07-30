@@ -109,6 +109,7 @@ Additionally, these experiments were originally run on an Intel i7-10700K CPU, 3
 
 
 6. Reproduce my figures
+
 | Step | Git Bash Command                        | Description                    |
 |------|-----------------------------------------|--------------------------------|
 | 1  | `cd ..`                                  | Move up one directory level    |
