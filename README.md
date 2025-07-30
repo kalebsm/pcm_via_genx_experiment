@@ -85,35 +85,35 @@ Additionally, these experiments were originally run on an Intel i7-10700K CPU, 3
 | 7   | BA_wind_2day-ahead_fcst_Existing_2018.h5  | Wind      | 2-Day Ahead Forecast   | ERCOT/2018/Wind/2Day_ahead/BA_level/                       |
 | 8   | BA_wind_day-ahead_fcst_Existing_2018.h5   | Wind      | Day-ahead Forecast     | ERCOT/2018/Wind/Day-ahead/BA_level/                        |
 
-Download ATB data
+3. Download ATB data
 
-3. Download Gurobi Academic license https://www.gurobi.com/account
+4. Download Gurobi Academic license https://www.gurobi.com/account
 
-4. Set up Python virtual environment using Git Bash with the following
+5. Set up Python virtual environment using Git Bash with the following
 
 | Step | Git Bash Command                                   | Description                  |
 |------|----------------------------------------------------|------------------------------|
-| 4.1  | `python -m venv venv`                              | Create a virtual environment |
-| 4.2  | `chmod +x venv_setup.sh`                           | Make the setup script executable |
-| 4.3  | `./venv_setup.sh`                                  | Run the setup script         |
-| 4.4  | `source ./venv/Scripts/activate`                   | Activate the environment     |
-| 4.5  | `python scripts/sge_model_setup/sge_model_setup.py`| Run the model setup script   |
-| 4.6  | `deactivate`                                       | Exit the environment         |
+| 1  | `python -m venv venv`                              | Create a virtual environment |
+| 2  | `chmod +x venv_setup.sh`                           | Make the setup script executable |
+| 3  | `./venv_setup.sh`                                  | Run the setup script         |
+| 4  | `source ./venv/Scripts/activate`                   | Activate the environment     |
+| 5  | `python scripts/sge_model_setup/sge_model_setup.py`| Run the model setup script   |
+| 6  | `deactivate`                                       | Exit the environment         |
 
 
-5. Run CEM and LAC simulations using Julia
+6. Run CEM and LAC simulations using Julia
 
 | Step | Git Bash Command                       | Description                    |
 |------|----------------------------------------|--------------------------------|
-| 5.1  | `julia scripts/sge_run_cem_lac.jl`     | Run both CEM and LAC simulations |
+| 1  | `julia scripts/sge_run_cem_lac.jl`     | Run both CEM and LAC simulations |
 
 
 6. Reproduce my figures
 | Step | Git Bash Command                        | Description                    |
 |------|-----------------------------------------|--------------------------------|
-| 6.1  | `cd ..`                                  | Move up one directory level    |
-| 6.2  | `source ./venv/Scripts/activate`         | Activate the virtual environment |
-| 6.3  | `python figures/run_all_figures.py`      | Generate all figure outputs    |
+| 1  | `cd ..`                                  | Move up one directory level    |
+| 2  | `source ./venv/Scripts/activate`         | Activate the virtual environment |
+| 3  | `python figures/run_all_figures.py`      | Generate all figure outputs    |
 
 
 
