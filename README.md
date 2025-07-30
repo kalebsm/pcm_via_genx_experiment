@@ -91,24 +91,30 @@ Download ATB data
 
 4. Set up Python virtual environment using Git Bash with the following
 
-| Step | Git Bash | Description |
-| 4.1 |	python -m venv venv |	Create a virtual environment |
-| 4.2 |	chmod +x venv_setup.sh | Make the setup script executable |
-| 4.3 |	./venv_setup.sh |	Run the setup script |
-| 4.4 |	source ./venv/Scripts/activate | Activate the environment |
-| 4.5 |	python scripts/sge_model_setup/sge_model_setup.py |	Run the model setup script |
-| 4.6 |	deactivate | Exit the environment |
+| Step | Git Bash Command                                   | Description                  |
+|------|----------------------------------------------------|------------------------------|
+| 4.1  | `python -m venv venv`                              | Create a virtual environment |
+| 4.2  | `chmod +x venv_setup.sh`                           | Make the setup script executable |
+| 4.3  | `./venv_setup.sh`                                  | Run the setup script         |
+| 4.4  | `source ./venv/Scripts/activate`                   | Activate the environment     |
+| 4.5  | `python scripts/sge_model_setup/sge_model_setup.py`| Run the model setup script   |
+| 4.6  | `deactivate`                                       | Exit the environment         |
+
 
 5. Run CEM and LAC simulations using Julia
 
-| Step | Git Bash | Description |
-| 5.1 |	julia scripts/sge_run_cem_lac.jl |	Run both CEM and LAC simulations |
+| Step | Git Bash Command                       | Description                    |
+|------|----------------------------------------|--------------------------------|
+| 5.1  | `julia scripts/sge_run_cem_lac.jl`     | Run both CEM and LAC simulations |
+
 
 6. Reproduce my figures
-| Step | Git Bash | Description |
-| 6.1 | cd .. | Description |
-| 6.2 | source ./venv/Scripts/activate | Description |
-| 6.3 | python figures/run_all_figures.py | Description |
+| Step | Git Bash Command                        | Description                    |
+|------|-----------------------------------------|--------------------------------|
+| 6.1  | `cd ..`                                  | Move up one directory level    |
+| 6.2  | `source ./venv/Scripts/activate`         | Activate the virtual environment |
+| 6.3  | `python figures/run_all_figures.py`      | Generate all figure outputs    |
+
 
 
 
