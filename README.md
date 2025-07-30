@@ -112,9 +112,8 @@ Additionally, these experiments were originally run on an Intel i7-10700K CPU, 3
 
 | Step | Git Bash Command                        | Description                    |
 |------|-----------------------------------------|--------------------------------|
-| 1  | `cd ..`                                  | Move up one directory level    |
-| 2  | `source ./venv/Scripts/activate`         | Activate the virtual environment |
-| 3  | `python figures/run_all_figures.py`      | Generate all figure outputs    |
+| 1  | `source ./venv/Scripts/activate`         | Activate the virtual environment |
+| 2  | `python figures/run_all_figures.py`      | Generate all figure outputs    |
 
 
 
