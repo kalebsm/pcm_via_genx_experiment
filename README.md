@@ -1,17 +1,6 @@
 # insert DOI when available
 
-<!-- Get rid of the metarepo instructions (the two sections below this) once you're done. -->
-
-# metarepo
-## [Check out the website for instructions](https://immm-sfa.github.io/metarepo)
-`metarepo` is short for meta-repository, a GitHub repository that contains instructions to reproduce results in a published work. This repo is a template for creating your own metarepo.
-
-## Purpose
-A meta-repository creates a single point of access for someone to find all of the components that were used to create a published work for the purpose of reproducibility. This repository should contain references to all minted data and software as well as any ancillary code used to transform the source data, create figures for your publication, conduct the experiment, and / or execute the contributing software.
-
-<!-- Get rid of the metarepo instructions (the two sections above this) once you're done. -->
-
-# lastname-etal_year_journal
+# lastname-etal_year_journal (to be included when published)
 
 **your Paper Title here (once published, include a link to the text)**
 
@@ -47,13 +36,6 @@ Human, I.M. (2021). My input dataset name [Data set]. DataHub. https://doi.org/s
 
 _your input data references here_
 
-### Output data
-Reference for each minted data source for your output data.  For example:
-
-Human, I.M. (2021). My output dataset name [Data set]. DataHub. https://doi.org/some-doi-number
-
-_your output data references here_
-
 
 ## Contributing modeling software
 | Model | Version | Repository Link | DOI |
@@ -85,7 +67,7 @@ Additionally, these experiments were originally run on an Intel i7-10700K CPU, 3
 | 7   | BA_wind_2day-ahead_fcst_Existing_2018.h5  | Wind      | 2-Day Ahead Forecast   | ERCOT/2018/Wind/2Day_ahead/BA_level/                       |
 | 8   | BA_wind_day-ahead_fcst_Existing_2018.h5   | Wind      | Day-ahead Forecast     | ERCOT/2018/Wind/Day-ahead/BA_level/                        |
 
-3. Download ATB data
+3. Save the ATB data (2024 v2 Annual Technology Baseline Workbook Errata 7-19-2024.xlsx) to the folder `data/` from the following link: (https://atb.nrel.gov/electricity/2024/data) or in the ATB archives.
 
 4. Download Gurobi Academic license https://www.gurobi.com/account
 
@@ -108,7 +90,7 @@ Additionally, these experiments were originally run on an Intel i7-10700K CPU, 3
 | 1  | `julia scripts/sge_run_cem_lac.jl`     | Run both CEM and LAC simulations |
 
 
-6. Reproduce my figures
+7. Reproduce my figures
 
 | Step | Git Bash Command                        | Description                    |
 |------|-----------------------------------------|--------------------------------|
