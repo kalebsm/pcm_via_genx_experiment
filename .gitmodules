@@ -7,6 +7,3 @@
 [submodule "SPCM/src/scenario_generation/sequential_norta"]
 	path = SPCM/src/scenario_generation/sequential_norta
 	url = https://github.com/kalebsm/sequential_norta.git
-[submodule "ToySystemEquilibrium"]
-	path = ToySystemEquilibrium
-	url = https://github.com/sherryzuo/ToySystemEquilibrium
