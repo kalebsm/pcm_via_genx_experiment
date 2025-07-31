@@ -1,6 +1,4 @@
 
-
-### Papers associated with this repository
 # insert DOI when available
 # lastname-etal_year_journal (to be included when published)
 
