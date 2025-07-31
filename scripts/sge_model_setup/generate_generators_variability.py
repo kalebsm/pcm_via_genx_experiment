@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+import h5py
 import sys
 from get_case_names import get_case_names
 
@@ -34,6 +35,27 @@ full_generator_df = pd.read_csv(a_upd_generator_df_path)
 # load in ercot actuals data
 ercot_actuals_loc = os.path.join(scenario_generation_path, 'sequential_NORTA', 'data')
 ercot_actuals_df = pd.read_csv(ercot_actuals_loc + '/actuals_ercot2018.csv')
+
+# with h5py.File(os.path.join(ercot_actuals_loc, 'BA_load_actuals_2018.h5'), 'r') as f:
+#     df_meta = pd.DataFrame(f['meta'][...])
+#     time_index = pd.to_datetime(f['time_index'][...].astype(str))
+#     load_actuals = f['actuals'][...]
+#     # Assuming the array is 1-dimensional
+#     ercot_actuals_df = pd.DataFrame({'time_index': time_index, 'load': load_actuals})
+
+# # Load solar actuals and add to ercot_actuals_df
+# with h5py.File(os.path.join(ercot_actuals_loc, 'BA_solar_actuals_Existing_2018.h5'), 'r') as f:
+#     solar_time_index = pd.to_datetime(f['time_index'][...].astype(str))
+#     solar_actuals = f['actuals'][...]
+#     # Align with ercot_actuals_df by time_index if needed
+#     solar_df = pd.DataFrame({'time_index': solar_time_index, 'solar': solar_actuals})
+
+# # Load wind actuals and add to ercot_actuals_df
+# with h5py.File(os.path.join(ercot_actuals_loc, 'BA_wind_actuals_Existing_2018.h5'), 'r') as f:
+#     wind_time_index = pd.to_datetime(f['time_index'][...].astype(str))
+#     wind_actuals = f['actuals'][...]
+#     # Align with ercot_actuals_df by time_index if needed
+#     wind_df = pd.DataFrame({'time_index': wind_time_index, 'wind': wind_actuals})
 
 lac_length = len(ercot_actuals_df)
 period = range(0,lac_length)

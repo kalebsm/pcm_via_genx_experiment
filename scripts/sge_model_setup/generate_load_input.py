@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import h5py
 import os
 import sys
 from get_case_names import get_case_names
@@ -10,6 +11,7 @@ sys.path.append(root_path)
 
 # Now import from utils
 from utils.sge_utils import get_paths
+
 data_path = get_paths('data')
 genx_research_path = get_paths('genx_research')
 spcm_research_path = get_paths('spcm_research')
@@ -25,6 +27,15 @@ case_names_list = get_case_names(generator_assumptions_path)
 # load in ercot actuals data
 ercot_actuals_loc = os.path.join(scenario_generation_path, 'sequential_norta', 'data')
 ercot_actuals_df = pd.read_csv(ercot_actuals_loc + '/actuals_ercot2018.csv')
+
+# with h5py.File(os.path.join(ercot_actuals_loc, 'BA_load_actuals_2018.h5'), 'r') as f:
+#     df_meta = pd.DataFrame(f['meta'][...])
+#     time_index = pd.to_datetime(f['time_index'][...].astype(str))
+#     load_actuals = f['actuals'][...]
+#     # Assuming the array is 1-dimensional
+#     ercot_actuals_df = pd.DataFrame({'time_index': time_index, 'load': load_actuals})
+
+
 lac_length = len(ercot_actuals_df)
 
 period = range(0,lac_length)
