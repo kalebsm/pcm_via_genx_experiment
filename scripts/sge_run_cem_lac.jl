@@ -9,8 +9,8 @@ function run_CEM_and_LAC()
         using Pkg;
         Pkg.activate(".");
         Pkg.instantiate();
-        include("research_systems/run_CEM_cases.jl");
-        include("research_systems/cem_to_lac_capacity_update.jl")'
+        include("src/run_CEM_cases.jl");
+        include("src/cem_to_lac_capacity_update.jl")'
     `)
     cd("..")
 
@@ -22,7 +22,7 @@ function run_CEM_and_LAC()
         Pkg.activate(".");
         Pkg.develop(path="src/scenario_generation/sequential_norta");
         Pkg.instantiate();
-        include("research_systems/run_script.jl")'`)
+        include("src/run_script.jl")'`)
 
     println(">>> LAC case run complete at $(Dates.format(now(), "HH:MM:SS"))")
 end
