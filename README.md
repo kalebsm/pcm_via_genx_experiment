@@ -51,7 +51,7 @@ Running the scripts and computations will require the installation of the follow
 Additionally, these experiments were originally run on an Intel i7-10700K CPU, 3.7 Ghz machine with 8 GB RAM. The total time for all 11 cases of the experiment to run on that machine was approximately 33 hours, or 3 hours per experiment (without parallelization).
 
 ## Reproduce my experiment
-1. open a git bash terminal in the desired folder and enter: `git clone --recurse-submodules https://github.com/kalebsm/spcm_genx_experiment.git`
+1. open a git bash terminal in the desired folder and enter: `git clone --recurse-submodules [https://github.com/kalebsm/spcm_genx_experiment.git](https://github.com/kalebsm/pcm_via_genx_experiment.git)`
 2. download the following ERCOT data from NREL ARPA-E PERFORM dataset and save in `spcm_genx_experiment\SPCM\src\scenario_generation\sequential_norta\data`
 
 | #   | File Name                                | Data Type | Forecast Type         | Location Path                                               |
