@@ -1,9 +1,12 @@
 cff-version: 1.1.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: Smith
-  given-names: Kaleb
+- family-names: "Smith"
+  given-names: "Kaleb"
 orcid: https://orcid.org/0009-0001-6097-4400
-title:Price Formation and Flexibility Valuation in Production Cost Modeling
+title: "Price Formation and Flexibility Valuation in Production Cost Modeling"
 version: v1.0.0
 date-released: 2025-08-05
+url: "https://github.com/kalebsm/pcm_via_genx_experiment"
+
+
