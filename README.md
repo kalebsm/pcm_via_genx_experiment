@@ -1,5 +1,5 @@
 
-# insert DOI when available
+DOI: 10.5281/zenodo.16748244
 # lastname-etal_year_journal (to be included when published)
 
 **your Paper Title here (once published, include a link to the text)**
