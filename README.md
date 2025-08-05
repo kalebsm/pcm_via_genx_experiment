@@ -40,7 +40,7 @@ National Renewable Energy Laboratory (2024). 2024 annual technology baseline. Av
 |-------|---------|-----------------|-----|
 | ATB-calc | v0.0 | [link to code repository](https://github.com/NREL/ATB-calc) | [link to DOI dataset ](https://doi.org/10.11578/dc.20230914.2)|
 | GenX | v0.4.4 | [link to code repository](https://github.com/kalebsm/GenX/tree/caee5563bc1118c24fe99a30e1ed72e052191478) \ [link to original code repository](https://github.com/GenXProject/GenX.jl) | [link to DOI dataset](https://zenodo.org/records/15865702) |
-| SequentialNorta | v0.0 | link to code repository | link to DOI dataset |
+| SequentialNorta | v0.0 | [link to code repository](https://github.com/kalebsm/sequential_norta.git) | no DOI currently |
 
 ## Program requirements
 Running the scripts and computations will require the installation of the following:
