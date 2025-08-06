@@ -4,14 +4,13 @@ DOI: 10.5281/zenodo.16748244
 
 **your Paper Title here (once published, include a link to the text)**
 
-First Last<sup>1\*</sup>, First Last<sup>1</sup>,  and First Last<sup>1, 2</sup>
+Kaleb Smith<sup>1\*</sup>, Hugo Santarém de Araujo <sup>1</sup>,  and Jacob Mays<sup>1, 2</sup>
 
 <sup>1 </sup> Cornell University, Ithaca, NY, USA.
 
 
 \* corresponding author:  ks885@cornell.edu
-\* author: Hugo Araujo de Santarem
-\* author: Jacob Mays
+
 
 
 # Abstract
