@@ -10,6 +10,8 @@ First Last<sup>1\*</sup>, First Last<sup>1</sup>,  and First Last<sup>1, 2</sup>
 
 
 \* corresponding author:  ks885@cornell.edu
+\* author: Hugo Araujo de Santarem
+\* author: Jacob Mays
 
 
 # Abstract
