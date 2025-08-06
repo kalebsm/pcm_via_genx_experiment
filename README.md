@@ -6,11 +6,10 @@ DOI: 10.5281/zenodo.16748244
 
 First Last<sup>1\*</sup>, First Last<sup>1</sup>,  and First Last<sup>1, 2</sup>
 
-<sup>1 </sup>Pacific Northwest National Laboratory, Richland, WA, USA.
+<sup>1 </sup> Cornell University, Ithaca, NY, USA.
 
-<sup>2 </sup> Institute for Energy Analysis, Oak Ridge Associated Universities, Washington, DC, USA
 
-\* corresponding author:  email@myorg.gov
+\* corresponding author:  ks885@cornell.edu
 
 
 # Abstract
