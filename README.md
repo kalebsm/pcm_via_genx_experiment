@@ -4,7 +4,7 @@ DOI: 10.5281/zenodo.16748244
 
 **your Paper Title here (once published, include a link to the text)**
 
-Kaleb Smith<sup>1\*</sup>, Hugo Santarém de Araujo <sup>1</sup>,  and Jacob Mays<sup>1, 2</sup>
+Kaleb Smith<sup>1\*</sup>, Hugo Santarém de Araujo <sup>1</sup>,  and Jacob Mays<sup>1</sup>
 
 <sup>1 </sup> Cornell University, Ithaca, NY, USA.
 
