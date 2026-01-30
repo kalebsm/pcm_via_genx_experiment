@@ -44,6 +44,7 @@ def sge_model_setup():
                 "generate_gurobi_settings.py",
                 "generate_cem_run_files.py",
                 "generate_lac_run_files.py",
+                "generate_voll_sensitivity_cases.py"
                 ]
 
     for script in python_files:

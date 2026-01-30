@@ -101,6 +101,7 @@ export scenario_generator_init
 
 using JuMP # used for mathematical programming
 using DataFrames
+import DataFrames: nrow   # prefer DataFrames' nrow to avoid conflict with TSFrames
 using CSV
 using StatsBase
 using LinearAlgebra

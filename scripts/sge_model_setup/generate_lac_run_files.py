@@ -28,6 +28,7 @@ model_types = ['pf', 'dlac-p', 'dlac-i', 'slac']
 julia_code = r"""
 # Load the dev-tracked package
 using SequentialNorta
+using PCMviaGenX
 # Load the required packages
 using Gurobi
 using YAML
