@@ -3,7 +3,6 @@ import sys
 import shutil
 import pandas as pd
 
-# filepath: c:\Users\ks885\Documents\aa_research\Modeling\spcm_check\pcm_via_genx_experiment\scripts\sge_model_setup\generate_voll_sensitivity_cases.py
 
 # add project root so utils can be imported (one level up from scripts/)
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
