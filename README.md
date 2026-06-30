@@ -1,8 +1,8 @@
 
 DOI: 10.1088/2753-3751/ae3f34
 
-Smith et al. 2025, Environmental Research: Energy  
-Resource adequacy under uncertainty: A Monte Carlo framework for reliability assessment
+Smith et al. 2026, Environmental Research: Energy  
+Price formation and flexibility valuation in production cost modeling
 
 Kaleb Smith<sup>1\</sup>, Hugo Santarém de Araujo<sup>1</sup>, and Jacob Mays<sup>1</sup>
 <sup>1</sup> Cornell University, Ithaca, NY, USA
