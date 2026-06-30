@@ -1,15 +1,12 @@
 
-DOI: 10.5281/zenodo.16748244
-# lastname-etal_year_journal (to be included when published)
+DOI: 10.1088/2753-3751/ae3f34
 
-**your Paper Title here (once published, include a link to the text)**
+Smith et al. 2025, Environmental Research: Energy  
+Resource adequacy under uncertainty: A Monte Carlo framework for reliability assessment
 
-Kaleb Smith<sup>1\*</sup>, Hugo Santarém de Araujo <sup>1</sup>,  and Jacob Mays<sup>1</sup>
-
-<sup>1 </sup> Cornell University, Ithaca, NY, USA.
-
-
-\* corresponding author:  ks885@cornell.edu
+Kaleb Smith<sup>1\</sup>, Hugo Santarém de Araujo<sup>1</sup>, and Jacob Mays<sup>1</sup>
+<sup>1</sup> Cornell University, Ithaca, NY, USA
+\ corresponding author: ks885@cornell.edu
 
 
 
