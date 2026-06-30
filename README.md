@@ -12,8 +12,22 @@ Kaleb Smith<sup>1</sup>, Hugo Santarém de Araujo<sup>1</sup>, and Jacob Mays<su
 # Abstract
 This paper considers the impact of operational uncertainty on spot price distributions and resource valuation in power markets as systems transition to high levels of wind, solar, and storage resources. In systems dominated by thermal resources with minimal storage, marginal costs and therefore market clearing prices are driven by fuel costs, enabling modelers to rely on simplified deterministic formulations to approximate price behavior. Future price formation may instead be increasingly driven by storage opportunity costs, necessitating a more sophisticated representation of uncertainty and intertemporal constraints. In this paper we describe the mechanics of price formation with storage, employ a stochastic production cost model to simulate prices in modeled future systems, and highlight the differences between the simulated revenues and those that arise in deterministic simplifications. We perform numerical tests using a plausible representation of short-term forecast uncertainty and assess the economic impact of this uncertainty across cases with different battery durations and quantities.
 
-# Journal reference
-(to be included when published)
+# Journal Bibtex reference
+@article{Smith_2026,
+doi = {10.1088/2753-3751/ae3f34},
+url = {https://doi.org/10.1088/2753-3751/ae3f34},
+year = {2026},
+month = {feb},
+publisher = {IOP Publishing},
+volume = {3},
+number = {1},
+pages = {015009},
+author = {Smith, Kaleb and Santarém de Araújo, Hugo and Mays, Jacob},
+title = {Price formation and flexibility valuation in production cost modeling},
+journal = {Environmental Research: Energy},
+abstract = {This paper considers the impact of operational uncertainty on spot price distributions and resource valuation in power markets as systems transition to high levels of wind, solar, and storage resources. In systems dominated by thermal resources with minimal storage, marginal costs and therefore market clearing prices are driven by fuel costs, enabling modelers to rely on simplified deterministic formulations to approximate price behavior. Future price formation may instead be increasingly driven by storage opportunity costs, necessitating a more sophisticated representation of uncertainty and intertemporal constraints. In this paper we describe the mechanics of price formation with storage, employ a stochastic production cost model to simulate prices in modeled future systems, and highlight the differences between the simulated revenues and those that arise in deterministic simplifications. We perform numerical tests using a plausible representation of short-term forecast uncertainty and assess the economic impact of this uncertainty across cases with different battery durations and quantities.}
+}
+
 
 ## Code reference
 Bonaldo, L., S. Chakrabarti, F. Cheng, Y. Ding, J. Jenkins, Q. Luo, R. Macdonald, D. Mallapragada, A. Manocha, G. Mantegna, J. Morris, N. Patankar, F. Pecci, A. Schwartz, J. Schwartz, G. Schivley, N. Sepulveda, and Q. Xu (2024, April). GenX. [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15865702.svg)](https://doi.org/10.5281/zenodo.15865702)
