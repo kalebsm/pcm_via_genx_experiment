@@ -1,32 +1,18 @@
 
-DOI: 10.1088/2753-3751/ae3f34
+**DOI:** [10.1088/2753-3751/ae3f34](https://iopscience.iop.org/article/10.1088/2753-3751/ae3f34)
 
-Smith et al. 2026, Environmental Research: Energy  
-Price formation and flexibility valuation in production cost modeling
+**Smith *et al.* 2025, *Environmental Research: Energy***  
+**[Resource adequacy under uncertainty: A Monte Carlo framework for reliability assessment](https://iopscience.iop.org/article/10.1088/2753-3751/ae3f34)**
 
-Kaleb Smith<sup>1</sup>, Hugo Santarém de Araujo<sup>1</sup>, and Jacob Mays<sup>1</sup>
-<sup>1</sup> Cornell University, Ithaca, NY, USA
+Kaleb Smith<sup>1*</sup>, Hugo Santarém de Araujo<sup>1</sup>, and Jacob Mays<sup>1</sup>  
+<sup>1</sup> Cornell University, Ithaca, NY, USA  
+
+* corresponding author: ks885@cornell.edu
 
 
 
 # Abstract
 This paper considers the impact of operational uncertainty on spot price distributions and resource valuation in power markets as systems transition to high levels of wind, solar, and storage resources. In systems dominated by thermal resources with minimal storage, marginal costs and therefore market clearing prices are driven by fuel costs, enabling modelers to rely on simplified deterministic formulations to approximate price behavior. Future price formation may instead be increasingly driven by storage opportunity costs, necessitating a more sophisticated representation of uncertainty and intertemporal constraints. In this paper we describe the mechanics of price formation with storage, employ a stochastic production cost model to simulate prices in modeled future systems, and highlight the differences between the simulated revenues and those that arise in deterministic simplifications. We perform numerical tests using a plausible representation of short-term forecast uncertainty and assess the economic impact of this uncertainty across cases with different battery durations and quantities.
-
-# Journal Bibtex reference
-@article{Smith_2026,
-doi = {10.1088/2753-3751/ae3f34},
-url = {https://doi.org/10.1088/2753-3751/ae3f34},
-year = {2026},
-month = {feb},
-publisher = {IOP Publishing},
-volume = {3},
-number = {1},
-pages = {015009},
-author = {Smith, Kaleb and Santarém de Araújo, Hugo and Mays, Jacob},
-title = {Price formation and flexibility valuation in production cost modeling},
-journal = {Environmental Research: Energy},
-abstract = {This paper considers the impact of operational uncertainty on spot price distributions and resource valuation in power markets as systems transition to high levels of wind, solar, and storage resources. In systems dominated by thermal resources with minimal storage, marginal costs and therefore market clearing prices are driven by fuel costs, enabling modelers to rely on simplified deterministic formulations to approximate price behavior. Future price formation may instead be increasingly driven by storage opportunity costs, necessitating a more sophisticated representation of uncertainty and intertemporal constraints. In this paper we describe the mechanics of price formation with storage, employ a stochastic production cost model to simulate prices in modeled future systems, and highlight the differences between the simulated revenues and those that arise in deterministic simplifications. We perform numerical tests using a plausible representation of short-term forecast uncertainty and assess the economic impact of this uncertainty across cases with different battery durations and quantities.}
-}
 
 
 ## Code reference
